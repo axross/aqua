@@ -72,7 +72,7 @@ class Hand {
 
   int get power {
     HandType type = this.type;
-    int power = type.power;
+    int power = getHandTypePower(type);
     final countEachRank = new Map<Rank, int>();
 
     for (final card in cards) {
@@ -138,31 +138,29 @@ enum HandType {
   straightFlush,
 }
 
-extension on HandType {
-  int get power {
-    switch (this) {
-      case HandType.high:
-        return _powerBaseForHandType;
-      case HandType.aPair:
-        return _powerBaseForHandType * 2;
-      case HandType.twoPairs:
-        return _powerBaseForHandType * 3;
-      case HandType.threeOfAKind:
-        return _powerBaseForHandType * 4;
-      case HandType.straight:
-        return _powerBaseForHandType * 5;
-      case HandType.flush:
-        return _powerBaseForHandType * 6;
-      case HandType.fullhouse:
-        return _powerBaseForHandType * 7;
-      case HandType.fourOfAKind:
-        return _powerBaseForHandType * 8;
-      case HandType.straightFlush:
-        return _powerBaseForHandType * 9;
-    }
-
-    assert(false, "unreachable here.");
+int getHandTypePower(HandType handType) {
+  switch (handType) {
+    case HandType.high:
+      return _powerBaseForHandType;
+    case HandType.aPair:
+      return _powerBaseForHandType * 2;
+    case HandType.twoPairs:
+      return _powerBaseForHandType * 3;
+    case HandType.threeOfAKind:
+      return _powerBaseForHandType * 4;
+    case HandType.straight:
+      return _powerBaseForHandType * 5;
+    case HandType.flush:
+      return _powerBaseForHandType * 6;
+    case HandType.fullhouse:
+      return _powerBaseForHandType * 7;
+    case HandType.fourOfAKind:
+      return _powerBaseForHandType * 8;
+    case HandType.straightFlush:
+      return _powerBaseForHandType * 9;
   }
+
+  assert(false, "unreachable here.");
 }
 
 // 14 ** 1 + 14 **2 + 14 ** 3 + 14 ** 4 + 14 ** 5
