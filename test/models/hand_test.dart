@@ -1,6 +1,6 @@
-import 'package:aqua/card.dart' show Card, Rank, Suit;
-import 'package:aqua/hand.dart' show Hand, HandType;
 import 'package:test/test.dart';
+import '../../lib/models/card.dart' show Card, Rank, Suit;
+import '../../lib/models/hand.dart' show Hand, HandType;
 
 final aceHighStraightFlush = Hand({
   Card(rank: Rank.king, suit: Suit.spade),

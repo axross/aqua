@@ -1,7 +1,7 @@
-import 'package:aqua/card.dart' show Card, Rank, Suit;
-import 'package:aqua/card_pair.dart' show CardPair;
 import 'package:aqua/parser.dart' show parseRangeString;
 import 'package:test/test.dart';
+import '../../lib/models/card.dart' show Card, Rank, Suit;
+import '../../lib/models/card_pair.dart' show CardPair;
 
 void main() {
   test('parseRangeString() returns a set of cards by the given string', () {

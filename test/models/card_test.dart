@@ -1,5 +1,5 @@
-import 'package:aqua/card.dart' show Card, Rank, Suit;
 import 'package:test/test.dart';
+import '../../lib/models/card.dart' show Card, Rank, Suit;
 
 void main() {
   test('Card can be compared with another one at their equility', () {

@@ -1,6 +1,6 @@
-import 'package:aqua/card.dart' show Card, Rank, Suit;
-import 'package:aqua/deck.dart' show Deck;
 import 'package:test/test.dart';
+import '../../lib/models/card.dart' show Card, Rank, Suit;
+import '../../lib/models/deck.dart' show Deck;
 
 void main() {
   test("Deck is a set of 52 cards", () {

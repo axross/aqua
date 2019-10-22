@@ -1,15 +1,16 @@
 import 'package:aqua/parser.dart' show parseRangeString;
-import 'package:aqua/simulator.dart' show Simulator;
 import 'package:test/test.dart';
+import '../../lib/models/simulator.dart' show Simulator;
+import '../../lib/models/player_hand_setting.dart' show PlayerHoleCards;
 
 void main() {
   test("Simulator#simulate()", () {
-    final simulator = Simulator();
-    final results = simulator.simulate({
+    final simulator = Simulator([
       parseRangeString("AsKs"),
       parseRangeString("22+"),
       parseRangeString("KJ+"),
-    });
+    ]);
+    final results = simulator.simulate();
 
     final totalWon = results.fold(
       0,

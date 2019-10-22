@@ -1,29 +1,29 @@
-import 'package:aqua/card.dart' show Card, Rank, Suit;
-import 'package:aqua/card_pair.dart' show CardPair;
 import 'package:test/test.dart';
+import '../../lib/models/card.dart' show Card, Rank, Suit;
+import '../../lib/models/card_pair.dart' show CardPair;
 
 void main() {
   test('CardPair can be compared with another one at their equility', () {
     expect(
-        CardPair(
-              Card(rank: Rank.ace, suit: Suit.spade),
-              Card(rank: Rank.ace, suit: Suit.heart),
-            ) ==
-            CardPair(
-              Card(rank: Rank.ace, suit: Suit.spade),
-              Card(rank: Rank.ace, suit: Suit.heart),
-            ),
-        isTrue);
+      CardPair(
+        Card(rank: Rank.ace, suit: Suit.spade),
+        Card(rank: Rank.ace, suit: Suit.heart),
+      ),
+      equals(CardPair(
+        Card(rank: Rank.ace, suit: Suit.spade),
+        Card(rank: Rank.ace, suit: Suit.heart),
+      )),
+    );
     expect(
-        CardPair(
-              Card(rank: Rank.ace, suit: Suit.spade),
-              Card(rank: Rank.ace, suit: Suit.heart),
-            ) ==
-            CardPair(
-              Card(rank: Rank.ace, suit: Suit.heart),
-              Card(rank: Rank.ace, suit: Suit.spade),
-            ),
-        isTrue);
+      CardPair(
+        Card(rank: Rank.ace, suit: Suit.spade),
+        Card(rank: Rank.ace, suit: Suit.heart),
+      ),
+      equals(CardPair(
+        Card(rank: Rank.ace, suit: Suit.heart),
+        Card(rank: Rank.ace, suit: Suit.spade),
+      )),
+    );
     expect(
         CardPair(
               Card(rank: Rank.eight, suit: Suit.spade),

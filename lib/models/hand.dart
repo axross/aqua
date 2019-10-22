@@ -1,7 +1,37 @@
 import 'dart:math' show max, pow;
+import 'package:meta/meta.dart' show immutable;
 import './card.dart' show Card, Rank, Suit;
 
+@immutable
 class Hand {
+  const Hand(this.cards);
+
+  factory Hand.bestFrom(Set<Card> cards) {
+    assert(cards.length == 7);
+
+    final _cards = cards.toList();
+    Hand best;
+
+    for (final pattern in _patterns) {
+      final hand = Hand({
+        _cards[pattern[0]],
+        _cards[pattern[1]],
+        _cards[pattern[2]],
+        _cards[pattern[3]],
+        _cards[pattern[4]],
+      });
+
+      if (best == null || hand.power > best.power) {
+        best = hand;
+      }
+    }
+
+    return best;
+  }
+
+  factory Hand.fromJson(List<Map<String, dynamic>> json) =>
+      Hand.bestFrom(json.map((item) => Card.fromJson(item)).toSet());
+
   final Set<Card> cards;
 
   HandType get type {
@@ -100,30 +130,8 @@ class Hand {
   bool operator ==(Object other) =>
       other is Hand && other.cards.difference(cards).length == 0;
 
-  Hand(this.cards);
-
-  factory Hand.bestFrom(Set<Card> cards) {
-    assert(cards.length == 7);
-
-    final _cards = cards.toList();
-    Hand best;
-
-    for (final pattern in _patterns) {
-      final hand = Hand({
-        _cards[pattern[0]],
-        _cards[pattern[1]],
-        _cards[pattern[2]],
-        _cards[pattern[3]],
-        _cards[pattern[4]],
-      });
-
-      if (best == null || hand.power > best.power) {
-        best = hand;
-      }
-    }
-
-    return best;
-  }
+  List<Map<String, dynamic>> toJson() =>
+      cards.map((card) => card.toJson()).toList();
 }
 
 enum HandType {
