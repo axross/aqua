@@ -6,7 +6,10 @@ import '../models/player_hand_setting.dart'
     show PlayerHandRange, PlayerHoleCards;
 import './card_selector.dart' show CardSelector;
 import './playing_card.dart' show PlayingCard, PlayingCardBack;
-import './range_grid.dart' show RangeSelectGrid;
+import './range_select_grid.dart' show RangeSelectGrid;
+
+import './card_replace_target_selector.dart' show CardReplaceTargetSelector;
+import './card_picker.dart' show CardPicker;
 
 class RangeSelectDialogRoute<T> extends PopupRoute<T> {
   RangeSelectDialogRoute({
@@ -82,7 +85,6 @@ class RangeSelectDialogRoute<T> extends PopupRoute<T> {
           topRight: Radius.circular(32),
         ),
       ),
-      padding: EdgeInsets.only(top: 16, bottom: 16),
       child: SafeArea(
         top: false,
         child: Provider.value(
@@ -111,7 +113,7 @@ class PlayerHandRangeSettingPage extends StatelessWidget {
         final handSetting = simulationSession.handSettings[index];
 
         return Padding(
-          padding: EdgeInsets.only(top: 16),
+          padding: EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -137,7 +139,7 @@ class PlayerHandRangeSettingPage extends StatelessWidget {
                       child: Text(
                         "Certain Cards",
                         style: TextStyle(
-                          fontFamily: "WorkSans",
+                          fontFamily: "Rubik",
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           decoration: TextDecoration.none,
@@ -168,7 +170,7 @@ class PlayerHandRangeSettingPage extends StatelessWidget {
                       child: Text(
                         "Range",
                         style: TextStyle(
-                          fontFamily: "WorkSans",
+                          fontFamily: "Rubik",
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           decoration: TextDecoration.none,
@@ -181,7 +183,7 @@ class PlayerHandRangeSettingPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 32),
               if (handSetting is PlayerHoleCards) HoleCardSelect(index: index),
               if (handSetting is PlayerHandRange) RangeSelect(index: index),
             ],
@@ -204,121 +206,54 @@ class HoleCardSelect extends StatefulWidget {
 }
 
 class _HoleCardSelectState extends State<HoleCardSelect> {
-  HoleCardSide selectedSideToChange = HoleCardSide.left;
+  int selectedIndex = 0;
 
-  void _onCardSelectedToChange(HoleCardSide side) {
-    setState(() {
-      selectedSideToChange = side;
-    });
-  }
-
-  void _onCardSelected(Card card) {
+  @override
+  Widget build(BuildContext context) {
     final simulationSession = Provider.of<SimulationSession>(context);
     final handSetting = simulationSession.handSettings.elementAt(widget.index)
         as PlayerHoleCards;
 
-    if (selectedSideToChange == HoleCardSide.left) {
-      simulationSession.handSettings[widget.index] =
-          handSetting.copyWith(left: card);
-
-      setState(() {
-        selectedSideToChange = HoleCardSide.right;
-      });
-    } else if (selectedSideToChange == HoleCardSide.right) {
-      simulationSession.handSettings[widget.index] =
-          handSetting.copyWith(right: card);
-
-      setState(() {
-        selectedSideToChange = HoleCardSide.left;
-      });
-    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 128,
+          child: CardReplaceTargetSelector(
+            cards: [handSetting[0], handSetting[1]],
+            selectedIndex: selectedIndex,
+            onCardTap: _onCardTapToReplace,
+          ),
+        ),
+        SizedBox(height: 32),
+        CardPicker(
+          onCardTap: _onCardTapInPicker,
+        ),
+      ],
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final handSetting = Provider.of<SimulationSession>(context)
-        .handSettings
-        .elementAt(widget.index) as PlayerHoleCards;
+  void _onCardTapToReplace(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
 
-    return Padding(
-      padding: EdgeInsets.only(top: 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 128,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: selectedSideToChange == HoleCardSide.left
-                          ? Color(0x7ffeca57)
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: GestureDetector(
-                      onTap: () {
-                        _onCardSelectedToChange(HoleCardSide.left);
-                      },
-                      child: handSetting[0] == null
-                          ? PlayingCardBack()
-                          : PlayingCard(
-                              card: handSetting[0],
-                            ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 4),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: selectedSideToChange == HoleCardSide.right
-                          ? Color(0x7ffeca57)
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: GestureDetector(
-                      onTap: () {
-                        _onCardSelectedToChange(HoleCardSide.right);
-                      },
-                      child: handSetting[1] == null
-                          ? PlayingCardBack()
-                          : PlayingCard(
-                              card: handSetting[1],
-                            ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 32),
-          Text(
-            selectedSideToChange == null
-                ? "Tap a card above to change"
-                : "Select a card below to replace",
-            style: TextStyle(
-              color: Color(0xff000000),
-              fontFamily: "WorkSans",
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              decoration: TextDecoration.none,
-            ),
-          ),
-          SizedBox(height: 16),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: CardSelector(
-              unavailableCards: {},
-              onTap: _onCardSelected,
-            ),
-          ),
-        ],
-      ),
+  void _onCardTapInPicker(Card card) {
+    if (selectedIndex == null) return;
+
+    final simulationSession = Provider.of<SimulationSession>(context);
+    final handSetting = simulationSession.handSettings.elementAt(widget.index)
+        as PlayerHoleCards;
+
+    simulationSession.handSettings[widget.index] = handSetting.copyWith(
+      left: selectedIndex == 0 ? card : handSetting[0],
+      right: selectedIndex == 1 ? card : handSetting[1],
     );
+
+    setState(() {
+      selectedIndex = (1 - selectedIndex).abs();
+    });
   }
 }
 
@@ -345,15 +280,12 @@ class _RangeSelectState extends State<RangeSelect> {
     final handSetting = simulationSession.handSettings.elementAt(widget.index)
         as PlayerHandRange;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: RangeSelectGrid(
-        initial: handSetting.handRange,
-        onUpdate: (handRange) {
-          simulationSession.handSettings[widget.index] =
-              handSetting.copyWith(handRange);
-        },
-      ),
+    return RangeSelectGrid(
+      initial: handSetting.handRange,
+      onUpdate: (handRange) {
+        simulationSession.handSettings[widget.index] =
+            handSetting.copyWith(handRange);
+      },
     );
   }
 }

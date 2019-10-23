@@ -1,197 +1,99 @@
 import "dart:math" show Random;
-import 'package:meta/meta.dart' show immutable;
+import 'package:meta/meta.dart' show required;
 import './card.dart' show Card;
 import './card_pair.dart' show CardPair;
 import './deck.dart' show Deck;
-import './hand.dart' show HandType;
 import './player_hand_setting.dart' show PlayerHandSetting;
+import './simulation_result.dart' show SimulationResult;
 import './showdown.dart' show Showdown;
 
 class Simulator {
-  Simulator(this.players)
-      : holeCardsEachPlayer =
-            players.map((player) => player.cardPairCombinations).toList();
+  Simulator({@required this.handSettings, @required Iterable<Card> board})
+      : assert(handSettings != null),
+        assert(handSettings.length >= 2),
+        assert(board != null),
+        board = board.where((card) => card != null).toSet() {
+    assert(board.length == 0 ||
+        board.length == 3 ||
+        board.length == 4 ||
+        board.length == 5);
+  }
 
-  final List<PlayerHandSetting> players;
-  final List<Set<CardPair>> holeCardsEachPlayer;
+  final List<PlayerHandSetting> handSettings;
+  final Set<Card> board;
 
   List<SimulationResult> simulate({int times = 1}) {
-    final results =
-        List.generate(players.length, (_) => _MutableSimulationResult());
+    final holeCardsEachPlayer = <Set<CardPair>>[];
+    final resultEachPlayer = <SimulationResult>[];
+
+    for (final handSetting in handSettings) {
+      holeCardsEachPlayer.add(handSetting.cardPairCombinations);
+      resultEachPlayer.add(SimulationResult.empty());
+    }
 
     for (int i = 0; i < times; ++i) {
       final deck = Deck();
+
+      for (final card in board) {
+        deck.remove(card);
+      }
+
       final holeCards = _getHoleCardPermutationRandomly(holeCardsEachPlayer);
 
       for (final holeCard in holeCards) {
-        deck.removeAll(holeCard);
+        deck.remove(holeCard[0]);
+        deck.remove(holeCard[1]);
       }
 
+      deck.shuffle();
+
       final showdown = Showdown(
-        board: List.generate(5, (_) => deck.removeLast()).toSet(),
+        board: board.union(deck.take(5 - board.length).toSet()),
         holeCards: holeCards,
       );
-      final hands = showdown.hands.toList();
+      // final hands = showdown.hands.toList();
 
       Set<int> wonPlayers = Set<int>();
       int wonPower = 0;
 
-      for (int i = 0; i < hands.length; ++i) {
-        final hand = hands[i];
+      for (int index = 0; index < showdown.hands.length; ++index) {
+        final hand = showdown.hands.elementAt(index);
 
         if (hand.power > wonPower) {
-          wonPlayers = {i};
+          wonPlayers = {index};
           wonPower = hand.power;
         } else if (hand.power == wonPower) {
-          wonPlayers.add(i);
+          wonPlayers.add(index);
         }
       }
 
-      for (int p = 0; p < results.length; ++p) {
-        if (wonPlayers.contains(p)) {
+      for (int index = 0; index < resultEachPlayer.length; ++index) {
+        if (wonPlayers.contains(index)) {
           if (wonPlayers.length == 1) {
-            results[p].resultEachHandType[hands[p].type].win += 1;
+            resultEachPlayer[index][showdown.hands.elementAt(index).type].win +=
+                1;
           } else {
-            results[p].resultEachHandType[hands[p].type].even += 1;
+            resultEachPlayer[index][showdown.hands.elementAt(index).type]
+                .even += 1;
           }
         } else {
-          results[p].resultEachHandType[hands[p].type].lose += 1;
+          resultEachPlayer[index][showdown.hands.elementAt(index).type].lose +=
+              1;
         }
       }
     }
 
-    return results
-        .map<SimulationResult>((result) => result.toImmutable())
-        .toList();
+    return resultEachPlayer;
   }
 }
 
-@immutable
-class SimulationResult {
-  SimulationResult(
-      {Map<HandType, SimulationResultEachHandType> resultEachHandType})
-      : resultEachHandType = resultEachHandType ??
-            {
-              HandType.high: SimulationResultEachHandType(),
-              HandType.aPair: SimulationResultEachHandType(),
-              HandType.twoPairs: SimulationResultEachHandType(),
-              HandType.threeOfAKind: SimulationResultEachHandType(),
-              HandType.straight: SimulationResultEachHandType(),
-              HandType.flush: SimulationResultEachHandType(),
-              HandType.fullhouse: SimulationResultEachHandType(),
-              HandType.fourOfAKind: SimulationResultEachHandType(),
-              HandType.straightFlush: SimulationResultEachHandType(),
-            };
+class SimulationCancelException implements Exception {}
 
-  final Map<HandType, SimulationResultEachHandType> resultEachHandType;
+class IncompleteHandSettingException implements SimulationCancelException {}
 
-  int get gameCount => resultEachHandType.values
-      .fold(0, (total, res) => total + res.win + res.lose + res.even);
+class DuplicatedCardException implements SimulationCancelException {}
 
-  double get winRate =>
-      resultEachHandType.values.fold(0, (win, res) => win + res.win) /
-      resultEachHandType.values
-          .fold(0, (total, res) => total + res.win + res.lose + res.even);
-
-  double get loseRate =>
-      resultEachHandType.values.fold(0, (lose, res) => lose + res.lose) /
-      resultEachHandType.values
-          .fold(0, (total, res) => total + res.win + res.lose + res.even);
-
-  double get evenRate =>
-      resultEachHandType.values.fold(0, (even, res) => even + res.even) /
-      resultEachHandType.values
-          .fold(0, (total, res) => total + res.win + res.lose + res.even);
-
-  SimulationResult copyWithSum(SimulationResult other) {
-    final resultEachHandType = {
-      HandType.high: SimulationResultEachHandType(),
-      HandType.aPair: SimulationResultEachHandType(),
-      HandType.twoPairs: SimulationResultEachHandType(),
-      HandType.threeOfAKind: SimulationResultEachHandType(),
-      HandType.straight: SimulationResultEachHandType(),
-      HandType.flush: SimulationResultEachHandType(),
-      HandType.fullhouse: SimulationResultEachHandType(),
-      HandType.fourOfAKind: SimulationResultEachHandType(),
-      HandType.straightFlush: SimulationResultEachHandType(),
-    };
-
-    for (final entry in this.resultEachHandType.entries) {
-      resultEachHandType[entry.key] = resultEachHandType[entry.key].copyWithSum(
-        win: entry.value.win,
-        lose: entry.value.lose,
-        even: entry.value.even,
-      );
-    }
-
-    for (final entry in other.resultEachHandType.entries) {
-      resultEachHandType[entry.key] = resultEachHandType[entry.key].copyWithSum(
-        win: entry.value.win,
-        lose: entry.value.lose,
-        even: entry.value.even,
-      );
-    }
-
-    return SimulationResult(resultEachHandType: resultEachHandType);
-  }
-}
-
-@immutable
-class SimulationResultEachHandType {
-  SimulationResultEachHandType({int win, int lose, int even})
-      : win = win ?? 0,
-        lose = lose ?? 0,
-        even = even ?? 0;
-
-  final int win;
-  final int lose;
-  final int even;
-
-  SimulationResultEachHandType copyWithSum({int win, int lose, int even}) =>
-      SimulationResultEachHandType(
-        win: this.win + win,
-        lose: this.lose + lose,
-        even: this.even + even,
-      );
-}
-
-@immutable
-class _MutableSimulationResult {
-  _MutableSimulationResult(
-      {Map<HandType, _MutableSimulationResultEachHandType> resultEachHandType})
-      : resultEachHandType = resultEachHandType ??
-            {
-              HandType.high: _MutableSimulationResultEachHandType(),
-              HandType.aPair: _MutableSimulationResultEachHandType(),
-              HandType.twoPairs: _MutableSimulationResultEachHandType(),
-              HandType.threeOfAKind: _MutableSimulationResultEachHandType(),
-              HandType.straight: _MutableSimulationResultEachHandType(),
-              HandType.flush: _MutableSimulationResultEachHandType(),
-              HandType.fullhouse: _MutableSimulationResultEachHandType(),
-              HandType.fourOfAKind: _MutableSimulationResultEachHandType(),
-              HandType.straightFlush: _MutableSimulationResultEachHandType(),
-            };
-
-  final Map<HandType, _MutableSimulationResultEachHandType> resultEachHandType;
-
-  SimulationResult toImmutable() => SimulationResult(
-      resultEachHandType: resultEachHandType
-          .map((handType, result) => MapEntry(handType, result.toImmutable())));
-}
-
-class _MutableSimulationResultEachHandType {
-  _MutableSimulationResultEachHandType({int win, int lose, int even})
-      : win = win ?? 0,
-        lose = lose ?? 0,
-        even = even ?? 0;
-
-  int win;
-  int lose;
-  int even;
-
-  SimulationResultEachHandType toImmutable() =>
-      SimulationResultEachHandType(win: win, lose: lose, even: even);
-}
+class NoPossibleCombinationException implements SimulationCancelException {}
 
 Iterable<CardPair> _getHoleCardPermutationRandomly(
   Iterable<Set<CardPair>> holeCardsEachPlayer,
@@ -224,5 +126,5 @@ Iterable<CardPair> _getHoleCardPermutationRandomly(
       return cardPermutation;
   }
 
-  throw new Error();
+  throw NoPossibleCombinationException();
 }

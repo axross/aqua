@@ -80,6 +80,7 @@ class _RangeSelectGridState extends State<RangeSelectGrid> {
             }
           },
           onPanEnd: (_) => _onPanEnd(),
+          behavior: HitTestBehavior.opaque,
           child: Column(
             children: List.generate(_matrix.length * 2 - 1, (i) {
               if (i % 2 == 1) return SizedBox(height: 2);

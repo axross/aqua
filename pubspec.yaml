@@ -23,6 +23,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+  flutter_icons: ^0.3.1
+  intl: ^0.16.0
   provider: ^3.1.0+1
   rxdart: ^0.22.4
 
@@ -52,6 +54,15 @@ flutter:
     - assets/images/diamond.png
     - assets/images/heart.png
     - assets/images/spade.png
+    - assets/images/flush.png
+    - assets/images/four-of-a-kind.png
+    - assets/images/fullhouse.png
+    - assets/images/high.png
+    - assets/images/pair.png
+    - assets/images/straight-flush.png
+    - assets/images/straight.png
+    - assets/images/three-of-a-kind.png
+    - assets/images/two-pairs.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -99,3 +110,30 @@ flutter:
           weight: 800
         - asset: assets/fonts/WorkSans-Black.ttf
           weight: 900
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Rubik-BlackItalic.ttf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/Rubik-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Rubik-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Rubik-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Rubik-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Rubik-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/Rubik-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Rubik-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Rubik-Regular.ttf
+          weight: 400

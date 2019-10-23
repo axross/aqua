@@ -1,8 +1,9 @@
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:flutter/widgets.dart';
+// import 'package:intl/intl.dart' show NumberFormat;
 import 'package:provider/provider.dart';
 import '../models/hand.dart' show HandType;
-import '../models/simulator.dart' show SimulationResult;
+import '../models/simulation_result.dart' show SimulationResult;
 import '../view_models/simulation_session.dart' show SimulationSession;
 import './playing_card.dart' show PlayingCard, PlayingCardBack;
 import './range_select_dialog_route.dart' show RangeSelectDialogRoute;
@@ -18,6 +19,7 @@ class PlayerListView extends StatelessWidget {
       builder: (context, _) => AnimatedBuilder(
         animation: session.results,
         builder: (context, _) => ListView.separated(
+          padding: EdgeInsets.only(top: 16, bottom: 80),
           itemBuilder: (_, index) {
             return Dismissible(
               onDismissed: (_) {
@@ -114,24 +116,24 @@ class PlayerListViewItem extends StatelessWidget {
                         children: [
                           Text(
                             result != null
-                                ? "${((result.winRate + result.evenRate) * 100).floor()}"
+                                ? "${(result.winRate * 100).floor()}"
                                 : "??",
                             style: TextStyle(
-                              fontSize: 32,
-                              color: Color(0xff000000),
-                              fontFamily: "WorkSans",
+                              fontSize: 36,
+                              color: Color(0xff222f3e),
+                              fontFamily: "Rubik",
                               fontWeight: FontWeight.w400,
                               decoration: TextDecoration.none,
                             ),
                           ),
                           Text(
                             result != null
-                                ? ".${((result.winRate + result.evenRate) * 10000 % 100).floor()}% win"
+                                ? ".${(result.winRate * 10000 % 100).floor()}% win"
                                 : ".??% win",
                             style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xff000000),
-                              fontFamily: "WorkSans",
+                              fontSize: 20,
+                              color: Color(0xff576574),
+                              fontFamily: "Rubik",
                               fontWeight: FontWeight.w400,
                               decoration: TextDecoration.none,
                             ),
@@ -141,30 +143,78 @@ class PlayerListViewItem extends StatelessWidget {
                       Text(
                         "${handSetting.cardPairCombinations.length} combinations",
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xff000000),
-                          fontFamily: "WorkSans",
+                          fontSize: 16,
+                          color: Color(0xff54a0ff),
+                          fontFamily: "Rubik",
                           fontWeight: FontWeight.w400,
                           decoration: TextDecoration.none,
                         ),
                       ),
                       if (result != null)
-                        Table(
-                          children: result.resultEachHandType.entries
-                              .map((entry) => TableRow(
+                        SizedBox(height: 8),
+                      if (result != null)
+                        Wrap(
+                          direction: Axis.horizontal,
+                          alignment: WrapAlignment.start,
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: result.entries
+                              .map((entry) => Column(
                                     children: [
-                                      TableCell(
-                                        child:
-                                            Text(_handTypeStrings[entry.key]),
+                                      Image.asset(
+                                        _handTypeAssetNames[entry.key],
+                                        width: 72,
                                       ),
-                                      TableCell(
-                                        child: Text(
-                                            "happens ${((entry.value.win + entry.value.even + entry.value.lose) / result.gameCount * 100).toStringAsFixed(2)}%"),
+                                      Text(
+                                        "${(result.totalGames == 0 ? 0 : (entry.value.win + entry.value.even) / result.totalGames * 100).toStringAsFixed(2)}% win",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(0xff8395a7),
+                                          fontFamily: "Rubik",
+                                          fontWeight: FontWeight.w400,
+                                          decoration: TextDecoration.none,
+                                        ),
                                       ),
                                     ],
                                   ))
                               .toList(),
                         ),
+                      // Table(
+                      //   columnWidths: {
+                      //     0: IntrinsicColumnWidth(),
+                      //     1: FlexColumnWidth(),
+                      //   },
+                      //   children: result.entries
+                      //       .map((entry) => TableRow(
+                      //             children: [
+                      //               TableCell(
+                      //                 child: Text(
+                      //                   "${(result.totalGames == 0 ? 0 : (entry.value.win + entry.value.even) / result.totalGames * 100).toStringAsFixed(2)}% win ",
+                      //                   style: TextStyle(
+                      //                     fontSize: 14,
+                      //                     color: Color(0xff8395a7),
+                      //                     fontFamily: "Rubik",
+                      //                     fontWeight: FontWeight.w400,
+                      //                     decoration: TextDecoration.none,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //               TableCell(
+                      //                 child: Text(
+                      //                   "at ${_handTypeStrings[entry.key]}",
+                      //                   style: TextStyle(
+                      //                     fontSize: 14,
+                      //                     color: Color(0xff8395a7),
+                      //                     fontFamily: "Rubik",
+                      //                     fontWeight: FontWeight.w400,
+                      //                     decoration: TextDecoration.none,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ))
+                      //       .toList(),
+                      // ),
                     ],
                   ),
                 ),
@@ -187,4 +237,16 @@ const _handTypeStrings = {
   HandType.twoPairs: "Two Pairs",
   HandType.aPair: "Pair",
   HandType.high: "High",
+};
+
+const _handTypeAssetNames = {
+  HandType.straightFlush: "assets/images/straight-flush.png",
+  HandType.fourOfAKind: "assets/images/four-of-a-kind.png",
+  HandType.fullhouse: "assets/images/fullhouse.png",
+  HandType.flush: "assets/images/flush.png",
+  HandType.straight: "assets/images/straight.png",
+  HandType.threeOfAKind: "assets/images/three-of-a-kind.png",
+  HandType.twoPairs: "assets/images/two-pairs.png",
+  HandType.aPair: "assets/images/pair.png",
+  HandType.high: "assets/images/high.png",
 };

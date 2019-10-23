@@ -1,13 +1,12 @@
+import 'dart:collection';
 import "dart:math" show Random;
-import 'package:meta/meta.dart' show immutable;
 import "./card.dart" show Card, Rank, Suit;
 
-@immutable
-class Deck {
+class Deck extends IterableBase<Card> {
   Deck._(this._cards);
 
   factory Deck() {
-    final cards = <Card>{};
+    final cards = <Card>[];
 
     for (final suit in Suit.values) {
       for (final rank in Rank.values) {
@@ -18,14 +17,10 @@ class Deck {
     return Deck._(cards);
   }
 
-  Deck.fromJson(List<Map<String, dynamic>> json)
-      : _cards = json.map((item) => Card.fromJson(item)).toSet();
+  final List<Card> _cards;
 
-  final Set<Card> _cards;
-
-  int get length => _cards.length;
-
-  bool contains(Card card) => _cards.contains(card);
+  @override
+  Iterator<Card> get iterator => _cards.iterator;
 
   Card removeLast() {
     assert(_cards.length >= 20);
@@ -41,10 +36,7 @@ class Deck {
     _cards.remove(card);
   }
 
-  void removeAll(Iterable<Card> cards) {
-    _cards.removeAll(cards);
+  void shuffle() {
+    _cards.shuffle();
   }
-
-  List<Map<String, dynamic>> toJson() =>
-      _cards.map((card) => card.toJson()).toList();
 }

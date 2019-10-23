@@ -1,14 +1,17 @@
 import 'dart:math' show Random;
 import 'dart:collection';
 import 'package:flutter/foundation.dart' show ChangeNotifier, compute;
+import 'package:flutter/foundation.dart';
 import '../models/card.dart' show Card;
-import '../models/simulator.dart' show SimulationResult, Simulator;
+import '../models/simulation_result.dart' show SimulationResult;
+import '../models/simulator.dart' show Simulator;
 import '../models/player_hand_setting.dart'
     show PlayerHandSetting, PlayerHoleCards;
 
 class SimulationSession {
   SimulationSession.initial()
-      : _handSettings = SimulationHandSettings.initial(),
+      : board = ValueNotifier(<Card>[null, null, null, null, null]),
+        _handSettings = SimulationHandSettings.initial(),
         results = SimulationResults.initial() {
     _handSettings.addListener(() {
       results.clear();
@@ -18,6 +21,8 @@ class SimulationSession {
       _simulate();
     });
   }
+
+  final ValueNotifier<List<Card>> board;
 
   final SimulationHandSettings _handSettings;
 
@@ -32,17 +37,20 @@ class SimulationSession {
   void _simulate() async {
     if (!_handSettings.isReadyToSimulate) return;
 
-    print(_calculationCount);
+    // print(_calculationCount);
 
     final handSettings = _handSettings.toList();
     final calculationId = _calculationId;
-    final results = await compute(simulate, handSettings);
+    final results = await compute(
+      simulate,
+      SimulateFunctionArgument(handSettings: handSettings, board: board.value),
+    );
 
     if (calculationId == _calculationId) {
       this.results.sum(results);
       _calculationCount += 1;
 
-      if (_calculationCount < 100) {
+      if (_calculationCount < 1000) {
         Future.microtask(() => _simulate());
       }
     }
@@ -115,7 +123,7 @@ class SimulationResults extends ChangeNotifier
       _values = other;
     } else {
       for (final entry in other.asMap().entries) {
-        _values[entry.key] = _values[entry.key].copyWithSum(entry.value);
+        _values[entry.key].sum(entry.value);
       }
     }
 
@@ -135,10 +143,28 @@ class SimulationResults extends ChangeNotifier
   }
 }
 
-List<SimulationResult> simulate(List<PlayerHandSetting> handSettings) {
-  final simulator = Simulator(handSettings);
+enum SimulationInreadyReason {
+  incompleteHandSetting,
+  duplicateCards,
+  noPossibleCombination,
+}
 
-  return simulator.simulate(times: 1000);
+List<SimulationResult> simulate(SimulateFunctionArgument argument) {
+  final simulator = Simulator(
+    handSettings: argument.handSettings,
+    board: argument.board,
+  );
+
+  return simulator.simulate(times: 100);
+}
+
+class SimulateFunctionArgument {
+  SimulateFunctionArgument({@required this.handSettings, @required this.board})
+      : assert(handSettings != null),
+        assert(board != null);
+
+  final List<PlayerHandSetting> handSettings;
+  final List<Card> board;
 }
 
 // import 'package:meta/meta.dart' show required;

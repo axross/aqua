@@ -1,49 +1,120 @@
 import 'package:flutter/widgets.dart';
 import '../models/card.dart' show Card, Rank, Suit;
-import './playing_card.dart' show PlayingCard;
+// import '../models/suit.dart' show Suit;
+import './playing_card.dart' show PlayingCard, PlayingCardBack;
 
-typedef OnTap = void Function(Card);
+class CardSelector extends StatefulWidget {
+  CardSelector({Key key, @required this.length, this.initial, this.onSelected})
+      : assert(length != null),
+        assert(length >= 1),
+        assert(initial == null || initial.length <= length),
+        super(key: key);
 
-class CardSelector extends StatelessWidget {
-  CardSelector({Key key, this.unavailableCards, this.onTap}) : super(key: key);
+  final int length;
 
-  final Set<Card> unavailableCards;
-  final OnTap onTap;
+  final List<Card> initial;
+
+  final void Function(List<Card>) onSelected;
+
+  @override
+  _CardSelectorState createState() => _CardSelectorState();
+}
+
+class _CardSelectorState extends State<CardSelector> {
+  List<Card> cards;
+  int selectedCardIndexToReplace;
+
+  @override
+  void initState() {
+    super.initState();
+
+    cards = List.generate(widget.length, (_) => null);
+
+    if (widget.initial != null) {
+      for (final entry in widget.initial.asMap().entries) {
+        cards[entry.key] = entry.value;
+      }
+    }
+
+    selectedCardIndexToReplace = 0;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(
-        _cards.length * 2 - 1,
-        (i) => i % 2 == 0
-            ? Row(
-                children: List.generate(
-                  _cards[i ~/ 2].length * 2 - 1,
-                  (j) => j % 2 == 0
-                      ? Expanded(
-                          child:
-                              unavailableCards.contains(_cards[i ~/ 2][j ~/ 2])
-                                  ? Opacity(
-                                      opacity: 0.25,
-                                      child: PlayingCard(
-                                        card: _cards[i ~/ 2][j ~/ 2],
-                                      ),
-                                    )
-                                  : GestureDetector(
-                                      onTap: () => onTap != null
-                                          ? onTap(_cards[i ~/ 2][j ~/ 2])
-                                          : null,
-                                      child: PlayingCard(
-                                        card: _cards[i ~/ 2][j ~/ 2],
-                                      ),
-                                    ),
-                        )
-                      : SizedBox(width: 2),
-                ),
-              )
-            : SizedBox(height: 2),
+    return Column(children: [
+      Row(
+        children: List.generate(widget.length * 2 - 1, (i) {
+          if (i % 2 == 1) return SizedBox(width: 4);
+
+          final cardIndex = i ~/ 2;
+
+          return Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: cardIndex == selectedCardIndexToReplace
+                    ? Color(0x7ffeca57)
+                    : null,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: EdgeInsets.all(4),
+              child: GestureDetector(
+                onTap: () {
+                  selectedCardIndexToReplace = cardIndex;
+                },
+                child: cards[cardIndex] == null
+                    ? PlayingCardBack()
+                    : PlayingCard(
+                        card: cards[cardIndex],
+                      ),
+              ),
+            ),
+          );
+        }),
       ),
-    );
+      SizedBox(height: 32),
+      Column(
+        children: List.generate(
+          _cards.length * 2 - 1,
+          (i) => i % 2 == 0
+              ? Row(
+                  children: List.generate(
+                    _cards[i ~/ 2].length * 2 - 1,
+                    (j) => j % 2 == 0
+                        ? Expanded(
+                            child: cards.contains(_cards[i ~/ 2][j ~/ 2])
+                                ? Opacity(
+                                    opacity: 0.25,
+                                    child: PlayingCard(
+                                      card: _cards[i ~/ 2][j ~/ 2],
+                                    ),
+                                  )
+                                : GestureDetector(
+                                    onTap: () =>
+                                        _onCardTap(_cards[i ~/ 2][j ~/ 2]),
+                                    child: PlayingCard(
+                                      card: _cards[i ~/ 2][j ~/ 2],
+                                    ),
+                                  ),
+                          )
+                        : SizedBox(width: 2),
+                  ),
+                )
+              : SizedBox(height: 2),
+        ),
+      )
+    ]);
+  }
+
+  _onCardTap(Card card) {
+    if (selectedCardIndexToReplace == null) return;
+
+    setState(() {
+      cards[selectedCardIndexToReplace] = card;
+    });
+
+    if (widget.onSelected != null) {
+      widget.onSelected(cards);
+    }
   }
 }
 
