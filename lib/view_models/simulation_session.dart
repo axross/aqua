@@ -44,6 +44,9 @@ class SimulationSession {
           results.value = data;
         },
         onError: (error) {
+          _simulationIsolateService.dispose();
+          _simulationIsolateService = null;
+
           if (error is SimulationCancelException) {
             debugPrint("simulation canceled: ${error.runtimeType}");
 
