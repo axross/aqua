@@ -118,6 +118,7 @@ class _SimulationPageState extends State<SimulationPage> {
 class PlayerListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
     final simulationSession = Provider.of<SimulationSession>(context);
 
     return ValueListenableBuilder(
@@ -135,7 +136,32 @@ class PlayerListView extends StatelessWidget {
                 ...playerHandSetting
               ]..removeAt(index);
             },
-            background: Container(color: Color(0xffff6b6b)),
+            background: Container(
+              color: Color(0xffff6b6b),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16),
+                  child: Text(
+                    "Delete".toUpperCase(),
+                    style: theme.textStyle.copyWith(color: Color(0xffffffff)),
+                  ),
+                ),
+              ),
+            ),
+            secondaryBackground: Container(
+              color: Color(0xffff6b6b),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: Text(
+                    "Delete".toUpperCase(),
+                    style: theme.textStyle.copyWith(color: Color(0xffffffff)),
+                  ),
+                ),
+              ),
+            ),
             child: PlayerListViewItem(index: index),
             key: ObjectKey(playerHandSetting[index]),
           );
