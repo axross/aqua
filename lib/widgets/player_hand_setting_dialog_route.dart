@@ -5,6 +5,7 @@ import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:aqua/widgets/card_picker.dart';
 import 'package:aqua/widgets/playing_card.dart';
 import 'package:aqua/widgets/range_select_grid.dart';
+import 'package:flutter/services.dart';
 import "package:flutter/widgets.dart";
 import 'package:provider/provider.dart';
 
@@ -76,11 +77,16 @@ class PlayerHandSettingDialogRoute<T> extends PopupRoute<T> {
     BuildContext context,
     Animation<double> animation,
     Animation<double> secondaryAnimation,
-  ) =>
-      Provider.value(
-        value: simulationSession,
-        child: PlayerHandSettingDialogPage(index: index),
-      );
+  ) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+    ));
+
+    return Provider.value(
+      value: simulationSession,
+      child: PlayerHandSettingDialogPage(index: index),
+    );
+  }
 }
 
 class PlayerHandSettingDialogPage extends StatelessWidget {

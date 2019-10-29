@@ -10,6 +10,7 @@ import 'package:aqua/widgets/playing_card.dart';
 import 'package:aqua/widgets/readonly_range_grid.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Card;
+import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,10 @@ class _SimulationPageState extends State<SimulationPage> {
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.light,
+    ));
 
     _simulationSession = ValueNotifier(SimulationSession.initial());
   }
@@ -50,7 +55,6 @@ class _SimulationPageState extends State<SimulationPage> {
               appBar: AppBar(
                 elevation: 0,
                 backgroundColor: theme.appBarBackgroundColor,
-                brightness: Brightness.light,
                 title: Text(
                   "Aqua",
                   style: theme.appBarTextStyle

@@ -3,6 +3,7 @@ import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:aqua/widgets/card_picker.dart';
 import 'package:aqua/widgets/playing_card.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -68,6 +69,10 @@ class BoardSelectDialogRoute<T> extends PopupRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: Brightness.dark,
+    ));
+
     return Container(
       decoration: BoxDecoration(
         color: Color(0xffffffff),
