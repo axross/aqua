@@ -64,7 +64,7 @@ class _SimulationPageState extends State<SimulationPage> {
               ),
               body: Column(
                 children: [
-                  SizedBox(height: 32),
+                  SizedBox(height: 16),
                   GestureDetector(
                     onTap: () =>
                         Navigator.of(context).push(BoardSelectDialogRoute(
@@ -72,12 +72,11 @@ class _SimulationPageState extends State<SimulationPage> {
                     )),
                     behavior: HitTestBehavior.opaque,
                     child: Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: ValueListenableBuilder(
                         valueListenable: simulationSession.board,
                         builder: (context, board, _) => Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
                           children: List.generate(9, (i) {
                             if (i % 2 == 1) return SizedBox(width: 8);
 
@@ -202,141 +201,142 @@ class PlayerListViewItem extends StatelessWidget {
           );
         }
 
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 136,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.of(context).push(PlayerHandSettingDialogRoute(
-                    simulationSession: simulationSession,
-                    index: index,
-                  ));
-                },
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            Navigator.of(context).push(PlayerHandSettingDialogRoute(
+              simulationSession: simulationSession,
+              index: index,
+            ));
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 136,
                 child: Padding(
                   padding: EdgeInsets.all(16),
                   child: leftItem,
                 ),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(top: 16, bottom: 16, right: 16),
-                child: ValueListenableBuilder<List<SimulationResult>>(
-                  valueListenable: simulationSession.results,
-                  builder: (context, results, _) {
-                    final result =
-                        index < results.length ? results[index] : null;
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16, bottom: 16, right: 16),
+                  child: ValueListenableBuilder<List<SimulationResult>>(
+                    valueListenable: simulationSession.results,
+                    builder: (context, results, _) {
+                      final result =
+                          index < results.length ? results[index] : null;
 
-                    if (result == null) {
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(
-                            "??",
-                            style: theme.textStyle.copyWith(
-                              color: theme.secondaryBackgroundColor,
-                              fontSize: 32,
-                            ),
-                          ),
-                          Text(
-                            ".??% win",
-                            style: theme.textStyle.copyWith(
-                              color: theme.secondaryBackgroundColor,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-
-                    final sortedHandTypes = result.entries
-                        .map((entry) => MapEntry(
-                            entry.key, entry.value.win + entry.value.even))
-                        .toList()
-                          ..sort((a, b) => b.value - a.value);
-                    final top3HandTypes = sortedHandTypes.take(3);
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                      if (result == null) {
+                        return Row(
                           crossAxisAlignment: CrossAxisAlignment.baseline,
                           textBaseline: TextBaseline.alphabetic,
                           children: [
                             Text(
-                              "${_twoDigitFormat.format(result.winRate * 100)}",
-                              style: theme.digitTextStyle.copyWith(
-                                color: theme.foregroundColor,
+                              "??",
+                              style: theme.textStyle.copyWith(
+                                color: theme.secondaryBackgroundColor,
                                 fontSize: 32,
-                                fontWeight: FontWeight.w900,
                               ),
                             ),
                             Text(
-                              ".",
+                              ".??% win",
                               style: theme.textStyle.copyWith(
-                                color: theme.foregroundColor,
-                                fontSize: 24,
-                              ),
-                            ),
-                            Text(
-                              "${_twoDigitFormat.format(result.winRate * 10000 % 100)}",
-                              style: theme.digitTextStyle.copyWith(
-                                color: theme.foregroundColor,
-                                fontSize: 18,
-                              ),
-                            ),
-                            Text(
-                              "% win",
-                              style: theme.textStyle.copyWith(
-                                color: theme.foregroundColor,
-                                fontSize: 14,
+                                color: theme.secondaryBackgroundColor,
+                                fontSize: 16,
                               ),
                             ),
                           ],
-                        ),
-                        SizedBox(height: 8),
-                        Column(
-                          children: top3HandTypes
-                              .map((entry) => Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 40,
-                                        child: Text(
-                                          "${_numberFormat.format(entry.value / result.totalGames * 100)}",
-                                          style: theme.digitTextStyle.copyWith(
-                                            color:
-                                                theme.secondaryBackgroundColor,
-                                            fontSize: 18,
+                        );
+                      }
+
+                      final sortedHandTypes = result.entries
+                          .map((entry) => MapEntry(
+                              entry.key, entry.value.win + entry.value.even))
+                          .toList()
+                            ..sort((a, b) => b.value - a.value);
+                      final top3HandTypes = sortedHandTypes.take(3);
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.baseline,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              Text(
+                                "${_twoDigitFormat.format(result.winRate * 100)}",
+                                style: theme.digitTextStyle.copyWith(
+                                  color: theme.foregroundColor,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              Text(
+                                ".",
+                                style: theme.textStyle.copyWith(
+                                  color: theme.foregroundColor,
+                                  fontSize: 24,
+                                ),
+                              ),
+                              Text(
+                                "${_twoDigitFormat.format(result.winRate * 10000 % 100)}",
+                                style: theme.digitTextStyle.copyWith(
+                                  color: theme.foregroundColor,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Text(
+                                "% win",
+                                style: theme.textStyle.copyWith(
+                                  color: theme.foregroundColor,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Column(
+                            children: top3HandTypes
+                                .map((entry) => Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 40,
+                                          child: Text(
+                                            "${_numberFormat.format(entry.value / result.totalGames * 100)}",
+                                            style:
+                                                theme.digitTextStyle.copyWith(
+                                              color: theme
+                                                  .secondaryBackgroundColor,
+                                              fontSize: 18,
+                                            ),
+                                            textAlign: TextAlign.right,
                                           ),
-                                          textAlign: TextAlign.right,
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          "% win at ${_handTypeStrings[entry.key].toUpperCase()}",
-                                          style: theme.textStyle.copyWith(
-                                            color:
-                                                theme.secondaryBackgroundColor,
-                                            fontSize: 14,
+                                        Expanded(
+                                          child: Text(
+                                            "% win at ${_handTypeStrings[entry.key].toUpperCase()}",
+                                            style: theme.textStyle.copyWith(
+                                              color: theme
+                                                  .secondaryBackgroundColor,
+                                              fontSize: 14,
+                                            ),
+                                            textAlign: TextAlign.left,
                                           ),
-                                          textAlign: TextAlign.left,
                                         ),
-                                      ),
-                                    ],
-                                  ))
-                              .toList(),
-                        ),
-                      ],
-                    );
-                  },
+                                      ],
+                                    ))
+                                .toList(),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
