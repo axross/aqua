@@ -55,6 +55,7 @@ class _SimulationPageState extends State<SimulationPage> {
               appBar: AppBar(
                 elevation: 0,
                 backgroundColor: theme.appBarBackgroundColor,
+                centerTitle: true,
                 title: Text(
                   "Aqua",
                   style: theme.appBarTextStyle
