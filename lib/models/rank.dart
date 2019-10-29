@@ -3,6 +3,8 @@ abstract class Rank {
 
   int compareStrongnessTo(Rank other);
 
+  int toInt();
+
   String toString();
 
   bool operator <(Rank other);
@@ -74,6 +76,9 @@ class _Rank implements Rank {
 
     return strongness - otherStrongness;
   }
+
+  @override
+  int toInt() => this._index;
 
   @override
   String toString() {

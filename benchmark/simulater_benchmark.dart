@@ -1,19 +1,79 @@
-import 'package:aqua/parser.dart' show parseRangeString;
-import 'package:aqua/simulator.dart' show Simulator;
+import 'package:aqua/models/hand_range_part.dart';
+import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/simulator.dart';
 
 void main() {
-  print('10x10000');
-
-  final ranges = [
-    'A2s+K7s+Q8s+J8s+97s+87s76s65sA2+KT+QT+JT22+',
-    'AKsAKTT+',
-    'A8s+KTs+QTs+JTsT9sAT+KJ+66+',
+  final playerHandSettings = [
+    PlayerHandRange({
+      HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.six, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.seven, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.eight, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.nine, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.ten, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.jack, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.queen, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.king, isSuited: true),
+      HandRangePart(high: Rank.five, kicker: Rank.five),
+      HandRangePart(high: Rank.six, kicker: Rank.six),
+      HandRangePart(high: Rank.seven, kicker: Rank.seven),
+      HandRangePart(high: Rank.eight, kicker: Rank.eight),
+      HandRangePart(high: Rank.nine, kicker: Rank.nine),
+      HandRangePart(high: Rank.ten, kicker: Rank.ten),
+      HandRangePart(high: Rank.jack, kicker: Rank.jack),
+      HandRangePart(high: Rank.queen, kicker: Rank.queen),
+      HandRangePart(high: Rank.king, kicker: Rank.king),
+      HandRangePart(high: Rank.ace, kicker: Rank.ace),
+    }),
+    PlayerHandRange({
+      HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.six, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.seven, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.eight, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.nine, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.ten, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.jack, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.queen, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.king, isSuited: true),
+      HandRangePart(high: Rank.five, kicker: Rank.five),
+      HandRangePart(high: Rank.six, kicker: Rank.six),
+      HandRangePart(high: Rank.seven, kicker: Rank.seven),
+      HandRangePart(high: Rank.eight, kicker: Rank.eight),
+      HandRangePart(high: Rank.nine, kicker: Rank.nine),
+      HandRangePart(high: Rank.ten, kicker: Rank.ten),
+      HandRangePart(high: Rank.jack, kicker: Rank.jack),
+      HandRangePart(high: Rank.queen, kicker: Rank.queen),
+      HandRangePart(high: Rank.king, kicker: Rank.king),
+      HandRangePart(high: Rank.ace, kicker: Rank.ace),
+    }),
+    PlayerHandRange({
+      HandRangePart(high: Rank.eight, kicker: Rank.seven, isSuited: true),
+      HandRangePart(high: Rank.nine, kicker: Rank.eight, isSuited: true),
+      HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: true),
+      HandRangePart(high: Rank.ten, kicker: Rank.ten),
+      HandRangePart(high: Rank.jack, kicker: Rank.jack),
+      HandRangePart(high: Rank.queen, kicker: Rank.queen),
+      HandRangePart(high: Rank.king, kicker: Rank.king),
+      HandRangePart(high: Rank.ace, kicker: Rank.ace),
+    }),
+    PlayerHandRange({
+      HandRangePart(high: Rank.eight, kicker: Rank.seven, isSuited: true),
+      HandRangePart(high: Rank.nine, kicker: Rank.eight, isSuited: true),
+      HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: true),
+      HandRangePart(high: Rank.ten, kicker: Rank.ten),
+      HandRangePart(high: Rank.jack, kicker: Rank.jack),
+      HandRangePart(high: Rank.queen, kicker: Rank.queen),
+      HandRangePart(high: Rank.king, kicker: Rank.king),
+      HandRangePart(high: Rank.ace, kicker: Rank.ace),
+    }),
   ];
-  final holeCardsEachPlayer =
-      ranges.map((range) => parseRangeString(range)).toList();
-
-  print(
-      'hands: ${holeCardsEachPlayer.map((pairs) => pairs.length).toList()} patterns');
 
   int elapsed = 0;
 
@@ -22,28 +82,17 @@ void main() {
 
     final startedAt = DateTime.now();
 
-    final simulator = Simulator();
+    final simulator = Simulator(
+      playerHandSettings: playerHandSettings,
+      board: [],
+    );
 
-    final results = simulator.simulate(holeCardsEachPlayer, times: 100000);
+    simulator.simulate(times: 10000);
 
     final endedAt = DateTime.now();
 
     elapsed += endedAt.difference(startedAt).inMilliseconds;
 
-    for (int i = 0; i < results.length; ++i) {
-      print('Player ${ranges[i]}');
-
-      int won = 0;
-
-      for (final entry in results.elementAt(i).entries) {
-        print(
-            '  ${entry.key}: ${entry.value.won} won, ${entry.value.lost} lost and ${entry.value.even} even');
-
-        won += entry.value.won;
-      }
-
-      print('  ${(won * 100 / 100000).toStringAsFixed(2)}% won');
-    }
     print('end: $i');
   }
 

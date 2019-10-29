@@ -1,7 +1,7 @@
-import 'package:meta/meta.dart' show immutable;
-import './card.dart' show Card;
-import './card_pair.dart' show CardPair;
-import './hand_range_part.dart';
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/card_pair.dart';
+import 'package:aqua/models/hand_range_part.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 abstract class PlayerHandSetting {
@@ -32,9 +32,9 @@ class PlayerHoleCards implements PlayerHandSetting {
 
 @immutable
 class PlayerHandRange implements PlayerHandSetting {
-  PlayerHandRange() : _handRange = {};
+  PlayerHandRange(this._handRange);
 
-  PlayerHandRange._(this._handRange);
+  PlayerHandRange.empty() : _handRange = Set();
 
   final Set<HandRangePart> _handRange;
 
@@ -46,5 +46,5 @@ class PlayerHandRange implements PlayerHandSetting {
   Set<HandRangePart> get handRange => _handRange;
 
   PlayerHandRange copyWith(Set<HandRangePart> handRange) =>
-      PlayerHandRange._(handRange);
+      PlayerHandRange(handRange);
 }

@@ -1,8 +1,10 @@
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/card_pair.dart';
+import 'package:aqua/models/hand.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/showdown.dart';
+import 'package:aqua/models/suit.dart';
 import 'package:test/test.dart';
-import '../../lib/models/card.dart' show Card, Rank, Suit;
-import '../../lib/models/card_pair.dart' show CardPair;
-import '../../lib/models/showdown.dart' show Showdown;
-import '../../lib/models/hand.dart' show Hand;
 
 void main() {
   test("Showdown#bestHands are the best hands for each player", () {

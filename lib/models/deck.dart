@@ -1,6 +1,8 @@
 import 'dart:collection';
-import "dart:math" show Random;
-import "./card.dart" show Card, Rank, Suit;
+import "dart:math";
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
 
 class Deck extends IterableBase<Card> {
   Deck._(this._cards);

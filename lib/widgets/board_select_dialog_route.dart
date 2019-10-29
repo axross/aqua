@@ -1,10 +1,10 @@
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/view_models/simulation_session.dart';
+import 'package:aqua/widgets/card_picker.dart';
+import 'package:aqua/widgets/playing_card.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
-import '../models/card.dart' show Card;
-import '../view_models/simulation_session.dart' show SimulationSession;
-import './card_picker.dart' show CardPicker;
-import './playing_card.dart' show PlayingCard, PlayingCardBack;
 
 class BoardSelectDialogRoute<T> extends PopupRoute<T> {
   BoardSelectDialogRoute({
@@ -103,82 +103,92 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
       padding: const EdgeInsets.all(16),
       child: ValueListenableBuilder<List<Card>>(
         valueListenable: simulationSession.board,
-        builder: (context, board, _) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    simulationSession.board.value = [
-                      null,
-                      null,
-                      null,
-                      null,
-                      null
-                    ];
+        builder: (context, board, _) => ValueListenableBuilder(
+          valueListenable: simulationSession.playerHandSettings,
+          builder: (context, playerHandSettings, _) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      simulationSession.board.value = [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                      ];
 
-                    setState(() {
-                      selectedIndex = 0;
-                    });
-                  },
-                  child: Container(
-                    decoration: ShapeDecoration(
-                      shape: StadiumBorder(),
-                      color: board.any((card) => card != null)
-                          ? Color(0x3fff6b6b)
-                          : Color(0x3fc8d6e5),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                    child: Text(
-                      "Clear",
-                      style: TextStyle(
-                        fontFamily: "Rubik",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        decoration: TextDecoration.none,
+                      setState(() {
+                        selectedIndex = 0;
+                      });
+                    },
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        shape: StadiumBorder(),
                         color: board.any((card) => card != null)
-                            ? Color(0xffee5253)
-                            : Color(0xff576574),
+                            ? Color(0x3fff6b6b)
+                            : Color(0x3fc8d6e5),
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                      child: Text(
+                        "Clear",
+                        style: TextStyle(
+                          fontFamily: "Rubik",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          decoration: TextDecoration.none,
+                          color: board.any((card) => card != null)
+                              ? Color(0xffee5253)
+                              : Color(0xff576574),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(board.length * 2 - 1, (i) {
-                if (i % 2 == 1) return SizedBox(width: 4);
+                ],
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(board.length * 2 - 1, (i) {
+                  if (i % 2 == 1) return SizedBox(width: 4);
 
-                final index = i ~/ 2;
+                  final index = i ~/ 2;
 
-                return Container(
-                  width: 64,
-                  decoration: BoxDecoration(
-                    color: index == selectedIndex ? Color(0x7ffeca57) : null,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: EdgeInsets.all(4),
-                  child: GestureDetector(
-                    onTap: () => _onCardTapToReplace(index),
-                    child: board[index] == null
-                        ? PlayingCardBack()
-                        : PlayingCard(
-                            card: board[index],
-                          ),
-                  ),
-                );
-              }),
-            ),
-            SizedBox(height: 32),
-            CardPicker(
-              unavailableCards: board.where((card) => card != null).toSet(),
-              onCardTap: _onCardTapInPicker,
-            ),
-          ],
+                  return Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: index == selectedIndex ? Color(0x7ffeca57) : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => _onCardTapToReplace(index),
+                      child: board[index] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: board[index],
+                            ),
+                    ),
+                  );
+                }),
+              ),
+              SizedBox(height: 32),
+              CardPicker(
+                unavailableCards: {
+                  ...board,
+                  ...playerHandSettings.whereType<PlayerHoleCards>().fold(
+                      Set<Card>(),
+                      (set, PlayerHoleCards playerHandSetting) =>
+                          {...set, playerHandSetting[0], playerHandSetting[1]})
+                },
+                onCardTap: _onCardTapInPicker,
+              ),
+            ],
+          ),
         ),
       ),
     );

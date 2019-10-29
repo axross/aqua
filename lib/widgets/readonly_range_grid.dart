@@ -1,5 +1,6 @@
-import '../models/card.dart' show Rank;
-import '../models/hand_range_part.dart' show HandRangePart;
+import 'package:aqua/models/hand_range_part.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:flutter/widgets.dart';
 
 class ReadonlyRangeGrid extends StatelessWidget {
@@ -11,10 +12,12 @@ class ReadonlyRangeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
         decoration: BoxDecoration(
-          color: Color(0xffdfe6ed),
+          color: theme.rangeBackgroundColor,
           borderRadius: BorderRadius.circular(constraints.maxWidth * 0.05),
         ),
         child: Table(
@@ -57,7 +60,7 @@ class ReadonlyRangeGrid extends StatelessWidget {
                     height: constraints.maxWidth / 13,
                     decoration: BoxDecoration(
                       color: handRange.contains(handRangePart)
-                          ? Color(0x7f1dd1a1)
+                          ? theme.selectedRangeBackgroundColor
                           : null,
                       borderRadius: borderRadius,
                     ),

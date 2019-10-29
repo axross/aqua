@@ -1,6 +1,8 @@
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
+import 'package:aqua/widgets/playing_card.dart';
 import 'package:flutter/widgets.dart';
-import '../models/card.dart' show Card, Rank, Suit;
-import './playing_card.dart' show PlayingCard;
 
 class CardPicker extends StatelessWidget {
   CardPicker(

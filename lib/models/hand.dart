@@ -1,10 +1,11 @@
-import 'dart:math' show max, pow;
-import 'package:meta/meta.dart' show immutable;
-import './card.dart' show Card, Rank, Suit;
+import 'dart:math';
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/hand_type.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
 
-@immutable
 class Hand {
-  const Hand(this.cards);
+  Hand(this.cards);
 
   factory Hand.bestFrom(Set<Card> cards) {
     assert(cards.length == 7);
@@ -34,7 +35,11 @@ class Hand {
 
   final Set<Card> cards;
 
+  HandType _type;
+
   HandType get type {
+    if (_type != null) return _type;
+
     final countEachRank = new Map<Rank, int>();
     final countEachSuit = new Map<Suit, int>();
     var maxCount = 0;
@@ -66,41 +71,49 @@ class Hand {
       ];
 
       // AKQJT => [t,f,f,f,f,f,f,f,f,t,t,t,t,t]
+      // mark 0 and 13 for the ace to find straight
       for (final rank in countEachRank.keys) {
         if (rank == Rank.ace) {
           m[0] = true;
           m[13] = true;
         } else {
-          m[rank.index] = true;
+          m[rank.toInt()] = true;
         }
       }
 
-      // mark ace as "1" (not as "14") to false if king is marked
+      // unmark the ace as 0 when the king is marked
+      // in order not to connect straight like as QKA23
       if (m[12]) {
         m[0] = false;
       }
 
       if (m.skipWhile((v) => !v).takeWhile((v) => v).length == 5) {
-        return isFlush ? HandType.straightFlush : HandType.straight;
+        _type = isFlush ? HandType.straightFlush : HandType.straight;
       } else {
-        return isFlush ? HandType.flush : HandType.high;
+        _type = isFlush ? HandType.flush : HandType.high;
       }
     } else if (countEachRank.length == 2 && maxCount == 4) {
-      return HandType.fourOfAKind;
+      _type = HandType.fourOfAKind;
     } else if (countEachRank.length == 2 && maxCount == 3) {
-      return HandType.fullhouse;
+      _type = HandType.fullHouse;
     } else if (countEachRank.length == 3 && maxCount == 3) {
-      return HandType.threeOfAKind;
+      _type = HandType.threeOfAKind;
     } else if (countEachRank.length == 3 && maxCount == 2) {
-      return HandType.twoPairs;
+      _type = HandType.twoPairs;
     } else if (countEachRank.length == 4 && maxCount == 2) {
-      return HandType.aPair;
+      _type = HandType.pair;
+    } else {
+      assert(false, "unreachable here.");
     }
 
-    assert(false, "unreachable here.");
+    return _type;
   }
 
+  int _power;
+
   int get power {
+    if (_power != null) return _power;
+
     HandType type = this.type;
     int power = getHandTypePower(type);
     final countEachRank = new Map<Rank, int>();
@@ -115,12 +128,15 @@ class Hand {
             countEachRank.containsKey(Rank.two);
 
     for (final entry in countEachRank.entries) {
-      power +=
-          (entry.key == Rank.ace && !isBottomStraight ? 13 : entry.key.index) *
-              pow(14, entry.value);
+      power += (entry.key == Rank.ace && !isBottomStraight
+              ? 13
+              : entry.key.toInt()) *
+          pow(14, entry.value);
     }
 
-    return power;
+    _power = power;
+
+    return _power;
   }
 
   @override
@@ -134,39 +150,16 @@ class Hand {
       cards.map((card) => card.toJson()).toList();
 }
 
-enum HandType {
-  high,
-  aPair,
-  twoPairs,
-  threeOfAKind,
-  straight,
-  flush,
-  fullhouse,
-  fourOfAKind,
-  straightFlush,
-}
-
 int getHandTypePower(HandType handType) {
-  switch (handType) {
-    case HandType.high:
-      return _powerBaseForHandType;
-    case HandType.aPair:
-      return _powerBaseForHandType * 2;
-    case HandType.twoPairs:
-      return _powerBaseForHandType * 3;
-    case HandType.threeOfAKind:
-      return _powerBaseForHandType * 4;
-    case HandType.straight:
-      return _powerBaseForHandType * 5;
-    case HandType.flush:
-      return _powerBaseForHandType * 6;
-    case HandType.fullhouse:
-      return _powerBaseForHandType * 7;
-    case HandType.fourOfAKind:
-      return _powerBaseForHandType * 8;
-    case HandType.straightFlush:
-      return _powerBaseForHandType * 9;
-  }
+  if (handType == HandType.high) return _powerBaseForHandType;
+  if (handType == HandType.pair) return _powerBaseForHandType * 2;
+  if (handType == HandType.twoPairs) return _powerBaseForHandType * 3;
+  if (handType == HandType.threeOfAKind) return _powerBaseForHandType * 4;
+  if (handType == HandType.straight) return _powerBaseForHandType * 5;
+  if (handType == HandType.flush) return _powerBaseForHandType * 6;
+  if (handType == HandType.fullHouse) return _powerBaseForHandType * 7;
+  if (handType == HandType.fourOfAKind) return _powerBaseForHandType * 8;
+  if (handType == HandType.straightFlush) return _powerBaseForHandType * 9;
 
   assert(false, "unreachable here.");
 }

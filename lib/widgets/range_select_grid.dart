@@ -1,6 +1,7 @@
+import 'package:aqua/models/hand_range_part.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/widgets/aqua_theme.dart';
 import "package:flutter/widgets.dart";
-import '../models/card.dart';
-import "../models/hand_range_part.dart" show HandRangePart;
 
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
 
@@ -34,6 +35,8 @@ class _RangeSelectGridState extends State<RangeSelectGrid> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
     return AspectRatio(
       aspectRatio: 1,
       child: LayoutBuilder(
@@ -95,24 +98,17 @@ class _RangeSelectGridState extends State<RangeSelectGrid> {
                     final x = j ~/ 2;
                     final rangePart = _matrix[y][x];
 
-                    Color cellColor = const Color(0xffdfe6ed);
-                    Color textColor = const Color(0xff464655);
+                    Color cellColor = theme.rangeBackgroundColor;
+                    Color textColor = theme.rangeForegroundColor;
 
                     if (rangePart.high == rangePart.kicker) {
-                      // cellColor = const Color(0x7f00d2d3);
-                      // textColor = const Color(0xff01a3a4);
-                      cellColor = const Color(0x7ffeca57);
-                      textColor = const Color(0xffff9f43);
+                      cellColor = theme.pocketRangeBackgroundColor;
+                      textColor = theme.pocketRangeForegroundColor;
                     }
 
-                    // if (rangePart.isSuited) {
-                    //   cellColor = const Color(0x7ffeca57);
-                    //   textColor = const Color(0xffff9f43);
-                    // }
-
                     if (selectedRange.contains(rangePart)) {
-                      cellColor = const Color(0x3f1dd1a1);
-                      textColor = const Color(0xff10ac84);
+                      cellColor = theme.selectedRangeBackgroundColor;
+                      textColor = theme.selectedRangeForegroundColor;
                     }
 
                     return Expanded(
@@ -125,13 +121,8 @@ class _RangeSelectGridState extends State<RangeSelectGrid> {
                         child: Center(
                           child: Text(
                             '${_rankStrings[_matrix[y][x].high]}${_rankStrings[_matrix[y][x].kicker]}',
-                            style: TextStyle(
-                              color: textColor,
-                              fontFamily: "WorkSans",
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              decoration: TextDecoration.none,
-                            ),
+                            style:
+                                theme.rangeTextStyle.copyWith(color: textColor),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -295,9 +286,9 @@ const _matrix = [
     HandRangePart(high: Rank.seven, kicker: Rank.five, isSuited: false),
     HandRangePart(high: Rank.six, kicker: Rank.five, isSuited: false),
     HandRangePart(high: Rank.five, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.four, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.four, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.four, kicker: Rank.two, isSuited: true),
+    HandRangePart(high: Rank.five, kicker: Rank.four, isSuited: true),
+    HandRangePart(high: Rank.five, kicker: Rank.three, isSuited: true),
+    HandRangePart(high: Rank.five, kicker: Rank.two, isSuited: true),
   ],
   [
     HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: false),
@@ -327,7 +318,7 @@ const _matrix = [
     HandRangePart(high: Rank.five, kicker: Rank.three, isSuited: false),
     HandRangePart(high: Rank.four, kicker: Rank.three, isSuited: false),
     HandRangePart(high: Rank.three, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.four, kicker: Rank.two, isSuited: true),
+    HandRangePart(high: Rank.three, kicker: Rank.two, isSuited: true),
   ],
   [
     HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: false),
@@ -346,7 +337,7 @@ const _matrix = [
   ],
 ];
 
-const _rankStrings = {
+final _rankStrings = {
   Rank.ace: "A",
   Rank.king: "K",
   Rank.queen: "Q",

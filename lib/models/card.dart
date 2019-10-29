@@ -1,4 +1,6 @@
-import 'package:meta/meta.dart' show immutable, required;
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class Card {
@@ -19,7 +21,14 @@ class Card {
   }
 
   @override
-  int get hashCode => suit.index * 13 + rank.index;
+  int get hashCode {
+    int result = 17;
+
+    result = 37 * result + suit.hashCode;
+    result = 37 * result + rank.hashCode;
+
+    return result;
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -28,7 +37,7 @@ class Card {
   bool operator <(Card other) {
     if (this == other) return false;
 
-    return suit.index < other.suit.index || rank.index < other.rank.index;
+    return suit < other.suit || rank < other.rank;
   }
 
   bool operator >(Card other) {
@@ -36,27 +45,4 @@ class Card {
 
     return !(this < other);
   }
-}
-
-enum Rank {
-  ace,
-  two,
-  three,
-  four,
-  five,
-  six,
-  seven,
-  eight,
-  nine,
-  ten,
-  jack,
-  queen,
-  king,
-}
-
-enum Suit {
-  spade,
-  heart,
-  diamond,
-  club,
 }

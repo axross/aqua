@@ -1,7 +1,7 @@
-import 'package:meta/meta.dart' show immutable;
-import './card.dart' show Card;
-import './card_pair.dart' show CardPair;
-import './hand.dart' show Hand;
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/card_pair.dart';
+import 'package:aqua/models/hand.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class Showdown {

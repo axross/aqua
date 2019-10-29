@@ -1,6 +1,6 @@
-import 'dart:collection' show IterableMixin;
-import 'package:meta/meta.dart' show immutable;
-import './card.dart' show Card;
+import 'dart:collection';
+import 'package:aqua/models/card.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class CardPair with IterableMixin<Card> {

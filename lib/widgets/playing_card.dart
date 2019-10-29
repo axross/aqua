@@ -1,5 +1,8 @@
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
+import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:flutter/widgets.dart';
-import '../models/card.dart' show Card, Rank, Suit;
 
 class PlayingCard extends StatelessWidget {
   PlayingCard({Key key, @required this.card})
@@ -10,12 +13,14 @@ class PlayingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
     return AspectRatio(
       aspectRatio: 2.25 / 3.5,
       child: LayoutBuilder(
         builder: (_, constraints) => DecoratedBox(
           decoration: BoxDecoration(
-            color: Color(0xffdfe6ed),
+            color: theme.playingCardBackgroundColor,
             borderRadius: BorderRadius.circular(constraints.maxWidth * 0.1),
           ),
           child: Stack(
@@ -24,14 +29,11 @@ class PlayingCard extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 child: Text(
                   _rankStrings[card.rank],
-                  style: TextStyle(
+                  style: theme.playingCardTextStyle.copyWith(
                     color: card.suit == Suit.spade || card.suit == Suit.club
-                        ? Color(0xff464655)
-                        : Color(0xffd2555a),
-                    fontFamily: "WorkSans",
+                        ? theme.spadeForegroundColor
+                        : theme.heartForegroundColor,
                     fontSize: constraints.maxHeight * 0.45,
-                    fontWeight: FontWeight.w600,
-                    decoration: TextDecoration.none,
                   ),
                 ),
               ),
@@ -60,12 +62,14 @@ class PlayingCard extends StatelessWidget {
 class PlayingCardBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
     return AspectRatio(
       aspectRatio: 2.25 / 3.5,
       child: LayoutBuilder(
         builder: (_, constraints) => Container(
           decoration: BoxDecoration(
-            color: Color(0xffdfe6ed),
+            color: theme.playingCardBackgroundColor,
             borderRadius: BorderRadius.circular(constraints.maxWidth * 0.1),
           ),
         ),
@@ -74,7 +78,7 @@ class PlayingCardBack extends StatelessWidget {
   }
 }
 
-const _rankStrings = {
+final _rankStrings = {
   Rank.ace: "A",
   Rank.king: "K",
   Rank.queen: "Q",
@@ -90,7 +94,7 @@ const _rankStrings = {
   Rank.two: "2",
 };
 
-const _suitImages = {
+final _suitImages = {
   Suit.spade: "assets/images/spade.png",
   Suit.heart: "assets/images/heart.png",
   Suit.diamond: "assets/images/diamond.png",

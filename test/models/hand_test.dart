@@ -1,6 +1,9 @@
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/hand.dart';
+import 'package:aqua/models/hand_type.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
 import 'package:test/test.dart';
-import '../../lib/models/card.dart' show Card, Rank, Suit;
-import '../../lib/models/hand.dart' show Hand, HandType;
 
 final aceHighStraightFlush = Hand({
   Card(rank: Rank.king, suit: Suit.spade),
@@ -114,14 +117,14 @@ final twoPairsOfTenAndFive = Hand({
   Card(rank: Rank.ten, suit: Suit.spade),
   Card(rank: Rank.five, suit: Suit.club),
 });
-final aPairOfAce = Hand({
+final pairOfAce = Hand({
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.six, suit: Suit.diamond),
   Card(rank: Rank.ace, suit: Suit.diamond),
   Card(rank: Rank.five, suit: Suit.heart),
 });
-final aPairOfTwo = Hand({
+final pairOfTwo = Hand({
   Card(rank: Rank.two, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.two, suit: Suit.diamond),
@@ -217,14 +220,14 @@ void main() {
     );
     expect(
       twoPairsOfTenAndFive.power,
-      greaterThan(aPairOfAce.power),
+      greaterThan(pairOfAce.power),
     );
     expect(
-      aPairOfAce.power,
-      greaterThan(aPairOfTwo.power),
+      pairOfAce.power,
+      greaterThan(pairOfTwo.power),
     );
     expect(
-      aPairOfTwo.power,
+      pairOfTwo.power,
       greaterThan(aceHigh.power),
     );
     expect(
@@ -239,8 +242,8 @@ void main() {
     expect(fiveHighStraightFlush.type, equals(HandType.straightFlush));
     expect(fourOfAKindOfAce.type, equals(HandType.fourOfAKind));
     expect(fourOfAKindOfTwo.type, equals(HandType.fourOfAKind));
-    expect(fullHouseOfJack.type, equals(HandType.fullhouse));
-    expect(fullHouseOfTen.type, equals(HandType.fullhouse));
+    expect(fullHouseOfJack.type, equals(HandType.fullHouse));
+    expect(fullHouseOfTen.type, equals(HandType.fullHouse));
     expect(aceHighFlush.type, equals(HandType.flush));
     expect(jackHighFlush.type, equals(HandType.flush));
     expect(aceHighStraight.type, equals(HandType.straight));
@@ -250,8 +253,8 @@ void main() {
     expect(twoPairsOfAceAndKing.type, equals(HandType.twoPairs));
     expect(twoPairsOfAceAndTwo.type, equals(HandType.twoPairs));
     expect(twoPairsOfTenAndFive.type, equals(HandType.twoPairs));
-    expect(aPairOfAce.type, equals(HandType.aPair));
-    expect(aPairOfTwo.type, equals(HandType.aPair));
+    expect(pairOfAce.type, equals(HandType.pair));
+    expect(pairOfTwo.type, equals(HandType.pair));
     expect(aceHigh.type, equals(HandType.high));
     expect(sevenHigh.type, equals(HandType.high));
   });

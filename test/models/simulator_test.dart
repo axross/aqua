@@ -1,43 +1,58 @@
-import 'package:aqua/parser.dart' show parseRangeString;
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/simulator.dart';
+import 'package:aqua/models/suit.dart';
 import 'package:test/test.dart';
-import '../../lib/models/simulator.dart' show Simulator;
-import '../../lib/models/player_hand_setting.dart' show PlayerHoleCards;
 
 void main() {
-  test("Simulator#simulate()", () {
-    final simulator = Simulator([
-      parseRangeString("AsKs"),
-      parseRangeString("22+"),
-      parseRangeString("KJ+"),
-    ]);
-    final results = simulator.simulate();
-
-    final totalWon = results.fold(
-      0,
-      (wonOrEven, result) =>
-          wonOrEven +
-          result.values.fold(
-            0,
-            (twe, h) => twe + h.won + h.even,
-          ),
-    );
-    final totalLost = results.fold(
-      0,
-      (lost, result) =>
-          lost +
-          result.values.fold(
-            0,
-            (tl, h) => tl + h.lost,
-          ),
+  test("Simulator", () {
+    final simulator = Simulator(
+      playerHandSettings: [
+        PlayerHoleCards(
+            left: Card(rank: Rank.ace, suit: Suit.spade),
+            right: Card(rank: Rank.king, suit: Suit.spade)),
+        PlayerHoleCards(
+            left: Card(rank: Rank.king, suit: Suit.spade),
+            right: Card(rank: Rank.queen, suit: Suit.spade)),
+      ],
+      board: [],
     );
 
-    expect(
-      totalWon,
-      greaterThanOrEqualTo(1),
-    );
-    expect(
-      totalWon + totalLost,
-      equals(3),
-    );
+    expect(() => simulator.simulate(),
+        throwsA(const TypeMatcher<DuplicatedCardException>()));
   });
+
+  test("Simulator", () {
+    final simulator = Simulator(
+      playerHandSettings: [
+        PlayerHoleCards(
+            left: Card(rank: Rank.ace, suit: Suit.spade),
+            right: Card(rank: Rank.king, suit: Suit.spade)),
+        PlayerHoleCards(left: Card(rank: Rank.king, suit: Suit.spade)),
+      ],
+      board: [],
+    );
+
+    expect(() => simulator.simulate(),
+        throwsA(const TypeMatcher<IncompleteHandSettingException>()));
+  });
+
+  // test("Simulator", () {
+  //   final simulator = Simulator(
+  //     playerHandSettings: [
+  //       PlayerHandRange()
+  //       PlayerHoleCards(
+  //           left: Card(rank: Rank.ace, suit: Suit.spade),
+  //           right: Card(rank: Rank.king, suit: Suit.spade)),
+  //       PlayerHoleCards(
+  //           left: Card(rank: Rank.king, suit: Suit.spade),
+  //           right: Card(rank: Rank.queen, suit: Suit.spade)),
+  //     ],
+  //     board: [],
+  //   );
+
+  //   expect(() => simulator.simulate(),
+  //       throwsA(const TypeMatcher<DuplicatedCardException>()));
+  // });
 }

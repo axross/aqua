@@ -1,32 +1,26 @@
-import 'package:meta/meta.dart' show immutable;
-import './card.dart' show Card, Rank, Suit;
-import './card_pair.dart' show CardPair;
+import 'package:aqua/models/card.dart';
+import 'package:aqua/models/card_pair.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
+import 'package:meta/meta.dart';
 
 @immutable
 class HandRangePart {
+  const HandRangePart({
+    @required this.high,
+    @required this.kicker,
+    bool isSuited,
+  })  : assert(high != null),
+        assert(kicker != null),
+        isSuited = isSuited ?? false;
+
   final Rank high;
   final Rank kicker;
   final bool isSuited;
 
-  const HandRangePart({this.high, this.kicker, this.isSuited})
-      : assert(high != null),
-        assert(kicker != null),
-        assert(isSuited != null);
-
-  HandRangePart.fromJson(Map<String, dynamic> json)
-      : high = json['high'],
-        kicker = json['kicker'],
-        isSuited = json['isSuited'];
-
   Set<CardPair> get combinations => isSuited
       ? _getAllSuitedCardPairsByRank(high, kicker)
       : _getAllOfsuitCardPairsByRank(high, kicker);
-
-  Map<String, dynamic> toJson() => {
-        'high': high,
-        'kicker': kicker,
-        'isSuited': isSuited,
-      };
 
   @override
   int get hashCode =>
@@ -109,5 +103,5 @@ Set<CardPair> _getAllOfsuitCardPairsByRank(Rank rankA, Rank rankB) => {
           Card(rank: rankA, suit: Suit.club),
           Card(rank: rankB, suit: Suit.diamond),
         ),
-      }
+      },
     };

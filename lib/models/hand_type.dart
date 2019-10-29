@@ -14,7 +14,7 @@ abstract class HandType {
   static const straight = _HandType(4);
   static const threeOfAKind = _HandType(5);
   static const twoPairs = _HandType(6);
-  static const aPair = _HandType(7);
+  static const pair = _HandType(7);
   static const high = _HandType(8);
 
   static const values = [
@@ -25,7 +25,7 @@ abstract class HandType {
     HandType.straight,
     HandType.threeOfAKind,
     HandType.twoPairs,
-    HandType.aPair,
+    HandType.pair,
     HandType.high,
   ];
 }
@@ -41,10 +41,13 @@ class _HandType implements HandType {
   @override
   int compareTo(HandType other) => _index - (other as _HandType)._index;
 
+  @override
   bool operator ==(Object other) =>
       other is _HandType && other._index == _index;
 
+  @override
   bool operator <(HandType other) => compareTo(other) <= -1;
 
+  @override
   bool operator >(HandType other) => compareTo(other) >= 1;
 }
