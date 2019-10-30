@@ -134,7 +134,7 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                       decoration: ShapeDecoration(
                         shape: StadiumBorder(),
                         color: board.any((card) => card != null)
-                            ? Color(0x3fff6b6b)
+                            ? Color(0xffff6b6b)
                             : Color(0x3fc8d6e5),
                       ),
                       padding:
@@ -147,8 +147,8 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                           fontWeight: FontWeight.w500,
                           decoration: TextDecoration.none,
                           color: board.any((card) => card != null)
-                              ? Color(0xffee5253)
-                              : Color(0xff576574),
+                              ? Color(0xffffffff)
+                              : Color(0xffc8d6e5),
                         ),
                       ),
                     ),
