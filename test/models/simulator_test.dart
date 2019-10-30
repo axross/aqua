@@ -20,7 +20,7 @@ void main() {
     );
 
     expect(() => simulator.simulate(),
-        throwsA(const TypeMatcher<DuplicatedCardException>()));
+        throwsA(const TypeMatcher<NoPossibleCombinationException>()));
   });
 
   test("Simulator", () {

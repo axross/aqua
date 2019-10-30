@@ -49,8 +49,6 @@ class Simulator {
       final deck = Deck();
 
       for (final card in board) {
-        if (!deck.contains(card)) throw DuplicatedCardException();
-
         deck.remove(card);
       }
 
@@ -58,9 +56,6 @@ class Simulator {
           _getHoleCardPermutationRandomly(holeCardsEachPlayer, board);
 
       for (final holeCard in holeCards) {
-        if (!deck.contains(holeCard[0])) throw DuplicatedCardException();
-        if (!deck.contains(holeCard[1])) throw DuplicatedCardException();
-
         deck.remove(holeCard[0]);
         deck.remove(holeCard[1]);
       }
@@ -129,10 +124,6 @@ class InvalidBoardException implements SimulationCancelException {
 
 class IncompleteHandSettingException implements SimulationCancelException {
   IncompleteHandSettingException();
-}
-
-class DuplicatedCardException implements SimulationCancelException {
-  DuplicatedCardException();
 }
 
 class NoPossibleCombinationException implements SimulationCancelException {
