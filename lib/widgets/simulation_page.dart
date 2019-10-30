@@ -458,4 +458,6 @@ String getMessageBySimulationCencelException(
     return "No possible combination. Change any player's certain cards or range to calculate";
 
   assert(false, "unreachable here.");
+
+  return "";
 }

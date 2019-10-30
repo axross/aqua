@@ -162,6 +162,8 @@ int getHandTypePower(HandType handType) {
   if (handType == HandType.straightFlush) return _powerBaseForHandType * 9;
 
   assert(false, "unreachable here.");
+
+  return -1;
 }
 
 // 14 ** 1 + 14 **2 + 14 ** 3 + 14 ** 4 + 14 ** 5
