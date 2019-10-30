@@ -22,11 +22,10 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
   flutter_icons: ^0.3.1
+  flutter_launcher_icons: ^0.7.4
   intl: ^0.16.0
   provider: ^3.1.0+1
-  rxdart: ^0.22.4
 
 dev_dependencies:
   flutter_test:
@@ -251,3 +250,10 @@ flutter:
         - asset: assets/fonts/Montserrat-ThinItalic.ttf
           weight: 100
           style: italic
+
+flutter_icons:
+  android: true 
+  ios: true
+  image_path: "assets/launcher-icon/icon@1024px.png"
+  adaptive_icon_background: "assets/launcher-icon/adaptive-icon-background@432px.png"
+  adaptive_icon_foreground: "assets/launcher-icon/adaptive-icon-foreground@432px.png"
