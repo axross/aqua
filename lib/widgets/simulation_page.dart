@@ -2,6 +2,7 @@ import 'package:aqua/models/hand_type.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/simulation_result.dart';
 import 'package:aqua/models/simulator.dart';
+import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:aqua/widgets/board_select_dialog_route.dart';
@@ -31,16 +32,17 @@ class _SimulationPageState extends State<SimulationPage> {
   void initState() {
     super.initState();
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.light,
-    ));
-
     _simulationSession = ValueNotifier(SimulationSession.initial());
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
+
+    setSystemUIOverlayStyle(
+      topColor: theme.appBarBackgroundColor,
+      bottomColor: theme.backgroundColor,
+    );
 
     return ValueListenableBuilder<SimulationSession>(
       valueListenable: _simulationSession,
@@ -54,6 +56,7 @@ class _SimulationPageState extends State<SimulationPage> {
               backgroundColor: theme.backgroundColor,
               appBar: AppBar(
                 elevation: 0,
+                brightness: Brightness.light,
                 backgroundColor: theme.appBarBackgroundColor,
                 centerTitle: true,
                 title: Text(

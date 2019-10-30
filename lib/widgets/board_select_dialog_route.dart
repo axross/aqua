@@ -1,6 +1,8 @@
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:aqua/widgets/card_picker.dart';
 import 'package:aqua/widgets/playing_card.dart';
 import 'package:flutter/services.dart';
@@ -34,34 +36,42 @@ class BoardSelectDialogRoute<T> extends PopupRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) =>
-      Container(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: Offset(0, 0.125),
-            end: Offset(0, 0),
-          ).animate(CurvedAnimation(
+  ) {
+    final theme = AquaTheme.of(context);
+
+    setSystemUIOverlayStyle(
+      topColor: theme.appBarBackgroundColor,
+      bottomColor: theme.backgroundColor,
+    );
+
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: Offset(0, 0.125),
+          end: Offset(0, 0),
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOutCubic,
+        )),
+        child: FadeTransition(
+          opacity: CurvedAnimation(
             parent: animation,
-            curve: Curves.easeInOutCubic,
-          )),
-          child: FadeTransition(
-            opacity: CurvedAnimation(
-              parent: animation,
-              curve: Curves.elasticInOut,
-            ),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: SizedBox(
-                width: double.infinity,
-                child: child,
-              ),
+            curve: Curves.elasticInOut,
+          ),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: SizedBox(
+              width: double.infinity,
+              child: child,
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget buildPage(
@@ -69,13 +79,11 @@ class BoardSelectDialogRoute<T> extends PopupRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-    ));
+    final theme = AquaTheme.of(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xffffffff),
+        color: theme.backgroundColor,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(32),
           topRight: Radius.circular(32),
