@@ -51,18 +51,11 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/images/club.png
+    - assets/images/club-4c.png
     - assets/images/diamond.png
+    - assets/images/diamond-4c.png
     - assets/images/heart.png
     - assets/images/spade.png
-    - assets/images/flush.png
-    - assets/images/four-of-a-kind.png
-    - assets/images/fullhouse.png
-    - assets/images/high.png
-    - assets/images/pair.png
-    - assets/images/straight-flush.png
-    - assets/images/straight.png
-    - assets/images/three-of-a-kind.png
-    - assets/images/two-pairs.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

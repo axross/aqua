@@ -14,6 +14,23 @@ class PlayingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
+    Color color;
+
+    if (card.suit == Suit.spade) {
+      color = theme.spadeForegroundColor;
+    }
+
+    if (card.suit == Suit.heart) {
+      color = theme.heartForegroundColor;
+    }
+
+    if (card.suit == Suit.diamond) {
+      color = theme.diamondForegroundColor;
+    }
+
+    if (card.suit == Suit.club) {
+      color = theme.clubForegroundColor;
+    }
 
     return AspectRatio(
       aspectRatio: 2.25 / 3.5,
@@ -30,9 +47,7 @@ class PlayingCard extends StatelessWidget {
                 child: Text(
                   _rankStrings[card.rank],
                   style: theme.playingCardTextStyle.copyWith(
-                    color: card.suit == Suit.spade || card.suit == Suit.club
-                        ? theme.spadeForegroundColor
-                        : theme.heartForegroundColor,
+                    color: color,
                     fontSize: constraints.maxHeight * 0.45,
                   ),
                 ),
@@ -97,6 +112,6 @@ final _rankStrings = {
 final _suitImages = {
   Suit.spade: "assets/images/spade.png",
   Suit.heart: "assets/images/heart.png",
-  Suit.diamond: "assets/images/diamond.png",
-  Suit.club: "assets/images/club.png",
+  Suit.diamond: "assets/images/diamond-4c.png",
+  Suit.club: "assets/images/club-4c.png",
 };

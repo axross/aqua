@@ -174,7 +174,7 @@ class HandSettingTypeSelector extends StatelessWidget {
                   style: theme.textStyle.copyWith(
                       color: playerHandSetting is PlayerHoleCards
                           ? Color(0xffffffff)
-                          : Color(0xff2e86de)),
+                          : Color(0xff54a0ff)),
                 ),
               ),
             ),
@@ -200,7 +200,7 @@ class HandSettingTypeSelector extends StatelessWidget {
                   style: theme.textStyle.copyWith(
                       color: playerHandSetting is PlayerHandRange
                           ? Color(0xffffffff)
-                          : Color(0xff10ac84)),
+                          : Color(0xff1dd1a1)),
                 ),
               ),
             ),
