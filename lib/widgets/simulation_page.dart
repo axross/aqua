@@ -80,17 +80,42 @@ class _SimulationPageState extends State<SimulationPage> {
                         valueListenable: simulationSession.board,
                         builder: (context, board, _) => Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(9, (i) {
-                            if (i % 2 == 1) return SizedBox(width: 8);
-
-                            final index = i ~/ 2;
-
-                            return SizedBox(
-                                width: 56,
-                                child: board[index] != null
-                                    ? PlayingCard(card: board[index])
-                                    : PlayingCardBack());
-                          }),
+                          children: [
+                            SizedBox(
+                              width: 56,
+                              child: board[0] != null
+                                  ? PlayingCard(card: board[0])
+                                  : PlayingCardBack(),
+                            ),
+                            SizedBox(width: 8),
+                            SizedBox(
+                              width: 56,
+                              child: board[1] != null
+                                  ? PlayingCard(card: board[1])
+                                  : PlayingCardBack(),
+                            ),
+                            SizedBox(width: 8),
+                            SizedBox(
+                              width: 56,
+                              child: board[2] != null
+                                  ? PlayingCard(card: board[2])
+                                  : PlayingCardBack(),
+                            ),
+                            SizedBox(width: 16),
+                            SizedBox(
+                              width: 56,
+                              child: board[3] != null
+                                  ? PlayingCard(card: board[3])
+                                  : PlayingCardBack(),
+                            ),
+                            SizedBox(width: 16),
+                            SizedBox(
+                              width: 56,
+                              child: board[4] != null
+                                  ? PlayingCard(card: board[4])
+                                  : PlayingCardBack(),
+                            ),
+                          ],
                         ),
                       ),
                     ),

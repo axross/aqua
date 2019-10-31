@@ -165,28 +165,92 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
               SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(board.length * 2 - 1, (i) {
-                  if (i % 2 == 1) return SizedBox(width: 4);
-
-                  final index = i ~/ 2;
-
-                  return Container(
+                children: [
+                  Container(
                     width: 64,
                     decoration: BoxDecoration(
-                      color: index == selectedIndex ? Color(0x7ffeca57) : null,
+                      color: selectedIndex == 0 ? Color(0x7ffeca57) : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: EdgeInsets.all(4),
                     child: GestureDetector(
-                      onTap: () => _onCardTapToReplace(index),
-                      child: board[index] == null
+                      onTap: () => _onCardTapToReplace(0),
+                      child: board[0] == null
                           ? PlayingCardBack()
                           : PlayingCard(
-                              card: board[index],
+                              card: board[0],
                             ),
                     ),
-                  );
-                }),
+                  ),
+                  SizedBox(width: 4),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 1 ? Color(0x7ffeca57) : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => _onCardTapToReplace(1),
+                      child: board[1] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: board[1],
+                            ),
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 2 ? Color(0x7ffeca57) : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => _onCardTapToReplace(2),
+                      child: board[2] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: board[2],
+                            ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 3 ? Color(0x7ffeca57) : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => _onCardTapToReplace(3),
+                      child: board[3] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: board[3],
+                            ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 4 ? Color(0x7ffeca57) : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => _onCardTapToReplace(4),
+                      child: board[4] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: board[4],
+                            ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 32),
               CardPicker(
