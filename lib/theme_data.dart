@@ -19,7 +19,7 @@ final lightThemeData = AquaThemeData(
   appBarForegroundColor: Color(0xff222f3e),
   appBarTextStyle: TextStyle(
     fontFamily: "Montserrat",
-    fontWeight: FontWeight.w900,
+    fontWeight: FontWeight.w700,
     fontSize: 20,
   ),
   digitTextStyle: TextStyle(

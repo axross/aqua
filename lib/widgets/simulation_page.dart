@@ -60,7 +60,7 @@ class _SimulationPageState extends State<SimulationPage> {
                 backgroundColor: theme.appBarBackgroundColor,
                 centerTitle: true,
                 title: Text(
-                  "Aqua",
+                  "Calculate",
                   style: theme.appBarTextStyle
                       .copyWith(color: theme.foregroundColor),
                 ),
