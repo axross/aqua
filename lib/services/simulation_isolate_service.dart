@@ -52,7 +52,7 @@ class SimulationIsolateService {
 
   dispose() {
     if (_isolate != null) {
-      _isolate.kill();
+      _isolate.kill(priority: Isolate.immediate);
     }
 
     _streamController.close();

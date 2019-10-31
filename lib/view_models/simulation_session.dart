@@ -28,7 +28,6 @@ class SimulationSession {
   void _onSituationChanged() async {
     if (_simulationIsolateService != null) {
       _simulationIsolateService.dispose();
-      _simulationIsolateService = null;
     }
 
     results.value = [];
