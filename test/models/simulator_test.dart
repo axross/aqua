@@ -35,7 +35,7 @@ void main() {
     );
 
     expect(() => simulator.simulate(),
-        throwsA(const TypeMatcher<IncompleteHandSettingException>()));
+        throwsA(const TypeMatcher<InsafficientHandSettingException>()));
   });
 
   // test("Simulator", () {
