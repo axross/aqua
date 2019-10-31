@@ -1,4 +1,4 @@
-package com.example.aqua
+package app.axross.aqua
 
 import android.os.Bundle
 import io.flutter.app.FlutterActivity
