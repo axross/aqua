@@ -18,9 +18,9 @@ class Simulator {
   final Set<Card> board;
 
   List<SimulationResult> simulate({int times = 1}) {
-    if (playerHandSettings.length < 2) throw InsafficientHandSettingException();
     if (board.length == 1 || board.length == 2 || board.length > 5)
       throw InvalidBoardException();
+    if (playerHandSettings.length < 2) throw InsafficientHandSettingException();
 
     final holeCardsEachPlayer = <Set<CardPair>>[];
     final resultEachPlayer = <Map<HandType, List<int>>>[];
@@ -28,8 +28,13 @@ class Simulator {
     for (final playerHandSetting in playerHandSettings) {
       final cardPairCombinations = playerHandSetting.cardPairCombinations;
 
-      if (cardPairCombinations.length == 0)
-        throw IncompleteHandSettingException();
+      if (cardPairCombinations.length == 0) {
+        if (playerHandSettings.length == 2) {
+          throw InsafficientHandSettingException();
+        } else {
+          throw IncompleteHandSettingException();
+        }
+      }
 
       holeCardsEachPlayer.add(cardPairCombinations);
       resultEachPlayer.add({
