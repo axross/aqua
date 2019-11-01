@@ -11,7 +11,7 @@ class SimulationIsolateService {
 
   SendPort _toIsolate;
 
-  final _streamController = StreamController();
+  final _streamController = StreamController.broadcast();
 
   Stream<dynamic> get onSimulated => _streamController.stream;
 

@@ -4,6 +4,7 @@ import 'package:aqua/models/simulation_result.dart';
 import 'package:aqua/models/simulator.dart';
 import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:aqua/widgets/analytics.dart';
 import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:aqua/widgets/board_select_dialog_route.dart';
 import 'package:aqua/widgets/player_hand_setting_dialog_route.dart';
@@ -32,7 +33,13 @@ class _SimulationPageState extends State<SimulationPage> {
   void initState() {
     super.initState();
 
-    _simulationSession = ValueNotifier(SimulationSession.initial());
+    Future.microtask(() {
+      setState(() {
+        _simulationSession = ValueNotifier(SimulationSession.initial(
+          analytics: Analytics.of(context),
+        ));
+      });
+    });
   }
 
   @override
@@ -43,6 +50,8 @@ class _SimulationPageState extends State<SimulationPage> {
       topColor: theme.appBarBackgroundColor,
       bottomColor: theme.backgroundColor,
     );
+
+    if (_simulationSession == null) return Container();
 
     return ValueListenableBuilder<SimulationSession>(
       valueListenable: _simulationSession,
@@ -69,10 +78,15 @@ class _SimulationPageState extends State<SimulationPage> {
                 children: [
                   SizedBox(height: 16),
                   GestureDetector(
-                    onTap: () =>
-                        Navigator.of(context).push(BoardSelectDialogRoute(
-                      simulationSession: simulationSession,
-                    )),
+                    onTap: () {
+                      Navigator.of(context).push(BoardSelectDialogRoute(
+                        simulationSession: simulationSession,
+                      ));
+
+                      Analytics.of(context).logEvent(
+                        name: "open_board_select_dialog",
+                      );
+                    },
                     behavior: HitTestBehavior.opaque,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -163,6 +177,10 @@ class PlayerListView extends StatelessWidget {
               simulationSession.playerHandSettings.value = [
                 ...playerHandSetting
               ]..removeAt(index);
+
+              Analytics.of(context).logEvent(
+                name: "delete_player_hand_setting",
+              );
             },
             background: Container(
               color: Color(0xffff6b6b),
@@ -262,6 +280,10 @@ class PlayerListViewItem extends StatelessWidget {
               simulationSession: simulationSession,
               index: index,
             ));
+
+            Analytics.of(context).logEvent(
+              name: "open_player_hand_setting_dialog",
+            );
           },
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,6 +439,13 @@ class PlayerListViewNewItem extends StatelessWidget {
           simulationSession: simulationSession,
           index: playerHandSettings.length,
         ));
+
+        Analytics.of(context).logEvent(
+          name: "add_player_hand_setting",
+        );
+        Analytics.of(context).logEvent(
+          name: "open_player_hand_setting_dialog",
+        );
       },
       child: Row(
         children: [
