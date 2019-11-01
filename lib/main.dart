@@ -1,4 +1,9 @@
+import 'package:aqua/widgets/analytics.dart';
+import 'package:aqua/widgets/app.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/widgets.dart';
-import './widgets/app.dart';
 
-void main() => runApp(AquaApp());
+void main() => runApp(Analytics(
+      analytics: FirebaseAnalytics(),
+      child: AquaApp(),
+    ));

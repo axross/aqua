@@ -2,6 +2,7 @@ import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:aqua/widgets/analytics.dart';
 import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:aqua/widgets/card_picker.dart';
 import 'package:aqua/widgets/playing_card.dart';
@@ -136,6 +137,10 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                       setState(() {
                         selectedIndex = 0;
                       });
+
+                      Analytics.of(context).logEvent(
+                        name: "clear_board_cards",
+                      );
                     },
                     child: Container(
                       decoration: ShapeDecoration(
@@ -270,11 +275,9 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
     );
   }
 
-  void _onCardTapToReplace(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
+  void _onCardTapToReplace(int index) => setState(() {
+        selectedIndex = index;
+      });
 
   void _onCardTapInPicker(Card card) {
     if (selectedIndex == null) return;
@@ -287,5 +290,10 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
     setState(() {
       selectedIndex = (selectedIndex + 1) % 5;
     });
+
+    Analytics.of(context).logEvent(
+      name: "update_board_cards",
+      parameters: {"next_length": simulationSession.board.value.length},
+    );
   }
 }

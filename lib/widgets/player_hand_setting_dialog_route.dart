@@ -2,6 +2,7 @@ import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:aqua/widgets/analytics.dart';
 import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:aqua/widgets/card_picker.dart';
 import 'package:aqua/widgets/playing_card.dart';
@@ -164,6 +165,11 @@ class HandSettingTypeSelector extends StatelessWidget {
                 simulationSession.playerHandSettings.value = [
                   ...playerHandSettings
                 ]..[index] = PlayerHoleCards();
+
+                Analytics.of(context).logEvent(
+                  name: "update_player_hand_setting_type",
+                  parameters: {"to": "hole_cards"},
+                );
               },
               child: Container(
                 decoration: ShapeDecoration(
@@ -190,6 +196,11 @@ class HandSettingTypeSelector extends StatelessWidget {
                 simulationSession.playerHandSettings.value = [
                   ...playerHandSettings
                 ]..[index] = PlayerHandRange.empty();
+
+                Analytics.of(context).logEvent(
+                  name: "update_player_hand_setting_type",
+                  parameters: {"to": "range"},
+                );
               },
               child: Container(
                 decoration: ShapeDecoration(
@@ -316,6 +327,14 @@ class _HoleCardSelectState extends State<HoleCardSelect> {
     setState(() {
       selectedIndex = (selectedIndex + 1) % 2;
     });
+
+    Analytics.of(context).logEvent(
+      name: "update_player_hand_setting",
+      parameters: {
+        "type": "hole_cards",
+        "index": selectedIndex,
+      },
+    );
   }
 }
 
@@ -343,6 +362,14 @@ class _RangeSelectState extends State<RangeSelect> {
         simulationSession.playerHandSettings.value = [
           ...simulationSession.playerHandSettings.value
         ]..[widget.index] = handSetting.copyWith(handRange);
+
+        Analytics.of(context).logEvent(
+          name: "update_player_hand_setting",
+          parameters: {
+            "type": "range",
+            "length": handRange.length,
+          },
+        );
       },
     );
   }

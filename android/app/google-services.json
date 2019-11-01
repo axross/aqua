@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1070741331805",
+    "firebase_url": "https://ax-aqua.firebaseio.com",
+    "project_id": "ax-aqua",
+    "storage_bucket": "ax-aqua.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070741331805:android:472a2516c8a8aa71c052b4",
+        "android_client_info": {
+          "package_name": "app.axross.aqua"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1070741331805-25q27uuoqf0k9kv8gqai7cfrs689j9rf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuphIwAWuvlxnXfKRiW0JdartJYQPTp-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1070741331805-25q27uuoqf0k9kv8gqai7cfrs689j9rf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1070741331805-rmt0hnk3ieurnp3hnnlq0krr98ongupj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.axross.aqua",
+                "app_store_id": "1485519383"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
