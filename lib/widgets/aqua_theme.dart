@@ -1,4 +1,5 @@
 import 'dart:ui' show Brightness;
+import 'package:aqua/models/suit.dart';
 import 'package:flutter/widgets.dart';
 
 class AquaTheme extends InheritedWidget {
@@ -57,6 +58,7 @@ class AquaThemeData {
     @required this.pocketRangeForegroundColor,
     @required this.selectedRangeForegroundColor,
     @required this.rangeTextStyle,
+    @required this.assets,
   });
 
   final TextStyle textStyle;
@@ -90,6 +92,8 @@ class AquaThemeData {
   final Color pocketRangeForegroundColor;
   final Color selectedRangeForegroundColor;
   final TextStyle rangeTextStyle;
+
+  final AquaThemedAssets assets;
 
   @override
   int get hashCode {
@@ -144,4 +148,13 @@ class AquaThemeData {
       other.pocketRangeForegroundColor == pocketRangeForegroundColor &&
       other.selectedRangeForegroundColor == selectedRangeForegroundColor &&
       other.rangeTextStyle == rangeTextStyle;
+}
+
+@immutable
+class AquaThemedAssets {
+  const AquaThemedAssets({
+    @required this.suits,
+  }) : assert(suits != null);
+
+  final Map<Suit, AssetImage> suits;
 }

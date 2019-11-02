@@ -71,7 +71,7 @@ class _SimulationPageState extends State<SimulationPage> {
                 title: Text(
                   "Calculate",
                   style: theme.appBarTextStyle
-                      .copyWith(color: theme.foregroundColor),
+                      .copyWith(color: theme.appBarForegroundColor),
                 ),
               ),
               body: Column(
@@ -384,7 +384,7 @@ class PlayerListViewItem extends StatelessWidget {
                                             style:
                                                 theme.digitTextStyle.copyWith(
                                               color: theme
-                                                  .secondaryBackgroundColor,
+                                                  .secondaryForegroundColor,
                                               fontSize: 18,
                                             ),
                                             textAlign: TextAlign.right,
@@ -395,7 +395,7 @@ class PlayerListViewItem extends StatelessWidget {
                                             "% win at ${_handTypeStrings[entry.key].toUpperCase()}",
                                             style: theme.textStyle.copyWith(
                                               color: theme
-                                                  .secondaryBackgroundColor,
+                                                  .secondaryForegroundColor,
                                               fontSize: 14,
                                             ),
                                             textAlign: TextAlign.left,
