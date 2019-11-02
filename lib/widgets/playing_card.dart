@@ -60,8 +60,8 @@ class PlayingCard extends StatelessWidget {
                     left: constraints.maxWidth * 0.2,
                     right: constraints.maxWidth * 0.2,
                   ),
-                  child: Image.asset(
-                    _suitImages[card.suit],
+                  child: Image(
+                    image: theme.assets.suits[card.suit],
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -107,11 +107,4 @@ final _rankStrings = {
   Rank.four: "4",
   Rank.three: "3",
   Rank.two: "2",
-};
-
-final _suitImages = {
-  Suit.spade: "assets/images/spade.png",
-  Suit.heart: "assets/images/heart.png",
-  Suit.diamond: "assets/images/diamond-4c.png",
-  Suit.club: "assets/images/club-4c.png",
 };

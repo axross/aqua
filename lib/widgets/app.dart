@@ -9,7 +9,7 @@ class AquaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AquaTheme(
       lightThemeData: lightThemeData,
-      darkThemeData: lightThemeData,
+      darkThemeData: darkThemeData,
       child: MaterialApp(
         title: 'Flutter Demo',
         // theme: ThemeData(
