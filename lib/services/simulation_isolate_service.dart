@@ -11,9 +11,9 @@ class SimulationIsolateService {
 
   SendPort _toIsolate;
 
-  final _streamController = StreamController.broadcast();
+  final _streamController = StreamController<SimulationDetails>.broadcast();
 
-  Stream<dynamic> get onSimulated => _streamController.stream;
+  Stream<SimulationDetails> get onSimulated => _streamController.stream;
 
   void requestSimulation({
     @required List<PlayerHandSetting> playerHandSettings,
@@ -59,6 +59,20 @@ class SimulationIsolateService {
   }
 }
 
+class SimulationDetails {
+  SimulationDetails({
+    @required this.timesSimulated,
+    @required this.timesWillBeSimulated,
+    @required this.results,
+  })  : assert(timesSimulated != null),
+        assert(timesWillBeSimulated != null),
+        assert(results != null);
+
+  final int timesSimulated;
+  final int timesWillBeSimulated;
+  final List<SimulationResult> results;
+}
+
 void _isolateFunction(SendPort toMain) {
   final receivePort = ReceivePort();
 
@@ -93,7 +107,11 @@ void _isolateFunction(SendPort toMain) {
         newResults.add(results[i] + _results[i]);
       }
 
-      toMain.send(newResults);
+      toMain.send(SimulationDetails(
+        timesSimulated: (i + 1) * 200,
+        timesWillBeSimulated: 500 * 200,
+        results: newResults,
+      ));
 
       results = newResults;
     }

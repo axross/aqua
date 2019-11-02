@@ -71,7 +71,7 @@ final darkThemeData = AquaThemeData(
   accentForegroundColor: Color(0xff2e86de),
   errorForegroundColor: Color(0xffff6b6b),
   backgroundColor: Color(0xff19232E),
-  secondaryBackgroundColor: Color(0xffc8d6e5),
+  secondaryBackgroundColor: Color(0xff576574),
   highlightBackgroundColor: Color(0xfffeca57),
   appBarBackgroundColor: Color(0xff222f3e),
   appBarForegroundColor: Color(0xffF1F4F8),

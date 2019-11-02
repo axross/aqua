@@ -12,7 +12,8 @@ class SimulationSession {
         board = ValueNotifier(<Card>[null, null, null, null, null]),
         playerHandSettings = ValueNotifier([]),
         results = ValueNotifier([]),
-        error = ValueNotifier(null) {
+        error = ValueNotifier(null),
+        progress = ValueNotifier(0) {
     board.addListener(_onSituationChanged);
     playerHandSettings.addListener(_onSituationChanged);
   }
@@ -26,6 +27,8 @@ class SimulationSession {
   final ValueNotifier<List<SimulationResult>> results;
 
   final ValueNotifier<SimulationCancelException> error;
+
+  final ValueNotifier<double> progress;
 
   SimulationIsolateService _simulationIsolateService;
 
@@ -47,9 +50,11 @@ class SimulationSession {
 
     _simulationIsolateService
       ..onSimulated.listen(
-        (data) {
+        (details) {
           error.value = null;
-          results.value = data;
+          results.value = details.results;
+          progress.value =
+              details.timesSimulated / details.timesWillBeSimulated;
         },
         onError: (error) {
           _simulationIsolateService.dispose();
