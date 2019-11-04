@@ -65,7 +65,10 @@ class BoardSelectDialogRoute<T> extends PopupRoute<T> {
             alignment: Alignment.bottomLeft,
             child: SizedBox(
               width: double.infinity,
-              child: child,
+              child: DefaultTextStyle(
+                style: TextStyle(decoration: TextDecoration.none),
+                child: child,
+              ),
             ),
           ),
         ),
@@ -111,6 +114,7 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
   @override
   Widget build(BuildContext context) {
     final simulationSession = Provider.of<SimulationSession>(context);
+    final theme = AquaTheme.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -153,14 +157,11 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                           EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                       child: Text(
                         "Clear",
-                        style: TextStyle(
-                          fontFamily: "Rubik",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          decoration: TextDecoration.none,
+                        style: theme.textStyle.copyWith(
                           color: board.any((card) => card != null)
                               ? Color(0xffffffff)
                               : Color(0xffc8d6e5),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),

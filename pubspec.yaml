@@ -50,9 +50,7 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
-    - assets/images/club.png
     - assets/images/club-4c.png
-    - assets/images/diamond.png
     - assets/images/diamond-4c.png
     - assets/images/heart.png
     - assets/images/spade.png
@@ -104,33 +102,6 @@ flutter:
           weight: 800
         - asset: assets/fonts/WorkSans-Black.ttf
           weight: 900
-    - family: Rubik
-      fonts:
-        - asset: assets/fonts/Rubik-Black.ttf
-          weight: 900
-        - asset: assets/fonts/Rubik-BlackItalic.ttf
-          weight: 900
-          style: italic
-        - asset: assets/fonts/Rubik-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Rubik-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: assets/fonts/Rubik-Italic.ttf
-          weight: 400
-          style: italic
-        - asset: assets/fonts/Rubik-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Rubik-LightItalic.ttf
-          weight: 300
-          style: italic
-        - asset: assets/fonts/Rubik-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Rubik-MediumItalic.ttf
-          weight: 500
-          style: italic
-        - asset: assets/fonts/Rubik-Regular.ttf
-          weight: 400
     - family: Source Code Pro
       fonts:
         - asset: assets/fonts/SourceCodePro-Black.ttf
@@ -166,43 +137,6 @@ flutter:
         - asset: assets/fonts/SourceCodePro-SemiBold.ttf
           weight: 600
         - asset: assets/fonts/SourceCodePro-SemiBoldItalic.ttf
-          weight: 600
-          style: italic
-    - family: Muli
-      fonts:
-        - asset: assets/fonts/Muli-Black.ttf
-          weight: 900
-        - asset: assets/fonts/Muli-BlackItalic.ttf
-          weight: 400
-          style: italic
-        - asset: assets/fonts/Muli-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Muli-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: assets/fonts/Muli-ExtraBold.ttf
-          weight: 800
-        - asset: assets/fonts/Muli-ExtraBoldItalic.ttf
-          weight: 800
-          style: italic
-        - asset: assets/fonts/Muli-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/Muli-ExtraLightItalic.ttf
-          weight: 200
-          style: italic
-        - asset: assets/fonts/Muli-Italic.ttf
-          weight: 400
-          style: italic
-        - asset: assets/fonts/Muli-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Muli-LightItalic.ttf
-          weight: 300
-          style: italic
-        - asset: assets/fonts/Muli-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Muli-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Muli-SemiBoldItalic.ttf
           weight: 600
           style: italic
     - family: Montserrat

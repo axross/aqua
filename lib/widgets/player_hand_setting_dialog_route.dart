@@ -182,9 +182,11 @@ class HandSettingTypeSelector extends StatelessWidget {
                 child: Text(
                   "Certain Cards",
                   style: theme.textStyle.copyWith(
-                      color: playerHandSetting is PlayerHoleCards
-                          ? Color(0xffffffff)
-                          : Color(0xff54a0ff)),
+                    color: playerHandSetting is PlayerHoleCards
+                        ? Color(0xffffffff)
+                        : Color(0xff54a0ff),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -213,9 +215,11 @@ class HandSettingTypeSelector extends StatelessWidget {
                 child: Text(
                   "Range",
                   style: theme.textStyle.copyWith(
-                      color: playerHandSetting is PlayerHandRange
-                          ? Color(0xffffffff)
-                          : Color(0xff1dd1a1)),
+                    color: playerHandSetting is PlayerHandRange
+                        ? Color(0xffffffff)
+                        : Color(0xff1dd1a1),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
