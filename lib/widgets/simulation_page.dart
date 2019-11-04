@@ -76,16 +76,20 @@ class _SimulationPageState extends State<SimulationPage> {
               ),
               body: Column(
                 children: [
-                  ValueListenableBuilder(
-                    valueListenable: simulationSession.progress,
-                    builder: (context, progress, _) => LinearProgressIndicator(
-                      value: progress,
-                      valueColor: progress == 1.0
-                          ? AlwaysStoppedAnimation<Color>(Color(0x00000000))
-                          : AlwaysStoppedAnimation<Color>(
-                              theme.secondaryBackgroundColor,
-                            ),
-                      backgroundColor: Color(0x00000000),
+                  ConstrainedBox(
+                    constraints: BoxConstraints.tightFor(height: 2),
+                    child: ValueListenableBuilder(
+                      valueListenable: simulationSession.progress,
+                      builder: (context, progress, _) =>
+                          LinearProgressIndicator(
+                        value: progress,
+                        valueColor: progress == 1.0
+                            ? AlwaysStoppedAnimation<Color>(Color(0x00000000))
+                            : AlwaysStoppedAnimation<Color>(
+                                theme.secondaryBackgroundColor,
+                              ),
+                        backgroundColor: Color(0x00000000),
+                      ),
                     ),
                   ),
                   SizedBox(height: 10), // LinearProgressIndicator has 6 height
