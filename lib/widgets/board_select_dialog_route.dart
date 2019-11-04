@@ -175,7 +175,9 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
-                      color: selectedIndex == 0 ? Color(0x7ffeca57) : null,
+                      color: selectedIndex == 0
+                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: EdgeInsets.all(4),
@@ -192,7 +194,9 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
-                      color: selectedIndex == 1 ? Color(0x7ffeca57) : null,
+                      color: selectedIndex == 1
+                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: EdgeInsets.all(4),
@@ -209,7 +213,9 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
-                      color: selectedIndex == 2 ? Color(0x7ffeca57) : null,
+                      color: selectedIndex == 2
+                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: EdgeInsets.all(4),
@@ -226,7 +232,9 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
-                      color: selectedIndex == 3 ? Color(0x7ffeca57) : null,
+                      color: selectedIndex == 3
+                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: EdgeInsets.all(4),
@@ -243,7 +251,9 @@ class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
-                      color: selectedIndex == 4 ? Color(0x7ffeca57) : null,
+                      color: selectedIndex == 4
+                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: EdgeInsets.all(4),

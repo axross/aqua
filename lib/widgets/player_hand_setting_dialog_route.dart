@@ -273,6 +273,7 @@ class _HoleCardSelectState extends State<HoleCardSelect> {
                             decoration: BoxDecoration(
                               color: index == selectedIndex
                                   ? theme.highlightBackgroundColor
+                                      .withOpacity(0.5)
                                   : null,
                               borderRadius: BorderRadius.circular(8),
                             ),
