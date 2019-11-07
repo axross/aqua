@@ -358,7 +358,7 @@ class PlayerListViewItem extends StatelessWidget {
                             textBaseline: TextBaseline.alphabetic,
                             children: [
                               Text(
-                                "${_twoDigitFormat.format(result.winRate * 100)}",
+                                "${(result.winRate * 100).floor()}",
                                 style: theme.digitTextStyle.copyWith(
                                   color: theme.foregroundColor,
                                   fontSize: 32,
@@ -373,7 +373,7 @@ class PlayerListViewItem extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                "${_twoDigitFormat.format(result.winRate * 10000 % 100)}",
+                                "${_twoDigitFormat.format((result.winRate * 10000 % 100).floor())}",
                                 style: theme.digitTextStyle.copyWith(
                                   color: theme.foregroundColor,
                                   fontSize: 18,
@@ -396,7 +396,7 @@ class PlayerListViewItem extends StatelessWidget {
                                         SizedBox(
                                           width: 40,
                                           child: Text(
-                                            "${_numberFormat.format(entry.value / result.totalGames * 100)}",
+                                            "${_numberFormat.format((entry.value / result.totalGames * 100).floor())}",
                                             style:
                                                 theme.digitTextStyle.copyWith(
                                               color: theme
@@ -505,7 +505,7 @@ class PlayerListViewNewItem extends StatelessWidget {
 
 final _numberFormat = NumberFormat("#0");
 
-final _twoDigitFormat = NumberFormat("00");
+final _twoDigitFormat = NumberFormat("#00");
 
 final _handTypeStrings = {
   HandType.straightFlush: "Str. Flush",
