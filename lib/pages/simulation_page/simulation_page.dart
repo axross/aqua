@@ -2,6 +2,7 @@ import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/playing_card.dart';
 import 'package:aqua/common_widgets/readonly_range_grid.dart';
+import 'package:aqua/models/card.dart';
 import 'package:aqua/models/hand_type.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/simulation_result.dart';
@@ -29,22 +30,37 @@ class SimulationPage extends StatelessWidget {
     );
 
     return ValueListenableBuilder(
-      valueListenable: simulationSession.playerHandSettings,
-      builder: (context, playerHandSettings, _) => ValueListenableBuilder(
-        valueListenable: simulationSession.error,
-        builder: (context, error, _) => Container(
-          color: theme.backgroundColor,
-          child: Column(
-            children: [
-              Container(
-                color: theme.appBarBackgroundColor,
-                child: SafeArea(
-                  bottom: false,
-                  child: Container(
-                    height: 56,
-                    child: Center(
-                      child: Text(
-                        "Calculate",
+      valueListenable: simulationSession.error,
+      builder: (context, error, _) => Container(
+        color: theme.backgroundColor,
+        child: Column(
+          children: [
+            Container(
+              color: theme.appBarBackgroundColor,
+              child: SafeArea(
+                bottom: false,
+                child: Container(
+                  height: 56,
+                  child: Center(
+                    child: ValueListenableBuilder<List<Card>>(
+                      valueListenable: simulationSession.board,
+                      builder: (context, board, _) => Text(
+                        () {
+                          if (error != null) return "Odds Calculation";
+
+                          switch (board.where((card) => card != null).length) {
+                            case 0:
+                              return "Odds at Preflop";
+                            case 3:
+                              return "Odds at Flop";
+                            case 4:
+                              return "Odds at Turn";
+                            case 5:
+                              return "Odds at River";
+                            default:
+                              throw AssertionError("unreachable here.");
+                          }
+                        }(),
                         style: theme.appBarTextStyle
                             .copyWith(color: theme.appBarForegroundColor),
                       ),
@@ -52,91 +68,91 @@ class SimulationPage extends StatelessWidget {
                   ),
                 ),
               ),
-              ConstrainedBox(
-                constraints: BoxConstraints.tightFor(height: 2),
-                child: ValueListenableBuilder(
-                  valueListenable: simulationSession.progress,
-                  builder: (context, progress, _) => LinearProgressIndicator(
-                    value: progress,
-                    valueColor: progress == 1.0
-                        ? AlwaysStoppedAnimation<Color>(Color(0x00000000))
-                        : AlwaysStoppedAnimation<Color>(
-                            theme.secondaryBackgroundColor,
-                          ),
-                    backgroundColor: Color(0x00000000),
-                  ),
+            ),
+            ConstrainedBox(
+              constraints: BoxConstraints.tightFor(height: 2),
+              child: ValueListenableBuilder(
+                valueListenable: simulationSession.progress,
+                builder: (context, progress, _) => LinearProgressIndicator(
+                  value: progress,
+                  valueColor: progress == 1.0
+                      ? AlwaysStoppedAnimation<Color>(Color(0x00000000))
+                      : AlwaysStoppedAnimation<Color>(
+                          theme.secondaryBackgroundColor,
+                        ),
+                  backgroundColor: Color(0x00000000),
                 ),
               ),
-              SizedBox(height: 10), // LinearProgressIndicator has 6 height
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(BoardSettingDialogRoute());
+            ),
+            SizedBox(height: 10), // LinearProgressIndicator has 6 height
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(BoardSettingDialogRoute());
 
-                  Analytics.of(context).logEvent(
-                    name: "open_board_select_dialog",
-                  );
-                },
-                behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: ValueListenableBuilder(
-                    valueListenable: simulationSession.board,
-                    builder: (context, board, _) => Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 56,
-                          child: board[0] != null
-                              ? PlayingCard(card: board[0])
-                              : PlayingCardBack(),
-                        ),
-                        SizedBox(width: 8),
-                        SizedBox(
-                          width: 56,
-                          child: board[1] != null
-                              ? PlayingCard(card: board[1])
-                              : PlayingCardBack(),
-                        ),
-                        SizedBox(width: 8),
-                        SizedBox(
-                          width: 56,
-                          child: board[2] != null
-                              ? PlayingCard(card: board[2])
-                              : PlayingCardBack(),
-                        ),
-                        SizedBox(width: 16),
-                        SizedBox(
-                          width: 56,
-                          child: board[3] != null
-                              ? PlayingCard(card: board[3])
-                              : PlayingCardBack(),
-                        ),
-                        SizedBox(width: 16),
-                        SizedBox(
-                          width: 56,
-                          child: board[4] != null
-                              ? PlayingCard(card: board[4])
-                              : PlayingCardBack(),
-                        ),
-                      ],
-                    ),
+                Analytics.of(context).logEvent(
+                  name: "open_board_select_dialog",
+                );
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: ValueListenableBuilder(
+                  valueListenable: simulationSession.board,
+                  builder: (context, board, _) => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 56,
+                        child: board[0] != null
+                            ? PlayingCard(card: board[0])
+                            : PlayingCardBack(),
+                      ),
+                      SizedBox(width: 8),
+                      SizedBox(
+                        width: 56,
+                        child: board[1] != null
+                            ? PlayingCard(card: board[1])
+                            : PlayingCardBack(),
+                      ),
+                      SizedBox(width: 8),
+                      SizedBox(
+                        width: 56,
+                        child: board[2] != null
+                            ? PlayingCard(card: board[2])
+                            : PlayingCardBack(),
+                      ),
+                      SizedBox(width: 16),
+                      SizedBox(
+                        width: 56,
+                        child: board[3] != null
+                            ? PlayingCard(card: board[3])
+                            : PlayingCardBack(),
+                      ),
+                      SizedBox(width: 16),
+                      SizedBox(
+                        width: 56,
+                        child: board[4] != null
+                            ? PlayingCard(card: board[4])
+                            : PlayingCardBack(),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              if (error != null)
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                  child: Text(
-                    getMessageBySimulationCencelException(error),
-                    style: theme.textStyle
-                        .copyWith(color: theme.errorForegroundColor),
-                  ),
+            ),
+            if (error != null)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                child: Text(
+                  getMessageBySimulationCencelException(error),
+                  style: theme.textStyle
+                      .copyWith(color: theme.errorForegroundColor),
                 ),
-              Expanded(
-                child: PlayerListView(),
               ),
-            ],
-          ),
+            Expanded(
+              child: PlayerListView(),
+            ),
+          ],
         ),
       ),
     );
