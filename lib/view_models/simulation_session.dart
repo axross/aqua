@@ -55,6 +55,11 @@ class SimulationSession {
           results.value = details.results;
           progress.value =
               details.timesSimulated / details.timesWillBeSimulated;
+
+          // print(
+          //     "[0] ${(details.results.elementAt(0).totalWin / details.results.elementAt(0).totalGames).toStringAsFixed(2)}, ${(details.results.elementAt(0).totalDraw / details.results.elementAt(0).totalGames).toStringAsFixed(2)} / ${details.results.elementAt(0).totalGames}");
+          // print(
+          //     "[1] ${(details.results.elementAt(1).totalWin / details.results.elementAt(1).totalGames).toStringAsFixed(2)}, ${(details.results.elementAt(1).totalDraw / details.results.elementAt(1).totalGames).toStringAsFixed(2)} / ${details.results.elementAt(1).totalGames}");
         },
         onError: (error) {
           _simulationIsolateService.dispose();

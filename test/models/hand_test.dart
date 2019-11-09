@@ -234,6 +234,22 @@ void main() {
       aceHigh.power,
       greaterThan(sevenHigh.power),
     );
+    expect(
+      Hand({
+        Card(rank: Rank.ace, suit: Suit.spade),
+        Card(rank: Rank.king, suit: Suit.spade),
+        Card(rank: Rank.king, suit: Suit.club),
+        Card(rank: Rank.jack, suit: Suit.spade),
+        Card(rank: Rank.seven, suit: Suit.diamond),
+      }).power,
+      greaterThan(Hand({
+        Card(rank: Rank.king, suit: Suit.spade),
+        Card(rank: Rank.king, suit: Suit.club),
+        Card(rank: Rank.jack, suit: Suit.spade),
+        Card(rank: Rank.queen, suit: Suit.club),
+        Card(rank: Rank.ten, suit: Suit.club),
+      }).power),
+    );
   });
 
   test('Hand()#type is HandType', () {

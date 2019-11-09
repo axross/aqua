@@ -115,7 +115,7 @@ class Hand {
     if (_power != null) return _power;
 
     HandType type = this.type;
-    int power = getHandTypePower(type);
+    final handTypePower = getHandTypePower(type);
     final countEachRank = new Map<Rank, int>();
 
     for (final card in cards) {
@@ -127,14 +127,33 @@ class Hand {
             countEachRank.containsKey(Rank.ace) &&
             countEachRank.containsKey(Rank.two);
 
-    for (final entry in countEachRank.entries) {
-      power += (entry.key == Rank.ace && !isBottomStraight
-              ? 13
-              : entry.key.toInt()) *
-          pow(14, entry.value);
-    }
+    final ranks = cards.map((card) => card.rank).toList()
+      ..sort((a, b) {
+        if (countEachRank[a] < countEachRank[b]) return 1;
+        if (countEachRank[a] > countEachRank[b]) return -1;
 
-    _power = power;
+        return isBottomStraight
+            ? a.compareStrongnessTo(b)
+            : b.compareStrongnessTo(a);
+      });
+
+    // print(ranks);
+
+    final powerByRank = (ranks[0] == Rank.ace && !isBottomStraight
+                ? 13
+                : ranks[0].toInt()) *
+            pow(13, 4) +
+        (ranks[1] == Rank.ace && !isBottomStraight ? 13 : ranks[1].toInt()) *
+            pow(13, 3) +
+        (ranks[2] == Rank.ace && !isBottomStraight ? 13 : ranks[2].toInt()) *
+            pow(13, 2) +
+        (ranks[3] == Rank.ace && !isBottomStraight ? 13 : ranks[3].toInt()) *
+            pow(13, 1) +
+        (ranks[4] == Rank.ace && !isBottomStraight ? 13 : ranks[4].toInt()) *
+            pow(13, 0);
+
+    // memoizing
+    _power = handTypePower + powerByRank;
 
     return _power;
   }
@@ -166,8 +185,8 @@ int getHandTypePower(HandType handType) {
   return -1;
 }
 
-// 14 ** 1 + 14 **2 + 14 ** 3 + 14 ** 4 + 14 ** 5
-const _powerBaseForHandType = 579194;
+// 13 * 13 ** 4 + 13 * 13 ** 3 + 13 * 13 ** 2 + 13 * 13 ** 1 + 13 * 13 ** 0
+const _powerBaseForHandType = 100402233;
 
 const _patterns = [
   [0, 1, 2, 3, 4],
