@@ -1,11 +1,10 @@
-import 'package:aqua/models/hand_range_part.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/rank.dart';
 import 'package:aqua/models/simulator.dart';
 
 void main() {
   final playerHandSettings = [
-    PlayerHandRange({
+    PlayerHandSetting(parts: {
       HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
@@ -29,7 +28,7 @@ void main() {
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
     }),
-    PlayerHandRange({
+    PlayerHandSetting(parts: {
       HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
@@ -53,7 +52,7 @@ void main() {
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
     }),
-    PlayerHandRange({
+    PlayerHandSetting(parts: {
       HandRangePart(high: Rank.eight, kicker: Rank.seven, isSuited: true),
       HandRangePart(high: Rank.nine, kicker: Rank.eight, isSuited: true),
       HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: true),
@@ -63,7 +62,7 @@ void main() {
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
     }),
-    PlayerHandRange({
+    PlayerHandSetting(parts: {
       HandRangePart(high: Rank.eight, kicker: Rank.seven, isSuited: true),
       HandRangePart(high: Rank.nine, kicker: Rank.eight, isSuited: true),
       HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: true),
