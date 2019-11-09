@@ -275,7 +275,7 @@ class PlayerListViewItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 136,
+                width: 120,
                 child: Padding(
                   padding: EdgeInsets.all(16),
                   child: leftItem,
@@ -353,6 +353,42 @@ class PlayerListViewItem extends StatelessWidget {
                                 "% win",
                                 style: theme.textStyle.copyWith(
                                   color: theme.foregroundColor,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                "(",
+                                style: theme.textStyle.copyWith(
+                                  color: theme.secondaryForegroundColor,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "${(result.evenRate * 100).floor()}",
+                                style: theme.digitTextStyle.copyWith(
+                                  color: theme.secondaryForegroundColor,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Text(
+                                ".",
+                                style: theme.textStyle.copyWith(
+                                  color: theme.secondaryForegroundColor,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                "${(result.evenRate * 1000 / 100).floor() % 10}",
+                                style: theme.digitTextStyle.copyWith(
+                                  color: theme.secondaryForegroundColor,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Text(
+                                "% chop)",
+                                style: theme.textStyle.copyWith(
+                                  color: theme.secondaryForegroundColor,
                                   fontSize: 14,
                                 ),
                               ),
@@ -437,7 +473,7 @@ class PlayerListViewNewItem extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 136,
+            width: 120,
             child: Padding(
               padding: EdgeInsets.all(16),
               child: Row(

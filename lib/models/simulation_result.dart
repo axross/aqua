@@ -48,8 +48,9 @@ class SimulationResult {
 
   int get totalEven => _totalEven;
 
-  double get winRate =>
-      _totalGames == 0 ? 0.0 : (_totalWin + _totalEven) / _totalGames;
+  double get winRate => _totalGames == 0 ? 0.0 : _totalWin / _totalGames;
+
+  double get evenRate => _totalGames == 0 ? 0.0 : _totalEven / _totalGames;
 
   Iterable<MapEntry<HandType, SimulationResultEachHandType>> get entries =>
       _resultEachHandType.entries;
