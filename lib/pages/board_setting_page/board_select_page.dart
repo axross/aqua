@@ -21,8 +21,15 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
     final simulationSession = Provider.of<SimulationSession>(context);
     final theme = AquaTheme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.backgroundColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
+        ),
+      ),
+      padding: EdgeInsets.all(16),
       child: ValueListenableBuilder<List<Card>>(
         valueListenable: simulationSession.board,
         builder: (context, board, _) => ValueListenableBuilder(
