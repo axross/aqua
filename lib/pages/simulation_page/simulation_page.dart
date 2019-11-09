@@ -46,8 +46,6 @@ class SimulationPage extends StatelessWidget {
                       valueListenable: simulationSession.board,
                       builder: (context, board, _) => Text(
                         () {
-                          if (error != null) return "Odds Calculation";
-
                           switch (board.where((card) => card != null).length) {
                             case 0:
                               return "Odds at Preflop";
@@ -58,7 +56,7 @@ class SimulationPage extends StatelessWidget {
                             case 5:
                               return "Odds at River";
                             default:
-                              throw AssertionError("unreachable here.");
+                              return "Odds Calculation";
                           }
                         }(),
                         style: theme.appBarTextStyle
@@ -340,73 +338,64 @@ class PlayerListViewItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.baseline,
                             textBaseline: TextBaseline.alphabetic,
                             children: [
-                              Text(
-                                "${(result.winRate * 100).floor()}",
-                                style: theme.digitTextStyle.copyWith(
-                                  color: theme.foregroundColor,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w900,
-                                ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    "${(result.winRate * 100).floor()}",
+                                    style: theme.digitTextStyle.copyWith(
+                                      color: theme.foregroundColor,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  Text(
+                                    ".",
+                                    style: theme.textStyle.copyWith(
+                                      color: theme.foregroundColor,
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${_twoDigitFormat.format((result.winRate * 10000 % 100).floor())}",
+                                    style: theme.digitTextStyle.copyWith(
+                                      color: theme.foregroundColor,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    "% win",
+                                    style: theme.textStyle.copyWith(
+                                      color: theme.foregroundColor,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                ".",
-                                style: theme.textStyle.copyWith(
-                                  color: theme.foregroundColor,
-                                  fontSize: 24,
-                                ),
-                              ),
-                              Text(
-                                "${_twoDigitFormat.format((result.winRate * 10000 % 100).floor())}",
-                                style: theme.digitTextStyle.copyWith(
-                                  color: theme.foregroundColor,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              Text(
-                                "% win",
-                                style: theme.textStyle.copyWith(
-                                  color: theme.foregroundColor,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Text(
-                                "(",
-                                style: theme.textStyle.copyWith(
-                                  color: theme.secondaryForegroundColor,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                "${(result.drawRate * 100).floor()}",
-                                style: theme.digitTextStyle.copyWith(
-                                  color: theme.secondaryForegroundColor,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              Text(
-                                ".",
-                                style: theme.textStyle.copyWith(
-                                  color: theme.secondaryForegroundColor,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                "${(result.drawRate * 1000 / 100).floor() % 10}",
-                                style: theme.digitTextStyle.copyWith(
-                                  color: theme.secondaryForegroundColor,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              Text(
-                                "% chop)",
-                                style: theme.textStyle.copyWith(
-                                  color: theme.secondaryForegroundColor,
-                                  fontSize: 14,
-                                ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    "${_format(result.drawRate * 100)}",
+                                    style: theme.digitTextStyle.copyWith(
+                                      color: theme.secondaryForegroundColor,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Text(
+                                    "% chop",
+                                    style: theme.textStyle.copyWith(
+                                      color: theme.secondaryForegroundColor,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -418,7 +407,7 @@ class PlayerListViewItem extends StatelessWidget {
                                         SizedBox(
                                           width: 40,
                                           child: Text(
-                                            "${_numberFormat.format((entry.value / result.totalGames * 100).floor())}",
+                                            "${_format(entry.value / result.totalGames * 100)}",
                                             style:
                                                 theme.digitTextStyle.copyWith(
                                               color: theme
@@ -526,7 +515,13 @@ class PlayerListViewNewItem extends StatelessWidget {
   }
 }
 
-final _numberFormat = NumberFormat("#0");
+String _format(double value) {
+  if (value > 0 && value < 1) {
+    return ">0";
+  }
+
+  return "${value.floor()}";
+}
 
 final _twoDigitFormat = NumberFormat("#00");
 
