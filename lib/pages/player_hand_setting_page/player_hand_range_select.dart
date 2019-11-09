@@ -20,17 +20,17 @@ class _PlayerHandRangeSelectState extends State<PlayerHandRangeSelect> {
   @override
   Widget build(BuildContext context) {
     final simulationSession = Provider.of<SimulationSession>(context);
-    final handSetting = simulationSession.playerHandSettings.value[widget.index]
-        as PlayerHandRange;
+    final handSetting =
+        simulationSession.playerHandSettings.value[widget.index];
 
     return AspectRatio(
       aspectRatio: 1,
       child: HandRangeSelectGrid(
-        initial: handSetting.handRange,
+        initial: handSetting.onlyHandRange,
         onUpdate: (handRange) {
           simulationSession.playerHandSettings.value = [
             ...simulationSession.playerHandSettings.value
-          ]..[widget.index] = handSetting.copyWith(handRange);
+          ]..[widget.index] = PlayerHandSetting(parts: handRange);
 
           Analytics.of(context).logEvent(
             name: "update_player_hand_setting",

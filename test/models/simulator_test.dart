@@ -9,12 +9,18 @@ void main() {
   test("Simulator", () {
     final simulator = Simulator(
       playerHandSettings: [
-        PlayerHoleCards(
+        PlayerHandSetting(parts: {
+          HoleCards(
             left: Card(rank: Rank.ace, suit: Suit.spade),
-            right: Card(rank: Rank.king, suit: Suit.spade)),
-        PlayerHoleCards(
+            right: Card(rank: Rank.king, suit: Suit.spade),
+          )
+        }),
+        PlayerHandSetting(parts: {
+          HoleCards(
             left: Card(rank: Rank.king, suit: Suit.spade),
-            right: Card(rank: Rank.queen, suit: Suit.spade)),
+            right: Card(rank: Rank.queen, suit: Suit.spade),
+          )
+        }),
       ],
       board: [],
     );
@@ -26,10 +32,17 @@ void main() {
   test("Simulator", () {
     final simulator = Simulator(
       playerHandSettings: [
-        PlayerHoleCards(
+        PlayerHandSetting(parts: {
+          HoleCards(
             left: Card(rank: Rank.ace, suit: Suit.spade),
-            right: Card(rank: Rank.king, suit: Suit.spade)),
-        PlayerHoleCards(left: Card(rank: Rank.king, suit: Suit.spade)),
+            right: Card(rank: Rank.king, suit: Suit.spade),
+          )
+        }),
+        PlayerHandSetting(parts: {
+          HoleCards(
+            left: Card(rank: Rank.king, suit: Suit.spade),
+          )
+        }),
       ],
       board: [],
     );

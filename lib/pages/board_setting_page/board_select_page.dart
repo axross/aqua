@@ -32,7 +32,8 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
       padding: EdgeInsets.all(16),
       child: ValueListenableBuilder<List<Card>>(
         valueListenable: simulationSession.board,
-        builder: (context, board, _) => ValueListenableBuilder(
+        builder: (context, board, _) =>
+            ValueListenableBuilder<List<PlayerHandSetting>>(
           valueListenable: simulationSession.playerHandSettings,
           builder: (context, playerHandSettings, _) => Column(
             mainAxisSize: MainAxisSize.min,
@@ -184,10 +185,15 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
               CardPicker(
                 unavailableCards: {
                   ...board,
-                  ...playerHandSettings.whereType<PlayerHoleCards>().fold(
-                      Set<Card>(),
-                      (set, PlayerHoleCards playerHandSetting) =>
-                          {...set, playerHandSetting[0], playerHandSetting[1]})
+                  ...playerHandSettings
+                      .where((playerHandSetting) =>
+                          playerHandSetting.type ==
+                          PlayerHandSettingType.holeCards)
+                      .fold<Set<Card>>(
+                          Set<Card>(),
+                          (set, playerHandSetting) => set
+                            ..add(playerHandSetting.onlyHoleCards.left)
+                            ..add(playerHandSetting.onlyHoleCards.right))
                 },
                 onCardTap: _onCardTapInPicker,
               ),

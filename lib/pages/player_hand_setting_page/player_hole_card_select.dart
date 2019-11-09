@@ -33,50 +33,68 @@ class _PlayerHoleCardSelectState extends State<PlayerHoleCardSelect> {
           ValueListenableBuilder<List<PlayerHandSetting>>(
         valueListenable: simulationSession.playerHandSettings,
         builder: (context, playerHandSettings, _) {
-          final playerHandSetting =
-              playerHandSettings[widget.index] as PlayerHoleCards;
+          final playerHandSetting = playerHandSettings[widget.index];
 
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  3,
-                  (i) {
-                    final index = i ~/ 2;
-                    return i % 2 == 0
-                        ? Container(
-                            width: 64,
-                            decoration: BoxDecoration(
-                              color: index == selectedIndex
-                                  ? theme.highlightBackgroundColor
-                                      .withOpacity(0.5)
-                                  : null,
-                              borderRadius: BorderRadius.circular(8),
+                children: [
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 0
+                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => _onCardTapToReplace(0),
+                      child: playerHandSetting.onlyHoleCards.left == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: playerHandSetting.onlyHoleCards.left,
                             ),
-                            padding: EdgeInsets.all(4),
-                            child: GestureDetector(
-                              onTap: () => _onCardTapToReplace(index),
-                              child: playerHandSetting[index] == null
-                                  ? PlayingCardBack()
-                                  : PlayingCard(
-                                      card: playerHandSetting[index],
-                                    ),
+                    ),
+                  ),
+                  SizedBox(width: 4),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 1
+                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () => _onCardTapToReplace(1),
+                      child: playerHandSetting.onlyHoleCards.right == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: playerHandSetting.onlyHoleCards.right,
                             ),
-                          )
-                        : SizedBox(width: 4);
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 32),
               CardPicker(
                 unavailableCards: {
                   ...board,
-                  ...playerHandSettings.whereType<PlayerHoleCards>().fold(
-                      Set<Card>(),
-                      (set, PlayerHoleCards playerHandSetting) =>
-                          {...set, playerHandSetting[0], playerHandSetting[1]})
+                  ...playerHandSettings
+                      .where((playerhandSetting) =>
+                          playerHandSetting.type ==
+                          PlayerHandSettingType.holeCards)
+                      .fold(
+                          Set<Card>(),
+                          (set, playerHandSetting) => {
+                                ...set,
+                                playerHandSetting.onlyHoleCards.left,
+                                playerHandSetting.onlyHoleCards.right,
+                              })
                 },
                 onCardTap: _onCardTapInPicker,
               ),
@@ -97,15 +115,17 @@ class _PlayerHoleCardSelectState extends State<PlayerHoleCardSelect> {
     if (selectedIndex == null) return;
 
     final simulationSession = Provider.of<SimulationSession>(context);
-    final handSetting = simulationSession.playerHandSettings.value[widget.index]
-        as PlayerHoleCards;
+    final handSetting =
+        simulationSession.playerHandSettings.value[widget.index];
 
     simulationSession.playerHandSettings.value = [
       ...simulationSession.playerHandSettings.value
-    ]..[widget.index] = handSetting.copyWith(
-        left: selectedIndex == 0 ? card : handSetting[0],
-        right: selectedIndex == 1 ? card : handSetting[1],
-      );
+    ]..[widget.index] = PlayerHandSetting(parts: {
+        HoleCards(
+          left: selectedIndex == 0 ? card : handSetting.onlyHoleCards.left,
+          right: selectedIndex == 1 ? card : handSetting.onlyHoleCards.right,
+        )
+      });
 
     setState(() {
       selectedIndex = (selectedIndex + 1) % 2;

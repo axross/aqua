@@ -15,7 +15,7 @@ class PlayerHandSettingPage extends StatelessWidget {
     final theme = AquaTheme.of(context);
     final simulationSession = Provider.of<SimulationSession>(context);
 
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<List<PlayerHandSetting>>(
       valueListenable: simulationSession.playerHandSettings,
       builder: (context, playerHandSettings, _) {
         final playerHandSetting = playerHandSettings[index];
@@ -36,9 +36,9 @@ class PlayerHandSettingPage extends StatelessWidget {
               children: [
                 PlayerHandSettingTypeSelector(index: index),
                 SizedBox(height: 32),
-                if (playerHandSetting is PlayerHoleCards)
+                if (playerHandSetting.type == PlayerHandSettingType.holeCards)
                   PlayerHoleCardSelect(index: index),
-                if (playerHandSetting is PlayerHandRange)
+                if (playerHandSetting.type == PlayerHandSettingType.handRange)
                   PlayerHandRangeSelect(index: index),
               ],
             ),
