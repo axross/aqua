@@ -85,16 +85,15 @@ class _PlayerHoleCardSelectState extends State<PlayerHoleCardSelect> {
                 unavailableCards: {
                   ...board,
                   ...playerHandSettings
-                      .where((playerhandSetting) =>
+                      .where((playerHandSetting) =>
                           playerHandSetting.type ==
                           PlayerHandSettingType.holeCards)
-                      .fold(
-                          Set<Card>(),
-                          (set, playerHandSetting) => {
-                                ...set,
-                                playerHandSetting.onlyHoleCards.left,
-                                playerHandSetting.onlyHoleCards.right,
-                              })
+                      .fold<Set<Card>>(
+                        Set<Card>(),
+                        (set, playerHandSetting) => set
+                          ..add(playerHandSetting.onlyHoleCards.left)
+                          ..add(playerHandSetting.onlyHoleCards.right),
+                      ),
                 },
                 onCardTap: _onCardTapInPicker,
               ),
