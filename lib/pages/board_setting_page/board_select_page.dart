@@ -30,175 +30,181 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
         ),
       ),
       padding: EdgeInsets.symmetric(vertical: 16),
-      child: ValueListenableBuilder<List<Card>>(
-        valueListenable: simulationSession.board,
-        builder: (context, board, _) =>
-            ValueListenableBuilder<List<PlayerHandSetting>>(
-          valueListenable: simulationSession.playerHandSettings,
-          builder: (context, playerHandSettings, _) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 16),
-                    child: GestureDetector(
-                      onTap: () {
-                        simulationSession.board.value = [
-                          null,
-                          null,
-                          null,
-                          null,
-                          null
-                        ];
+      child: SafeArea(
+        top: false,
+        child: ValueListenableBuilder<List<Card>>(
+          valueListenable: simulationSession.board,
+          builder: (context, board, _) =>
+              ValueListenableBuilder<List<PlayerHandSetting>>(
+            valueListenable: simulationSession.playerHandSettings,
+            builder: (context, playerHandSettings, _) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 16),
+                      child: GestureDetector(
+                        onTap: () {
+                          simulationSession.board.value = [
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                          ];
 
-                        setState(() {
-                          selectedIndex = 0;
-                        });
+                          setState(() {
+                            selectedIndex = 0;
+                          });
 
-                        Analytics.of(context).logEvent(
-                          name: "clear_board_cards",
-                        );
-                      },
-                      child: Container(
-                        decoration: ShapeDecoration(
-                          shape: StadiumBorder(),
-                          color: board.any((card) => card != null)
-                              ? Color(0xffff6b6b)
-                              : Color(0x3fc8d6e5),
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                        child: Text(
-                          "Clear",
-                          style: theme.textStyle.copyWith(
+                          Analytics.of(context).logEvent(
+                            name: "clear_board_cards",
+                          );
+                        },
+                        child: Container(
+                          decoration: ShapeDecoration(
+                            shape: StadiumBorder(),
                             color: board.any((card) => card != null)
-                                ? Color(0xffffffff)
-                                : Color(0xffc8d6e5),
-                            fontWeight: FontWeight.w600,
+                                ? Color(0xffff6b6b)
+                                : Color(0x3fc8d6e5),
+                          ),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                          child: Text(
+                            "Clear",
+                            style: theme.textStyle.copyWith(
+                              color: board.any((card) => card != null)
+                                  ? Color(0xffffffff)
+                                  : Color(0xffc8d6e5),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 64,
+                      decoration: BoxDecoration(
+                        color: selectedIndex == 0
+                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            : null,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.all(4),
+                      child: GestureDetector(
+                        onTap: () => _onCardTapToReplace(0),
+                        child: board[0] == null
+                            ? PlayingCardBack()
+                            : PlayingCard(
+                                card: board[0],
+                              ),
+                      ),
+                    ),
+                    Container(
+                      width: 64,
+                      decoration: BoxDecoration(
+                        color: selectedIndex == 1
+                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            : null,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.all(4),
+                      child: GestureDetector(
+                        onTap: () => _onCardTapToReplace(1),
+                        child: board[1] == null
+                            ? PlayingCardBack()
+                            : PlayingCard(
+                                card: board[1],
+                              ),
+                      ),
+                    ),
+                    Container(
+                      width: 64,
+                      decoration: BoxDecoration(
+                        color: selectedIndex == 2
+                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            : null,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.all(4),
+                      child: GestureDetector(
+                        onTap: () => _onCardTapToReplace(2),
+                        child: board[2] == null
+                            ? PlayingCardBack()
+                            : PlayingCard(
+                                card: board[2],
+                              ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      width: 64,
+                      decoration: BoxDecoration(
+                        color: selectedIndex == 3
+                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            : null,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.all(4),
+                      child: GestureDetector(
+                        onTap: () => _onCardTapToReplace(3),
+                        child: board[3] == null
+                            ? PlayingCardBack()
+                            : PlayingCard(
+                                card: board[3],
+                              ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Container(
+                      width: 64,
+                      decoration: BoxDecoration(
+                        color: selectedIndex == 4
+                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            : null,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: EdgeInsets.all(4),
+                      child: GestureDetector(
+                        onTap: () => _onCardTapToReplace(4),
+                        child: board[4] == null
+                            ? PlayingCardBack()
+                            : PlayingCard(
+                                card: board[4],
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 32),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: CardPicker(
+                    unavailableCards: {
+                      ...board,
+                      ...playerHandSettings
+                          .where((playerHandSetting) =>
+                              playerHandSetting.type ==
+                              PlayerHandSettingType.holeCards)
+                          .fold<Set<Card>>(
+                              Set<Card>(),
+                              (set, playerHandSetting) => set
+                                ..add(playerHandSetting.onlyHoleCards.left)
+                                ..add(playerHandSetting.onlyHoleCards.right))
+                    },
+                    onCardTap: _onCardTapInPicker,
                   ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 64,
-                    decoration: BoxDecoration(
-                      color: selectedIndex == 0
-                          ? theme.highlightBackgroundColor.withOpacity(0.5)
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: GestureDetector(
-                      onTap: () => _onCardTapToReplace(0),
-                      child: board[0] == null
-                          ? PlayingCardBack()
-                          : PlayingCard(
-                              card: board[0],
-                            ),
-                    ),
-                  ),
-                  Container(
-                    width: 64,
-                    decoration: BoxDecoration(
-                      color: selectedIndex == 1
-                          ? theme.highlightBackgroundColor.withOpacity(0.5)
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: GestureDetector(
-                      onTap: () => _onCardTapToReplace(1),
-                      child: board[1] == null
-                          ? PlayingCardBack()
-                          : PlayingCard(
-                              card: board[1],
-                            ),
-                    ),
-                  ),
-                  Container(
-                    width: 64,
-                    decoration: BoxDecoration(
-                      color: selectedIndex == 2
-                          ? theme.highlightBackgroundColor.withOpacity(0.5)
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: GestureDetector(
-                      onTap: () => _onCardTapToReplace(2),
-                      child: board[2] == null
-                          ? PlayingCardBack()
-                          : PlayingCard(
-                              card: board[2],
-                            ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Container(
-                    width: 64,
-                    decoration: BoxDecoration(
-                      color: selectedIndex == 3
-                          ? theme.highlightBackgroundColor.withOpacity(0.5)
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: GestureDetector(
-                      onTap: () => _onCardTapToReplace(3),
-                      child: board[3] == null
-                          ? PlayingCardBack()
-                          : PlayingCard(
-                              card: board[3],
-                            ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Container(
-                    width: 64,
-                    decoration: BoxDecoration(
-                      color: selectedIndex == 4
-                          ? theme.highlightBackgroundColor.withOpacity(0.5)
-                          : null,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(4),
-                    child: GestureDetector(
-                      onTap: () => _onCardTapToReplace(4),
-                      child: board[4] == null
-                          ? PlayingCardBack()
-                          : PlayingCard(
-                              card: board[4],
-                            ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 32),
-              CardPicker(
-                unavailableCards: {
-                  ...board,
-                  ...playerHandSettings
-                      .where((playerHandSetting) =>
-                          playerHandSetting.type ==
-                          PlayerHandSettingType.holeCards)
-                      .fold<Set<Card>>(
-                          Set<Card>(),
-                          (set, playerHandSetting) => set
-                            ..add(playerHandSetting.onlyHoleCards.left)
-                            ..add(playerHandSetting.onlyHoleCards.right))
-                },
-                onCardTap: _onCardTapInPicker,
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
