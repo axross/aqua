@@ -1,114 +1,19 @@
+import 'package:aqua/common_widgets/analytics.dart';
+import 'package:aqua/common_widgets/aqua_theme.dart';
+import 'package:aqua/common_widgets/card_picker.dart';
+import 'package:aqua/common_widgets/playing_card.dart';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
-import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
-import 'package:aqua/widgets/analytics.dart';
-import 'package:aqua/widgets/aqua_theme.dart';
-import 'package:aqua/widgets/card_picker.dart';
-import 'package:aqua/widgets/playing_card.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class BoardSelectDialogRoute<T> extends PopupRoute<T> {
-  BoardSelectDialogRoute({
-    @required this.simulationSession,
-    RouteSettings settings,
-  })  : assert(simulationSession != null),
-        super(settings: settings);
-
-  final SimulationSession simulationSession;
-
+class BoardSettingPage extends StatefulWidget {
   @override
-  final bool barrierDismissible = true;
-
-  @override
-  final String barrierLabel = 'Close';
-
-  @override
-  final Color barrierColor = Color(0x88000000);
-
-  @override
-  final Duration transitionDuration = const Duration(milliseconds: 300);
-
-  @override
-  Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    final theme = AquaTheme.of(context);
-
-    setSystemUIOverlayStyle(
-      topColor: theme.appBarBackgroundColor,
-      bottomColor: theme.backgroundColor,
-    );
-
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: Offset(0, 0.125),
-          end: Offset(0, 0),
-        ).animate(CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeInOutCubic,
-        )),
-        child: FadeTransition(
-          opacity: CurvedAnimation(
-            parent: animation,
-            curve: Curves.elasticInOut,
-          ),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: SizedBox(
-              width: double.infinity,
-              child: DefaultTextStyle(
-                style: TextStyle(decoration: TextDecoration.none),
-                child: child,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    final theme = AquaTheme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.backgroundColor,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(32),
-          topRight: Radius.circular(32),
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Provider.value(
-          value: simulationSession,
-          child: BoardSelectDialogPage(),
-        ),
-      ),
-    );
-  }
+  _BoardSettingPageState createState() => _BoardSettingPageState();
 }
 
-class BoardSelectDialogPage extends StatefulWidget {
-  @override
-  _BoardSelectDialogPageState createState() => _BoardSelectDialogPageState();
-}
-
-class _BoardSelectDialogPageState extends State<BoardSelectDialogPage> {
+class _BoardSettingPageState extends State<BoardSettingPage> {
   int selectedIndex = 0;
 
   @override

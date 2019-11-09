@@ -37,22 +37,4 @@ void main() {
     expect(() => simulator.simulate(),
         throwsA(const TypeMatcher<InsafficientHandSettingException>()));
   });
-
-  // test("Simulator", () {
-  //   final simulator = Simulator(
-  //     playerHandSettings: [
-  //       PlayerHandRange()
-  //       PlayerHoleCards(
-  //           left: Card(rank: Rank.ace, suit: Suit.spade),
-  //           right: Card(rank: Rank.king, suit: Suit.spade)),
-  //       PlayerHoleCards(
-  //           left: Card(rank: Rank.king, suit: Suit.spade),
-  //           right: Card(rank: Rank.queen, suit: Suit.spade)),
-  //     ],
-  //     board: [],
-  //   );
-
-  //   expect(() => simulator.simulate(),
-  //       throwsA(const TypeMatcher<DuplicatedCardException>()));
-  // });
 }

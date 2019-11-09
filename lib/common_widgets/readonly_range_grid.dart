@@ -1,6 +1,6 @@
+import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/hand_range_part.dart';
 import 'package:aqua/models/rank.dart';
-import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:flutter/widgets.dart';
 
 class ReadonlyRangeGrid extends StatelessWidget {

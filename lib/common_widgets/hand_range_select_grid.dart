@@ -1,12 +1,12 @@
+import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/hand_range_part.dart';
 import 'package:aqua/models/rank.dart';
-import 'package:aqua/widgets/aqua_theme.dart';
 import "package:flutter/widgets.dart";
 
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
 
-class RangeSelectGrid extends StatefulWidget {
-  RangeSelectGrid({Key key, @required this.onUpdate, this.initial})
+class HandRangeSelectGrid extends StatefulWidget {
+  HandRangeSelectGrid({Key key, @required this.onUpdate, this.initial})
       : assert(onUpdate != null),
         super(key: key);
 
@@ -15,10 +15,10 @@ class RangeSelectGrid extends StatefulWidget {
   final Set<HandRangePart> initial;
 
   @override
-  State<RangeSelectGrid> createState() => _RangeSelectGridState();
+  State<HandRangeSelectGrid> createState() => _HandRangeSelectGridState();
 }
 
-class _RangeSelectGridState extends State<RangeSelectGrid> {
+class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
   Set<HandRangePart> selectedRange;
   bool isToCheck;
 
