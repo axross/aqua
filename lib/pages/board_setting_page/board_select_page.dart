@@ -17,6 +17,23 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
   int selectedIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final simulationSession = Provider.of<SimulationSession>(context);
+      final firstNullIndex =
+          simulationSession.board.value.indexWhere((card) => card == null);
+
+      if (firstNullIndex != -1) {
+        setState(() {
+          selectedIndex = firstNullIndex;
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final simulationSession = Provider.of<SimulationSession>(context);
     final theme = AquaTheme.of(context);
