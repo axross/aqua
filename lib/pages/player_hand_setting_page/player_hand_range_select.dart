@@ -23,21 +23,24 @@ class _PlayerHandRangeSelectState extends State<PlayerHandRangeSelect> {
     final handSetting = simulationSession.playerHandSettings.value[widget.index]
         as PlayerHandRange;
 
-    return HandRangeSelectGrid(
-      initial: handSetting.handRange,
-      onUpdate: (handRange) {
-        simulationSession.playerHandSettings.value = [
-          ...simulationSession.playerHandSettings.value
-        ]..[widget.index] = handSetting.copyWith(handRange);
+    return AspectRatio(
+      aspectRatio: 1,
+      child: HandRangeSelectGrid(
+        initial: handSetting.handRange,
+        onUpdate: (handRange) {
+          simulationSession.playerHandSettings.value = [
+            ...simulationSession.playerHandSettings.value
+          ]..[widget.index] = handSetting.copyWith(handRange);
 
-        Analytics.of(context).logEvent(
-          name: "update_player_hand_setting",
-          parameters: {
-            "type": "range",
-            "length": handRange.length,
-          },
-        );
-      },
+          Analytics.of(context).logEvent(
+            name: "update_player_hand_setting",
+            parameters: {
+              "type": "range",
+              "length": handRange.length,
+            },
+          );
+        },
+      ),
     );
   }
 }
