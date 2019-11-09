@@ -315,7 +315,7 @@ class PlayerListViewItem extends StatelessWidget {
 
                       final sortedHandTypes = result.entries
                           .map((entry) => MapEntry(
-                              entry.key, entry.value.win + entry.value.even))
+                              entry.key, entry.value.win + entry.value.draw))
                           .toList()
                             ..sort((a, b) => b.value - a.value);
                       final top3HandTypes = sortedHandTypes.take(3);
@@ -365,7 +365,7 @@ class PlayerListViewItem extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                "${(result.evenRate * 100).floor()}",
+                                "${(result.drawRate * 100).floor()}",
                                 style: theme.digitTextStyle.copyWith(
                                   color: theme.secondaryForegroundColor,
                                   fontSize: 18,
@@ -379,7 +379,7 @@ class PlayerListViewItem extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                "${(result.evenRate * 1000 / 100).floor() % 10}",
+                                "${(result.drawRate * 1000 / 100).floor() % 10}",
                                 style: theme.digitTextStyle.copyWith(
                                   color: theme.secondaryForegroundColor,
                                   fontSize: 18,
