@@ -108,7 +108,7 @@ class Simulator {
                   SimulationResultEachHandType(
                     win: value[0],
                     lose: value[1],
-                    even: value[2],
+                    draw: value[2],
                   ),
                 ))))
         .toList();

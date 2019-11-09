@@ -18,17 +18,17 @@ class SimulationResult {
         _totalGames = 0,
         _totalWin = 0,
         _totalLose = 0,
-        _totalEven = 0;
+        _totalDraw = 0;
 
   SimulationResult.fromMap(this._resultEachHandType)
       : _totalGames = _resultEachHandType.values.fold(0,
-            (total, result) => total + result.win + result.lose + result.even),
+            (total, result) => total + result.win + result.lose + result.draw),
         _totalWin = _resultEachHandType.values
             .fold(0, (total, result) => total + result.win),
         _totalLose = _resultEachHandType.values
             .fold(0, (total, result) => total + result.lose),
-        _totalEven = _resultEachHandType.values
-            .fold(0, (total, result) => total + result.even);
+        _totalDraw = _resultEachHandType.values
+            .fold(0, (total, result) => total + result.draw);
 
   final Map<HandType, SimulationResultEachHandType> _resultEachHandType;
 
@@ -38,7 +38,7 @@ class SimulationResult {
 
   final int _totalLose;
 
-  final int _totalEven;
+  final int _totalDraw;
 
   int get totalGames => _totalGames;
 
@@ -46,10 +46,11 @@ class SimulationResult {
 
   int get totalLose => _totalLose;
 
-  int get totalEven => _totalEven;
+  int get totalDraw => _totalDraw;
 
-  double get winRate =>
-      _totalGames == 0 ? 0.0 : (_totalWin + _totalEven) / _totalGames;
+  double get winRate => _totalGames == 0 ? 0.0 : _totalWin / _totalGames;
+
+  double get drawRate => _totalGames == 0 ? 0.0 : _totalDraw / _totalGames;
 
   Iterable<MapEntry<HandType, SimulationResultEachHandType>> get entries =>
       _resultEachHandType.entries;
@@ -62,55 +63,55 @@ class SimulationResult {
         HandType.high: SimulationResultEachHandType(
           win: this[HandType.high].win + other[HandType.high].win,
           lose: this[HandType.high].lose + other[HandType.high].lose,
-          even: this[HandType.high].even + other[HandType.high].even,
+          draw: this[HandType.high].draw + other[HandType.high].draw,
         ),
         HandType.pair: SimulationResultEachHandType(
           win: this[HandType.pair].win + other[HandType.pair].win,
           lose: this[HandType.pair].lose + other[HandType.pair].lose,
-          even: this[HandType.pair].even + other[HandType.pair].even,
+          draw: this[HandType.pair].draw + other[HandType.pair].draw,
         ),
         HandType.twoPairs: SimulationResultEachHandType(
           win: this[HandType.twoPairs].win + other[HandType.twoPairs].win,
           lose: this[HandType.twoPairs].lose + other[HandType.twoPairs].lose,
-          even: this[HandType.twoPairs].even + other[HandType.twoPairs].even,
+          draw: this[HandType.twoPairs].draw + other[HandType.twoPairs].draw,
         ),
         HandType.threeOfAKind: SimulationResultEachHandType(
           win: this[HandType.threeOfAKind].win +
               other[HandType.threeOfAKind].win,
           lose: this[HandType.threeOfAKind].lose +
               other[HandType.threeOfAKind].lose,
-          even: this[HandType.threeOfAKind].even +
-              other[HandType.threeOfAKind].even,
+          draw: this[HandType.threeOfAKind].draw +
+              other[HandType.threeOfAKind].draw,
         ),
         HandType.straight: SimulationResultEachHandType(
           win: this[HandType.straight].win + other[HandType.straight].win,
           lose: this[HandType.straight].lose + other[HandType.straight].lose,
-          even: this[HandType.straight].even + other[HandType.straight].even,
+          draw: this[HandType.straight].draw + other[HandType.straight].draw,
         ),
         HandType.flush: SimulationResultEachHandType(
           win: this[HandType.flush].win + other[HandType.flush].win,
           lose: this[HandType.flush].lose + other[HandType.flush].lose,
-          even: this[HandType.flush].even + other[HandType.flush].even,
+          draw: this[HandType.flush].draw + other[HandType.flush].draw,
         ),
         HandType.fullHouse: SimulationResultEachHandType(
           win: this[HandType.fullHouse].win + other[HandType.fullHouse].win,
           lose: this[HandType.fullHouse].lose + other[HandType.fullHouse].lose,
-          even: this[HandType.fullHouse].even + other[HandType.fullHouse].even,
+          draw: this[HandType.fullHouse].draw + other[HandType.fullHouse].draw,
         ),
         HandType.fourOfAKind: SimulationResultEachHandType(
           win: this[HandType.fourOfAKind].win + other[HandType.fourOfAKind].win,
           lose: this[HandType.fourOfAKind].lose +
               other[HandType.fourOfAKind].lose,
-          even: this[HandType.fourOfAKind].even +
-              other[HandType.fourOfAKind].even,
+          draw: this[HandType.fourOfAKind].draw +
+              other[HandType.fourOfAKind].draw,
         ),
         HandType.straightFlush: SimulationResultEachHandType(
           win: this[HandType.straightFlush].win +
               other[HandType.straightFlush].win,
           lose: this[HandType.straightFlush].lose +
               other[HandType.straightFlush].lose,
-          even: this[HandType.straightFlush].even +
-              other[HandType.straightFlush].even,
+          draw: this[HandType.straightFlush].draw +
+              other[HandType.straightFlush].draw,
         ),
       });
 }
@@ -118,24 +119,24 @@ class SimulationResult {
 @immutable
 class SimulationResultEachHandType {
   SimulationResultEachHandType(
-      {@required this.win, @required this.lose, @required this.even})
+      {@required this.win, @required this.lose, @required this.draw})
       : assert(win != null),
         assert(lose != null),
-        assert(even != null);
+        assert(draw != null);
 
   SimulationResultEachHandType.zero()
       : win = 0,
         lose = 0,
-        even = 0;
+        draw = 0;
 
   final int win;
   final int lose;
-  final int even;
+  final int draw;
 
-  SimulationResultEachHandType copyWith({int win, int lose, int even}) =>
+  SimulationResultEachHandType copyWith({int win, int lose, int draw}) =>
       SimulationResultEachHandType(
         win: win ?? this.win,
         lose: lose ?? this.lose,
-        even: even ?? this.even,
+        draw: draw ?? this.draw,
       );
 }
