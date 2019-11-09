@@ -16,7 +16,7 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
     final theme = AquaTheme.of(context);
     final simulationSession = Provider.of<SimulationSession>(context);
 
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<List<PlayerHandSetting>>(
       valueListenable: simulationSession.playerHandSettings,
       builder: (context, playerHandSettings, _) {
         final playerHandSetting = playerHandSettings[index];
@@ -25,30 +25,32 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: () {
-                if (playerHandSetting is PlayerHoleCards) return;
+              onTap: playerHandSetting.type != PlayerHandSettingType.holeCards
+                  ? () {
+                      simulationSession.playerHandSettings.value = [
+                        ...playerHandSettings
+                      ]..[index] = PlayerHandSetting.emptyHoleCards();
 
-                simulationSession.playerHandSettings.value = [
-                  ...playerHandSettings
-                ]..[index] = PlayerHoleCards();
-
-                Analytics.of(context).logEvent(
-                  name: "update_player_hand_setting_type",
-                  parameters: {"to": "hole_cards"},
-                );
-              },
+                      Analytics.of(context).logEvent(
+                        name: "update_player_hand_setting_type",
+                        parameters: {"to": "hole_cards"},
+                      );
+                    }
+                  : null,
               child: Container(
                 decoration: ShapeDecoration(
                   shape: StadiumBorder(),
-                  color: playerHandSetting is PlayerHoleCards
-                      ? Color(0xff54a0ff)
-                      : Color(0x3f54a0ff),
+                  color:
+                      playerHandSetting.type == PlayerHandSettingType.holeCards
+                          ? Color(0xff54a0ff)
+                          : Color(0x3f54a0ff),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                 child: Text(
                   "Certain Cards",
                   style: theme.textStyle.copyWith(
-                    color: playerHandSetting is PlayerHoleCards
+                    color: playerHandSetting.type ==
+                            PlayerHandSettingType.holeCards
                         ? Color(0xffffffff)
                         : Color(0xff54a0ff),
                     fontWeight: FontWeight.w600,
@@ -58,30 +60,32 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
             ),
             SizedBox(width: 16),
             GestureDetector(
-              onTap: () {
-                if (playerHandSetting is PlayerHandRange) return;
+              onTap: playerHandSetting.type != PlayerHandSettingType.handRange
+                  ? () {
+                      simulationSession.playerHandSettings.value = [
+                        ...playerHandSettings
+                      ]..[index] = PlayerHandSetting.emptyHandRange();
 
-                simulationSession.playerHandSettings.value = [
-                  ...playerHandSettings
-                ]..[index] = PlayerHandRange.empty();
-
-                Analytics.of(context).logEvent(
-                  name: "update_player_hand_setting_type",
-                  parameters: {"to": "range"},
-                );
-              },
+                      Analytics.of(context).logEvent(
+                        name: "update_player_hand_setting_type",
+                        parameters: {"to": "range"},
+                      );
+                    }
+                  : null,
               child: Container(
                 decoration: ShapeDecoration(
                   shape: StadiumBorder(),
-                  color: playerHandSetting is PlayerHandRange
-                      ? Color(0xff1dd1a1)
-                      : Color(0x3f1dd1a1),
+                  color:
+                      playerHandSetting.type == PlayerHandSettingType.handRange
+                          ? Color(0xff1dd1a1)
+                          : Color(0x3f1dd1a1),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                 child: Text(
                   "Range",
                   style: theme.textStyle.copyWith(
-                    color: playerHandSetting is PlayerHandRange
+                    color: playerHandSetting.type ==
+                            PlayerHandSettingType.handRange
                         ? Color(0xffffffff)
                         : Color(0xff1dd1a1),
                     fontWeight: FontWeight.w600,

@@ -1,50 +1,178 @@
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/card_pair.dart';
-import 'package:aqua/models/hand_range_part.dart';
+import 'package:aqua/models/rank.dart';
+import 'package:aqua/models/suit.dart';
 import 'package:meta/meta.dart';
 
 @immutable
-abstract class PlayerHandSetting {
+class PlayerHandSetting {
+  PlayerHandSetting({@required this.parts}) : assert(parts != null);
+
+  PlayerHandSetting.emptyHoleCards() : parts = {HoleCards()};
+
+  PlayerHandSetting.emptyHandRange() : parts = {};
+
+  final Set<PlayerHandSettingRangePart> parts;
+
+  PlayerHandSettingType get type {
+    if (parts.length == 1 && parts.first is HoleCards) {
+      return PlayerHandSettingType.holeCards;
+    }
+
+    if (parts.every((part) => part is HandRangePart)) {
+      return PlayerHandSettingType.handRange;
+    }
+
+    throw AssertionError("unreachable here.");
+  }
+
+  HoleCards get onlyHoleCards {
+    assert(type == PlayerHandSettingType.holeCards);
+
+    return parts.first;
+  }
+
+  Set<HandRangePart> get onlyHandRange {
+    assert(type == PlayerHandSettingType.handRange);
+
+    return parts;
+  }
+
+  Set<CardPair> get cardPairCombinations => parts.fold<List<CardPair>>(
+        <CardPair>[],
+        (list, part) => list..addAll(part.cardPairCombinations),
+      ).toSet();
+}
+
+enum PlayerHandSettingType {
+  holeCards,
+  handRange,
+}
+
+abstract class PlayerHandSettingRangePart {
   Set<CardPair> get cardPairCombinations;
 }
 
 @immutable
-class PlayerHoleCards implements PlayerHandSetting {
-  PlayerHoleCards({Card left, Card right})
-      : _left = left,
-        _right = right;
+class HoleCards implements PlayerHandSettingRangePart {
+  HoleCards({this.left, this.right});
 
-  final Card _left;
-  final Card _right;
+  final Card left;
+  final Card right;
 
+  @override
   Set<CardPair> get cardPairCombinations =>
-      _left != null && _right != null ? {CardPair(_left, _right)} : {};
+      left != null && right != null ? {CardPair(left, right)} : {};
 
-  PlayerHoleCards copyWith({Card left, Card right}) =>
-      PlayerHoleCards(left: left ?? _left, right: right ?? _right);
+  @override
+  int get hashCode => left.hashCode * 17 + right.hashCode;
 
-  Card operator [](int index) {
-    assert(index == 0 || index == 1);
-
-    return index == 0 ? _left : _right;
-  }
+  @override
+  bool operator ==(Object other) =>
+      other is HoleCards && other.left == left && other.right == right;
 }
 
 @immutable
-class PlayerHandRange implements PlayerHandSetting {
-  PlayerHandRange(this._handRange);
+class HandRangePart implements PlayerHandSettingRangePart {
+  const HandRangePart({
+    @required this.high,
+    @required this.kicker,
+    bool isSuited,
+  })  : assert(high != null),
+        assert(kicker != null),
+        isSuited = isSuited ?? false;
 
-  PlayerHandRange.empty() : _handRange = Set();
+  final Rank high;
+  final Rank kicker;
+  final bool isSuited;
 
-  final Set<HandRangePart> _handRange;
+  bool get isPocket => high == kicker;
 
-  Set<CardPair> get cardPairCombinations => _handRange.fold(
-      Set<CardPair>(),
-      (cardPairSet, handRangePart) =>
-          cardPairSet..addAll(handRangePart.combinations));
+  @override
+  Set<CardPair> get cardPairCombinations => isSuited
+      ? _getAllSuitedCardPairsByRank(high, kicker)
+      : _getAllOfsuitCardPairsByRank(high, kicker);
 
-  Set<HandRangePart> get handRange => _handRange;
+  @override
+  int get hashCode =>
+      high.hashCode * 17 * 17 + kicker.hashCode * 17 + isSuited.hashCode;
 
-  PlayerHandRange copyWith(Set<HandRangePart> handRange) =>
-      PlayerHandRange(handRange);
+  @override
+  bool operator ==(Object other) =>
+      other is HandRangePart &&
+      other.high == high &&
+      other.kicker == kicker &&
+      other.isSuited == isSuited;
 }
+
+Set<CardPair> _getAllSuitedCardPairsByRank(Rank rankA, Rank rankB) => {
+      CardPair(
+        Card(rank: rankA, suit: Suit.spade),
+        Card(rank: rankB, suit: Suit.spade),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.heart),
+        Card(rank: rankB, suit: Suit.heart),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.diamond),
+        Card(rank: rankB, suit: Suit.diamond),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.club),
+        Card(rank: rankB, suit: Suit.club),
+      ),
+    };
+
+Set<CardPair> _getAllOfsuitCardPairsByRank(Rank rankA, Rank rankB) => {
+      CardPair(
+        Card(rank: rankA, suit: Suit.spade),
+        Card(rank: rankB, suit: Suit.heart),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.spade),
+        Card(rank: rankB, suit: Suit.diamond),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.spade),
+        Card(rank: rankB, suit: Suit.club),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.heart),
+        Card(rank: rankB, suit: Suit.diamond),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.heart),
+        Card(rank: rankB, suit: Suit.club),
+      ),
+      CardPair(
+        Card(rank: rankA, suit: Suit.diamond),
+        Card(rank: rankB, suit: Suit.club),
+      ),
+      if (rankA != rankB) ...{
+        CardPair(
+          Card(rank: rankA, suit: Suit.heart),
+          Card(rank: rankB, suit: Suit.spade),
+        ),
+        CardPair(
+          Card(rank: rankA, suit: Suit.diamond),
+          Card(rank: rankB, suit: Suit.spade),
+        ),
+        CardPair(
+          Card(rank: rankA, suit: Suit.diamond),
+          Card(rank: rankB, suit: Suit.heart),
+        ),
+        CardPair(
+          Card(rank: rankA, suit: Suit.club),
+          Card(rank: rankB, suit: Suit.spade),
+        ),
+        CardPair(
+          Card(rank: rankA, suit: Suit.club),
+          Card(rank: rankB, suit: Suit.heart),
+        ),
+        CardPair(
+          Card(rank: rankA, suit: Suit.club),
+          Card(rank: rankB, suit: Suit.diamond),
+        ),
+      },
+    };

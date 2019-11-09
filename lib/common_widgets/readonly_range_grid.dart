@@ -1,5 +1,5 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:aqua/models/hand_range_part.dart';
+import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/rank.dart';
 import 'package:flutter/widgets.dart';
 

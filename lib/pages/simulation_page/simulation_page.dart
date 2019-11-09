@@ -215,36 +215,35 @@ class PlayerListViewItem extends StatelessWidget {
     final theme = AquaTheme.of(context);
     final simulationSession = Provider.of<SimulationSession>(context);
 
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<List<PlayerHandSetting>>(
       valueListenable: simulationSession.playerHandSettings,
       builder: (context, playerHandSettings, _) {
         final playerHandSetting = playerHandSettings[index];
         Widget leftItem;
 
-        if (playerHandSetting is PlayerHoleCards) {
+        if (playerHandSetting.type == PlayerHandSettingType.holeCards) {
           leftItem = Row(
-            children: List.generate(
-              3,
-              (i) {
-                final index = i ~/ 2;
-
-                return i % 2 == 0
-                    ? Expanded(
-                        child: playerHandSetting[index] != null
-                            ? PlayingCard(card: playerHandSetting[index])
-                            : PlayingCardBack(),
-                      )
-                    : SizedBox(width: 8);
-              },
-            ),
+            children: [
+              Expanded(
+                child: playerHandSetting.onlyHoleCards.left != null
+                    ? PlayingCard(card: playerHandSetting.onlyHoleCards.left)
+                    : PlayingCardBack(),
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: playerHandSetting.onlyHoleCards.right != null
+                    ? PlayingCard(card: playerHandSetting.onlyHoleCards.right)
+                    : PlayingCardBack(),
+              ),
+            ],
           );
         }
 
-        if (playerHandSetting is PlayerHandRange) {
+        if (playerHandSetting.type == PlayerHandSettingType.handRange) {
           leftItem = Column(
             children: [
               ReadonlyRangeGrid(
-                handRange: playerHandSetting.handRange,
+                handRange: playerHandSetting.onlyHandRange,
               ),
               SizedBox(height: 8),
               Text(
@@ -418,7 +417,7 @@ class PlayerListViewNewItem extends StatelessWidget {
 
         simulationSession.playerHandSettings.value = [
           ...playerHandSettings,
-          PlayerHoleCards(),
+          PlayerHandSetting.emptyHoleCards(),
         ];
 
         Navigator.of(context).push(PlayerHandSettingDialogRoute(
