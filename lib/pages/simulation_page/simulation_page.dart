@@ -540,7 +540,7 @@ final _handTypeStrings = {
 String getMessageBySimulationCencelException(
     SimulationCancelException exception) {
   if (exception is InsafficientHandSettingException)
-    return "Add more players to calculate";
+    return "At least 2 players to calculate";
   if (exception is InvalidBoardException)
     return "Set the board to be preflop, flop, turn or river to calculate";
   if (exception is IncompleteHandSettingException)
