@@ -1,171 +1,140 @@
+import 'package:aqua/common_widgets/analytics.dart';
+import 'package:aqua/common_widgets/aqua_theme.dart';
+import 'package:aqua/common_widgets/playing_card.dart';
+import 'package:aqua/common_widgets/readonly_range_grid.dart';
 import 'package:aqua/models/hand_type.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/simulation_result.dart';
 import 'package:aqua/models/simulator.dart';
+import 'package:aqua/popup_routes/board_setting_dialog_route%20copy.dart';
+import 'package:aqua/popup_routes/player_hand_setting_dialog_route.dart';
 import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
-import 'package:aqua/widgets/analytics.dart';
-import 'package:aqua/widgets/aqua_theme.dart';
-import 'package:aqua/widgets/board_select_dialog_route.dart';
-import 'package:aqua/widgets/player_hand_setting_dialog_route.dart';
-import 'package:aqua/widgets/playing_card.dart';
-import 'package:aqua/widgets/readonly_range_grid.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' hide Card;
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart' show LinearProgressIndicator;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class SimulationPage extends StatefulWidget {
-  SimulationPage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _SimulationPageState createState() => _SimulationPageState();
-}
-
-class _SimulationPageState extends State<SimulationPage> {
-  ValueNotifier<SimulationSession> _simulationSession;
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() {
-      setState(() {
-        _simulationSession = ValueNotifier(SimulationSession.initial(
-          analytics: Analytics.of(context),
-        ));
-      });
-    });
-  }
-
+class SimulationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
+    final simulationSession = Provider.of<SimulationSession>(context);
 
     setSystemUIOverlayStyle(
       topColor: theme.appBarBackgroundColor,
       bottomColor: theme.backgroundColor,
     );
 
-    if (_simulationSession == null) return Container();
-
-    return ValueListenableBuilder<SimulationSession>(
-      valueListenable: _simulationSession,
-      builder: (context, simulationSession, __) => Provider.value(
-        value: simulationSession,
-        child: ValueListenableBuilder(
-          valueListenable: simulationSession.playerHandSettings,
-          builder: (context, playerHandSettings, _) => ValueListenableBuilder(
-            valueListenable: simulationSession.error,
-            builder: (context, error, _) => Scaffold(
-              backgroundColor: theme.backgroundColor,
-              appBar: AppBar(
-                elevation: 0,
-                brightness: Brightness.light,
-                backgroundColor: theme.appBarBackgroundColor,
-                centerTitle: true,
-                title: Text(
-                  "Calculate",
-                  style: theme.appBarTextStyle
-                      .copyWith(color: theme.appBarForegroundColor),
+    return ValueListenableBuilder(
+      valueListenable: simulationSession.playerHandSettings,
+      builder: (context, playerHandSettings, _) => ValueListenableBuilder(
+        valueListenable: simulationSession.error,
+        builder: (context, error, _) => Container(
+          color: theme.backgroundColor,
+          child: Column(
+            children: [
+              Container(
+                color: theme.appBarBackgroundColor,
+                child: SafeArea(
+                  child: Container(
+                    height: 56,
+                    child: Center(
+                      child: Text(
+                        "Calculate",
+                        style: theme.appBarTextStyle
+                            .copyWith(color: theme.appBarForegroundColor),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              body: Column(
-                children: [
-                  ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(height: 2),
-                    child: ValueListenableBuilder(
-                      valueListenable: simulationSession.progress,
-                      builder: (context, progress, _) =>
-                          LinearProgressIndicator(
-                        value: progress,
-                        valueColor: progress == 1.0
-                            ? AlwaysStoppedAnimation<Color>(Color(0x00000000))
-                            : AlwaysStoppedAnimation<Color>(
-                                theme.secondaryBackgroundColor,
-                              ),
-                        backgroundColor: Color(0x00000000),
-                      ),
-                    ),
+              ConstrainedBox(
+                constraints: BoxConstraints.tightFor(height: 2),
+                child: ValueListenableBuilder(
+                  valueListenable: simulationSession.progress,
+                  builder: (context, progress, _) => LinearProgressIndicator(
+                    value: progress,
+                    valueColor: progress == 1.0
+                        ? AlwaysStoppedAnimation<Color>(Color(0x00000000))
+                        : AlwaysStoppedAnimation<Color>(
+                            theme.secondaryBackgroundColor,
+                          ),
+                    backgroundColor: Color(0x00000000),
                   ),
-                  SizedBox(height: 10), // LinearProgressIndicator has 6 height
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(BoardSelectDialogRoute(
-                        simulationSession: simulationSession,
-                      ));
-
-                      Analytics.of(context).logEvent(
-                        name: "open_board_select_dialog",
-                      );
-                    },
-                    behavior: HitTestBehavior.opaque,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: ValueListenableBuilder(
-                        valueListenable: simulationSession.board,
-                        builder: (context, board, _) => Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 56,
-                              child: board[0] != null
-                                  ? PlayingCard(card: board[0])
-                                  : PlayingCardBack(),
-                            ),
-                            SizedBox(width: 8),
-                            SizedBox(
-                              width: 56,
-                              child: board[1] != null
-                                  ? PlayingCard(card: board[1])
-                                  : PlayingCardBack(),
-                            ),
-                            SizedBox(width: 8),
-                            SizedBox(
-                              width: 56,
-                              child: board[2] != null
-                                  ? PlayingCard(card: board[2])
-                                  : PlayingCardBack(),
-                            ),
-                            SizedBox(width: 16),
-                            SizedBox(
-                              width: 56,
-                              child: board[3] != null
-                                  ? PlayingCard(card: board[3])
-                                  : PlayingCardBack(),
-                            ),
-                            SizedBox(width: 16),
-                            SizedBox(
-                              width: 56,
-                              child: board[4] != null
-                                  ? PlayingCard(card: board[4])
-                                  : PlayingCardBack(),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (error != null)
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                      child: Text(
-                        getMessageBySimulationCencelException(error),
-                        style: theme.textStyle
-                            .copyWith(color: theme.errorForegroundColor),
-                      ),
-                    ),
-                  Expanded(
-                    child: PlayerListView(),
-                  ),
-                ],
+                ),
               ),
-            ),
+              SizedBox(height: 10), // LinearProgressIndicator has 6 height
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(BoardSettingDialogRoute());
+
+                  Analytics.of(context).logEvent(
+                    name: "open_board_select_dialog",
+                  );
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: ValueListenableBuilder(
+                    valueListenable: simulationSession.board,
+                    builder: (context, board, _) => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 56,
+                          child: board[0] != null
+                              ? PlayingCard(card: board[0])
+                              : PlayingCardBack(),
+                        ),
+                        SizedBox(width: 8),
+                        SizedBox(
+                          width: 56,
+                          child: board[1] != null
+                              ? PlayingCard(card: board[1])
+                              : PlayingCardBack(),
+                        ),
+                        SizedBox(width: 8),
+                        SizedBox(
+                          width: 56,
+                          child: board[2] != null
+                              ? PlayingCard(card: board[2])
+                              : PlayingCardBack(),
+                        ),
+                        SizedBox(width: 16),
+                        SizedBox(
+                          width: 56,
+                          child: board[3] != null
+                              ? PlayingCard(card: board[3])
+                              : PlayingCardBack(),
+                        ),
+                        SizedBox(width: 16),
+                        SizedBox(
+                          width: 56,
+                          child: board[4] != null
+                              ? PlayingCard(card: board[4])
+                              : PlayingCardBack(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              if (error != null)
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                  child: Text(
+                    getMessageBySimulationCencelException(error),
+                    style: theme.textStyle
+                        .copyWith(color: theme.errorForegroundColor),
+                  ),
+                ),
+              Expanded(
+                child: PlayerListView(),
+              ),
+            ],
           ),
         ),
       ),
@@ -293,8 +262,9 @@ class PlayerListViewItem extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onTap: () {
             Navigator.of(context).push(PlayerHandSettingDialogRoute(
-              simulationSession: simulationSession,
-              index: index,
+              settings: RouteSettings(
+                arguments: {"index": index},
+              ),
             ));
 
             Analytics.of(context).logEvent(
@@ -452,8 +422,9 @@ class PlayerListViewNewItem extends StatelessWidget {
         ];
 
         Navigator.of(context).push(PlayerHandSettingDialogRoute(
-          simulationSession: simulationSession,
-          index: playerHandSettings.length,
+          settings: RouteSettings(
+            arguments: {"index": playerHandSettings.length},
+          ),
         ));
 
         Analytics.of(context).logEvent(

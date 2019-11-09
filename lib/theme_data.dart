@@ -1,5 +1,5 @@
+import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/suit.dart';
-import 'package:aqua/widgets/aqua_theme.dart';
 import 'package:flutter/widgets.dart';
 
 final lightThemeData = AquaThemeData(
