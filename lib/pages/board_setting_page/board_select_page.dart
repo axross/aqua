@@ -29,7 +29,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
           topRight: Radius.circular(32),
         ),
       ),
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(vertical: 16),
       child: ValueListenableBuilder<List<Card>>(
         valueListenable: simulationSession.board,
         builder: (context, board, _) =>
@@ -41,40 +41,43 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      simulationSession.board.value = [
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                      ];
+                  Padding(
+                    padding: EdgeInsets.only(right: 16),
+                    child: GestureDetector(
+                      onTap: () {
+                        simulationSession.board.value = [
+                          null,
+                          null,
+                          null,
+                          null,
+                          null
+                        ];
 
-                      setState(() {
-                        selectedIndex = 0;
-                      });
+                        setState(() {
+                          selectedIndex = 0;
+                        });
 
-                      Analytics.of(context).logEvent(
-                        name: "clear_board_cards",
-                      );
-                    },
-                    child: Container(
-                      decoration: ShapeDecoration(
-                        shape: StadiumBorder(),
-                        color: board.any((card) => card != null)
-                            ? Color(0xffff6b6b)
-                            : Color(0x3fc8d6e5),
-                      ),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                      child: Text(
-                        "Clear",
-                        style: theme.textStyle.copyWith(
+                        Analytics.of(context).logEvent(
+                          name: "clear_board_cards",
+                        );
+                      },
+                      child: Container(
+                        decoration: ShapeDecoration(
+                          shape: StadiumBorder(),
                           color: board.any((card) => card != null)
-                              ? Color(0xffffffff)
-                              : Color(0xffc8d6e5),
-                          fontWeight: FontWeight.w600,
+                              ? Color(0xffff6b6b)
+                              : Color(0x3fc8d6e5),
+                        ),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                        child: Text(
+                          "Clear",
+                          style: theme.textStyle.copyWith(
+                            color: board.any((card) => card != null)
+                                ? Color(0xffffffff)
+                                : Color(0xffc8d6e5),
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -103,7 +106,6 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                             ),
                     ),
                   ),
-                  SizedBox(width: 4),
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
@@ -122,7 +124,6 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                             ),
                     ),
                   ),
-                  SizedBox(width: 4),
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
@@ -141,7 +142,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                             ),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  SizedBox(width: 8),
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
@@ -160,7 +161,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                             ),
                     ),
                   ),
-                  SizedBox(width: 12),
+                  SizedBox(width: 8),
                   Container(
                     width: 64,
                     decoration: BoxDecoration(
