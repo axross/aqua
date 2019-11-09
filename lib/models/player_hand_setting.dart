@@ -35,7 +35,7 @@ class PlayerHandSetting {
   Set<HandRangePart> get onlyHandRange {
     assert(type == PlayerHandSettingType.handRange);
 
-    return parts;
+    return Set<HandRangePart>.from(parts);
   }
 
   Set<CardPair> get cardPairCombinations => parts.fold<List<CardPair>>(
