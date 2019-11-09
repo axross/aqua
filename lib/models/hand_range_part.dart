@@ -18,6 +18,8 @@ class HandRangePart {
   final Rank kicker;
   final bool isSuited;
 
+  bool get isPocket => high == kicker;
+
   Set<CardPair> get combinations => isSuited
       ? _getAllSuitedCardPairsByRank(high, kicker)
       : _getAllOfsuitCardPairsByRank(high, kicker);

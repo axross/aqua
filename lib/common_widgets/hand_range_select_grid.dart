@@ -6,7 +6,7 @@ import "package:flutter/widgets.dart";
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
 
 class HandRangeSelectGrid extends StatefulWidget {
-  HandRangeSelectGrid({Key key, @required this.onUpdate, this.initial})
+  HandRangeSelectGrid({@required this.onUpdate, this.initial, Key key})
       : assert(onUpdate != null),
         super(key: key);
 
@@ -29,103 +29,101 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
     selectedRange = widget.initial == null ? {} : widget.initial;
   }
 
-  void _onPanEnd() {
-    widget.onUpdate(selectedRange);
-  }
-
   @override
-  Widget build(BuildContext context) {
-    final theme = AquaTheme.of(context);
-
-    return AspectRatio(
-      aspectRatio: 1,
-      child: LayoutBuilder(
+  Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) => GestureDetector(
           onPanStart: (details) {
             final x = details.localPosition.dx *
-                _matrix[0].length ~/
+                Rank.values.length ~/
                 constraints.maxWidth;
             final y = details.localPosition.dy *
-                _matrix.length ~/
+                Rank.values.length ~/
                 constraints.maxHeight;
+            final handRangePart = x > y
+                ? HandRangePart(
+                    high: Rank.valuesInStrongnessOrder[x],
+                    kicker: Rank.valuesInStrongnessOrder[y],
+                    isSuited: true)
+                : HandRangePart(
+                    high: Rank.valuesInStrongnessOrder[x],
+                    kicker: Rank.valuesInStrongnessOrder[y],
+                    isSuited: false);
 
-            isToCheck = !selectedRange.contains(_matrix[y][x]);
+            isToCheck = !selectedRange.contains(handRangePart);
 
             if (isToCheck) {
               setState(() {
-                selectedRange.add(_matrix[y][x]);
+                selectedRange.add(handRangePart);
               });
             } else {
               setState(() {
-                selectedRange.remove(_matrix[y][x]);
+                selectedRange.remove(handRangePart);
               });
             }
           },
           onPanUpdate: (details) {
             final x = details.localPosition.dx *
-                _matrix[0].length ~/
+                Rank.values.length ~/
                 constraints.maxWidth;
             final y = details.localPosition.dy *
-                _matrix.length ~/
+                Rank.values.length ~/
                 constraints.maxHeight;
 
-            if (x < 0 || x >= _matrix[0].length) return;
-            if (y < 0 || y >= _matrix.length) return;
+            if (x < 0 || x >= Rank.values.length) return;
+            if (y < 0 || y >= Rank.values.length) return;
+
+            final handRangePart = x > y
+                ? HandRangePart(
+                    high: Rank.valuesInStrongnessOrder[x],
+                    kicker: Rank.valuesInStrongnessOrder[y],
+                    isSuited: true)
+                : HandRangePart(
+                    high: Rank.valuesInStrongnessOrder[x],
+                    kicker: Rank.valuesInStrongnessOrder[y],
+                    isSuited: false);
 
             if (isToCheck) {
               setState(() {
-                selectedRange.add(_matrix[y][x]);
+                selectedRange.add(handRangePart);
               });
             } else {
               setState(() {
-                selectedRange.remove(_matrix[y][x]);
+                selectedRange.remove(handRangePart);
               });
             }
           },
-          onPanEnd: (_) => _onPanEnd(),
+          onPanEnd: (_) {
+            widget.onUpdate(selectedRange);
+          },
           behavior: HitTestBehavior.opaque,
           child: Column(
-            children: List.generate(_matrix.length * 2 - 1, (i) {
+            children: List.generate(Rank.values.length * 2 - 1, (i) {
               if (i % 2 == 1) return SizedBox(height: 2);
 
               final y = i ~/ 2;
 
               return Expanded(
                 child: Row(
-                  children: List.generate(_matrix[y].length * 2 - 1, (j) {
+                  children: List.generate(Rank.values.length * 2 - 1, (j) {
                     if (j % 2 == 1) return SizedBox(width: 2);
 
                     final x = j ~/ 2;
-                    final rangePart = _matrix[y][x];
-
-                    Color cellColor = theme.rangeBackgroundColor;
-                    Color textColor = theme.rangeForegroundColor;
-
-                    if (rangePart.high == rangePart.kicker) {
-                      cellColor = theme.pocketRangeBackgroundColor;
-                      textColor = theme.pocketRangeForegroundColor;
-                    }
-
-                    if (selectedRange.contains(rangePart)) {
-                      cellColor = theme.selectedRangeBackgroundColor;
-                      textColor = theme.selectedRangeForegroundColor;
-                    }
+                    final handRangePart = x > y
+                        ? HandRangePart(
+                            high: Rank.valuesInStrongnessOrder[x],
+                            kicker: Rank.valuesInStrongnessOrder[y],
+                            isSuited: true,
+                          )
+                        : HandRangePart(
+                            high: Rank.valuesInStrongnessOrder[x],
+                            kicker: Rank.valuesInStrongnessOrder[y],
+                            isSuited: false,
+                          );
 
                     return Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: cellColor,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        height: constraints.maxWidth / _matrix[y].length,
-                        child: Center(
-                          child: Text(
-                            '${_rankStrings[_matrix[y][x].high]}${_rankStrings[_matrix[y][x].kicker]}',
-                            style:
-                                theme.rangeTextStyle.copyWith(color: textColor),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                      child: HandRangeSelectGridItem(
+                        handRangePart: handRangePart,
+                        isSelected: selectedRange.contains(handRangePart),
                       ),
                     );
                   }),
@@ -134,210 +132,56 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
             }),
           ),
         ),
+      );
+}
+
+class HandRangeSelectGridItem extends StatelessWidget {
+  HandRangeSelectGridItem({
+    @required this.handRangePart,
+    this.isSelected = false,
+    Key key,
+  })  : assert(handRangePart != null),
+        super(key: key);
+
+  final HandRangePart handRangePart;
+
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+    final backgroundColor = isSelected
+        ? theme.selectedRangeBackgroundColor
+        : handRangePart.isPocket
+            ? theme.pocketRangeBackgroundColor
+            : theme.rangeBackgroundColor;
+    final textColor = isSelected
+        ? theme.selectedRangeForegroundColor
+        : handRangePart.isPocket
+            ? theme.pocketRangeForegroundColor
+            : theme.rangeForegroundColor;
+
+    return LayoutBuilder(
+      builder: (context, constraints) => DecoratedBox(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Center(
+          child: Text(
+            '${_rankTextData[handRangePart.high]}${_rankTextData[handRangePart.kicker]}',
+            style: theme.rangeTextStyle.copyWith(
+              color: textColor,
+              fontSize: constraints.maxWidth / 2,
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-const _matrix = [
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.ace, isSuited: false),
-    HandRangePart(high: Rank.ace, kicker: Rank.king, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.queen, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.jack, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.ten, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.nine, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.eight, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.seven, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.king, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.king, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.ten, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.nine, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.eight, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.seven, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.king, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.queen, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.queen, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.jack, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.ten, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.nine, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.eight, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.seven, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.queen, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.jack, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.jack, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.jack, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.ten, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.nine, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.eight, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.seven, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.jack, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.ten, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.ten, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.ten, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.ten, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.ten, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.nine, isSuited: true),
-    HandRangePart(high: Rank.ten, kicker: Rank.eight, isSuited: true),
-    HandRangePart(high: Rank.ten, kicker: Rank.seven, isSuited: true),
-    HandRangePart(high: Rank.ten, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.ten, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.ten, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.ten, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.ten, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.nine, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.nine, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.nine, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.nine, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.nine, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.nine, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.eight, isSuited: true),
-    HandRangePart(high: Rank.nine, kicker: Rank.seven, isSuited: true),
-    HandRangePart(high: Rank.nine, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.nine, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.nine, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.nine, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.nine, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.eight, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.eight, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.eight, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.eight, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.eight, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.eight, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.eight, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.seven, isSuited: true),
-    HandRangePart(high: Rank.eight, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.eight, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.eight, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.eight, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.eight, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.seven, kicker: Rank.seven, isSuited: false),
-    HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: true),
-    HandRangePart(high: Rank.seven, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.seven, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.seven, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.seven, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.six, kicker: Rank.six, isSuited: false),
-    HandRangePart(high: Rank.six, kicker: Rank.five, isSuited: true),
-    HandRangePart(high: Rank.six, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.six, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.six, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.seven, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.six, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.five, kicker: Rank.five, isSuited: false),
-    HandRangePart(high: Rank.five, kicker: Rank.four, isSuited: true),
-    HandRangePart(high: Rank.five, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.five, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.seven, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.six, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.five, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.four, kicker: Rank.four, isSuited: false),
-    HandRangePart(high: Rank.four, kicker: Rank.three, isSuited: true),
-    HandRangePart(high: Rank.four, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.seven, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.six, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.five, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.four, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.three, kicker: Rank.three, isSuited: false),
-    HandRangePart(high: Rank.three, kicker: Rank.two, isSuited: true),
-  ],
-  [
-    HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.king, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.queen, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.jack, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.ten, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.nine, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.eight, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.seven, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.six, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.five, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.four, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.three, kicker: Rank.two, isSuited: false),
-    HandRangePart(high: Rank.two, kicker: Rank.two, isSuited: false),
-  ],
-];
-
-final _rankStrings = {
+final _rankTextData = {
   Rank.ace: "A",
   Rank.king: "K",
   Rank.queen: "Q",
