@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/deck.dart';
 import 'package:aqua/models/rank.dart';
@@ -28,5 +29,58 @@ void main() {
     deck.remove(Card(rank: Rank.two, suit: Suit.club));
 
     expect(deck.length, equals(50));
+  });
+
+  test("Deck#shuffle() shuffles the cards", () {
+    final counts = Map();
+
+    for (int i = 0; i < 1000000; ++i) {
+      final deck = Deck();
+
+      deck.shuffle();
+
+      for (final card in deck.take(5)) {
+        counts.update(card, (count) => count + 1, ifAbsent: () => 1);
+      }
+    }
+
+    int minimum = 1000000;
+    int maximum = 0;
+
+    for (final count in counts.values) {
+      minimum = min(minimum, count);
+      maximum = max(maximum, count);
+    }
+
+    expect((maximum - minimum).abs(), lessThan(3000));
+  });
+
+  test("Deck#shuffle() shuffles the cards (when some cards omitted)", () {
+    final counts = Map();
+
+    for (int i = 0; i < 1000000; ++i) {
+      final deck = Deck();
+
+      deck.remove(Card(rank: Rank.ace, suit: Suit.spade));
+      deck.remove(Card(rank: Rank.seven, suit: Suit.diamond));
+      deck.remove(Card(rank: Rank.queen, suit: Suit.club));
+      deck.remove(Card(rank: Rank.ten, suit: Suit.club));
+
+      deck.shuffle();
+
+      for (final card in deck.take(5)) {
+        counts.update(card, (count) => count + 1, ifAbsent: () => 1);
+      }
+    }
+
+    int minimum = 1000000;
+    int maximum = 0;
+
+    for (final count in counts.values) {
+      minimum = min(minimum, count);
+      maximum = max(maximum, count);
+    }
+
+    expect((maximum - minimum).abs(), lessThan(3000));
   });
 }

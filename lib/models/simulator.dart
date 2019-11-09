@@ -67,8 +67,9 @@ class Simulator {
 
       deck.shuffle();
 
+      final finalBoard = board.union(deck.take(5 - board.length).toSet());
       final showdown = Showdown(
-        board: board.union(deck.take(5 - board.length).toSet()),
+        board: finalBoard,
         holeCards: holeCards,
       );
 
