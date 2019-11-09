@@ -15,23 +15,23 @@ class PlayerHandSettingPage extends StatelessWidget {
     final theme = AquaTheme.of(context);
     final simulationSession = Provider.of<SimulationSession>(context);
 
-    return ValueListenableBuilder<List<PlayerHandSetting>>(
-      valueListenable: simulationSession.playerHandSettings,
-      builder: (context, playerHandSettings, _) {
-        final playerHandSetting = playerHandSettings[index];
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.backgroundColor,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(32),
+          topRight: Radius.circular(32),
+        ),
+      ),
+      padding: EdgeInsets.all(16),
+      child: SafeArea(
+        top: false,
+        child: ValueListenableBuilder<List<PlayerHandSetting>>(
+          valueListenable: simulationSession.playerHandSettings,
+          builder: (context, playerHandSettings, _) {
+            final playerHandSetting = playerHandSettings[index];
 
-        return Container(
-          decoration: BoxDecoration(
-            color: theme.backgroundColor,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(32),
-              topRight: Radius.circular(32),
-            ),
-          ),
-          padding: EdgeInsets.all(16),
-          child: SafeArea(
-            top: false,
-            child: Column(
+            return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 PlayerHandSettingTypeSelector(index: index),
@@ -41,10 +41,10 @@ class PlayerHandSettingPage extends StatelessWidget {
                 if (playerHandSetting.type == PlayerHandSettingType.handRange)
                   PlayerHandRangeSelect(index: index),
               ],
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 }
