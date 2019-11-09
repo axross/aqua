@@ -39,6 +39,7 @@ class SimulationPage extends StatelessWidget {
               Container(
                 color: theme.appBarBackgroundColor,
                 child: SafeArea(
+                  bottom: false,
                   child: Container(
                     height: 56,
                     child: Center(
