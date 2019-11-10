@@ -13,6 +13,7 @@ class SimulationResultAggregationBenchmark extends BenchmarkBase {
 
   @override
   void run() {
+    // ignore: unnecessary_statements
     _simulationResult + _otherSimulationResult;
   }
 
