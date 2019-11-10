@@ -41,8 +41,8 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 constraints.maxHeight;
             final handRangePart = x > y
                 ? HandRangePart(
-                    high: Rank.valuesInStrongnessOrder[x],
-                    kicker: Rank.valuesInStrongnessOrder[y],
+                    high: Rank.valuesInStrongnessOrder[y],
+                    kicker: Rank.valuesInStrongnessOrder[x],
                     isSuited: true)
                 : HandRangePart(
                     high: Rank.valuesInStrongnessOrder[x],
@@ -74,8 +74,8 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
 
             final handRangePart = x > y
                 ? HandRangePart(
-                    high: Rank.valuesInStrongnessOrder[x],
-                    kicker: Rank.valuesInStrongnessOrder[y],
+                    high: Rank.valuesInStrongnessOrder[y],
+                    kicker: Rank.valuesInStrongnessOrder[x],
                     isSuited: true)
                 : HandRangePart(
                     high: Rank.valuesInStrongnessOrder[x],
@@ -110,8 +110,8 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                     final x = j ~/ 2;
                     final handRangePart = x > y
                         ? HandRangePart(
-                            high: Rank.valuesInStrongnessOrder[x],
-                            kicker: Rank.valuesInStrongnessOrder[y],
+                            high: Rank.valuesInStrongnessOrder[y],
+                            kicker: Rank.valuesInStrongnessOrder[x],
                             isSuited: true,
                           )
                         : HandRangePart(

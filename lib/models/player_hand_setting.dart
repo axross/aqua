@@ -94,6 +94,9 @@ class HandRangePart implements PlayerHandSettingRangePart {
       : _getAllOfsuitCardPairsByRank(high, kicker);
 
   @override
+  String toString() => "HandRangePart<$high, $kicker, isSuited: $isSuited>";
+
+  @override
   int get hashCode =>
       high.hashCode * 17 * 17 + kicker.hashCode * 17 + isSuited.hashCode;
 
