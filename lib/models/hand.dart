@@ -1,4 +1,4 @@
-import 'dart:collection';
+import 'dart:collection' show LinkedHashMap;
 import 'dart:math' as math;
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/hand_type.dart';
@@ -6,17 +6,7 @@ import 'package:aqua/models/rank.dart';
 import 'package:aqua/models/suit.dart';
 import 'package:meta/meta.dart';
 
-List<Card> chooseFlushCards(List<Card> sortedCards) {
-  final cardsEachSuit = LinkedHashMap<Suit, List<Card>>();
-
-  for (final card in sortedCards) {
-    cardsEachSuit.update(
-      card.suit,
-      (v) => v..add(card),
-      ifAbsent: () => [card],
-    );
-  }
-
+List<Card> chooseFlushCards(LinkedHashMap<Suit, List<Card>> cardsEachSuit) {
   for (final cards in cardsEachSuit.values) {
     if (cards.length < 5) continue;
 
@@ -26,46 +16,71 @@ List<Card> chooseFlushCards(List<Card> sortedCards) {
   return null;
 }
 
-List<Card> chooseStraightCards(List<Card> sortedCards, {Suit forSuit}) {
-  final cardsEachRank = LinkedHashMap<Rank, List<Card>>();
+List<Card> chooseStraightCards(
+  LinkedHashMap<Rank, List<Card>> cardsEachRank, {
+  Suit maybeAlsoFlushWithSuit,
+}) {
+  if (cardsEachRank.length < 5) return null;
 
-  for (final card in sortedCards) {
-    if (forSuit != null && card.suit != forSuit) continue;
+  List<Card> straightFlush;
+  List<Card> straight;
 
-    cardsEachRank.update(
-      card.rank,
-      (v) => v..add(card),
-      ifAbsent: () => [card],
-    );
-  }
+  for (final combination in straightRankCombinations) {
+    bool isStraight = true;
+    final cards = <Card>[];
 
-  if (cardsEachRank.length >= 5) {
-    final firstCardsEachRank =
-        cardsEachRank.map((rank, cards) => MapEntry(rank, cards.first));
-    final ranks = firstCardsEachRank.values.map((card) => card.rank).toSet();
+    for (final rank in combination) {
+      final targetCard = Card(rank: rank, suit: maybeAlsoFlushWithSuit);
 
-    for (final combination in straightRankCombinations) {
-      final intersection = ranks.intersection(combination);
+      if (cardsEachRank.containsKey(rank) &&
+          cardsEachRank[rank].contains(targetCard)) {
+        cards.add(targetCard);
 
-      if (intersection.length >= 5) {
-        final _cards = <Card>[];
-
-        for (final rank in intersection) {
-          _cards.add(firstCardsEachRank[rank]);
-        }
-
-        assert(_cards.length == 5);
-
-        if (combination == straightRankCombinations.last) {
-          return _cards..sort((a, b) => b.rank.compareTo(a.rank));
-        }
-
-        return _cards..sort((a, b) => b.rank.compareStrongnessTo(a.rank));
+        continue;
       }
+
+      isStraight = false;
+
+      break;
+    }
+
+    if (isStraight) {
+      if (combination == straightRankCombinations.last) {
+        return cards..sort((a, b) => b.rank.compareTo(a.rank));
+      }
+
+      straightFlush = cards;
+
+      break;
     }
   }
 
-  return null;
+  for (final combination in straightRankCombinations) {
+    bool isStraight = true;
+    final cards = <Card>[];
+
+    for (final rank in combination) {
+      if (!cardsEachRank.containsKey(rank)) {
+        isStraight = false;
+
+        break;
+      }
+
+      cards.add(cardsEachRank[rank].first);
+    }
+
+    if (isStraight) {
+      if (combination == straightRankCombinations.last) {
+        return cards..sort((a, b) => b.rank.compareTo(a.rank));
+      }
+
+      straight = cards;
+
+      break;
+    }
+  }
+
+  return straightFlush ?? straight;
 }
 
 class Hand {
@@ -79,15 +94,19 @@ class Hand {
     assert(cards.length <= 7);
 
     final sortedCards = cards.toList()
-      ..sort((a, b) {
-        if (a.rank != b.rank) return b.rank.compareStrongnessTo(a.rank);
-
-        return a.suit.compareTo(b.suit);
-      });
+      ..sort((a, b) => a.rank == b.rank
+          ? a.suit.compareTo(b.suit)
+          : b.rank.compareStrongnessTo(a.rank));
+    final cardsEachSuit = LinkedHashMap<Suit, List<Card>>();
     final cardsEachRank = LinkedHashMap<Rank, List<Card>>();
     final numberOfCardsEachRank = LinkedHashMap<Rank, int>();
 
     for (final card in sortedCards) {
+      cardsEachSuit.update(
+        card.suit,
+        (v) => v..add(card),
+        ifAbsent: () => [card],
+      );
       cardsEachRank.update(
         card.rank,
         (v) => v..add(card),
@@ -96,12 +115,11 @@ class Hand {
       numberOfCardsEachRank.update(card.rank, (v) => v + 1, ifAbsent: () => 1);
     }
 
-    List<Card> flushCards = chooseFlushCards(sortedCards);
+    List<Card> flushCards = chooseFlushCards(cardsEachSuit);
     List<Card> straightCards = chooseStraightCards(
-          sortedCards,
-          forSuit: flushCards == null ? null : flushCards.first.suit,
-        ) ??
-        chooseStraightCards(sortedCards);
+      cardsEachRank,
+      maybeAlsoFlushWithSuit: flushCards == null ? null : flushCards.first.suit,
+    );
 
     if (numberOfCardsEachRank.containsValue(4)) {
       final chosenCards = cardsEachRank.entries
@@ -238,6 +256,8 @@ class Hand {
 
   int compareStrongnessTo(Hand other) => _power - other._power;
 
+  String toString() => _cards.toString();
+
   @override
   int get hashCode => _power;
 
@@ -292,14 +312,14 @@ int calculateHandPower(List<Card> cards, HandType type) {
 const _powerBaseForHandType = 100402233;
 
 final straightRankCombinations = [
-  {Rank.ace, Rank.king, Rank.queen, Rank.jack, Rank.ten},
-  {Rank.king, Rank.queen, Rank.jack, Rank.ten, Rank.nine},
-  {Rank.queen, Rank.jack, Rank.ten, Rank.nine, Rank.eight},
-  {Rank.jack, Rank.ten, Rank.nine, Rank.eight, Rank.seven},
-  {Rank.ten, Rank.nine, Rank.eight, Rank.seven, Rank.six},
-  {Rank.nine, Rank.eight, Rank.seven, Rank.six, Rank.five},
-  {Rank.eight, Rank.seven, Rank.six, Rank.five, Rank.four},
-  {Rank.seven, Rank.six, Rank.five, Rank.four, Rank.three},
-  {Rank.six, Rank.five, Rank.four, Rank.three, Rank.two},
-  {Rank.five, Rank.four, Rank.three, Rank.two, Rank.ace},
+  [Rank.ace, Rank.king, Rank.queen, Rank.jack, Rank.ten],
+  [Rank.king, Rank.queen, Rank.jack, Rank.ten, Rank.nine],
+  [Rank.queen, Rank.jack, Rank.ten, Rank.nine, Rank.eight],
+  [Rank.jack, Rank.ten, Rank.nine, Rank.eight, Rank.seven],
+  [Rank.ten, Rank.nine, Rank.eight, Rank.seven, Rank.six],
+  [Rank.nine, Rank.eight, Rank.seven, Rank.six, Rank.five],
+  [Rank.eight, Rank.seven, Rank.six, Rank.five, Rank.four],
+  [Rank.seven, Rank.six, Rank.five, Rank.four, Rank.three],
+  [Rank.six, Rank.five, Rank.four, Rank.three, Rank.two],
+  [Rank.five, Rank.four, Rank.three, Rank.two, Rank.ace],
 ];
