@@ -59,7 +59,7 @@ class Simulator {
       }
 
       final holeCards =
-          _getHoleCardPermutationRandomly(holeCardsEachPlayer, board);
+          getHoleCardPermutationRandomly(holeCardsEachPlayer, board);
 
       for (final holeCard in holeCards) {
         deck.remove(holeCard[0]);
@@ -141,7 +141,7 @@ class NoPossibleCombinationException implements SimulationCancelException {
   NoPossibleCombinationException();
 }
 
-Iterable<CardPair> _getHoleCardPermutationRandomly(
+Iterable<CardPair> getHoleCardPermutationRandomly(
   List<Set<CardPair>> holeCardsEachPlayer,
   Set<Card> unavailableCards,
 ) {
