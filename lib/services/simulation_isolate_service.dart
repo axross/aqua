@@ -90,13 +90,13 @@ void _isolateFunction(SendPort toMain) {
       (_) => SimulationResult.empty(),
     );
 
-    for (int i = 0; i < 500; ++i) {
+    for (int i = 0; i < _numberOfTimesOfTick; ++i) {
       final newResults = <SimulationResult>[];
 
       List<SimulationResult> _results;
 
       try {
-        _results = simulator.simulate(times: 200);
+        _results = simulator.simulate(times: _numberOfSimulationEachTick);
       } on SimulationCancelException catch (error) {
         toMain.send(error);
 
@@ -108,8 +108,9 @@ void _isolateFunction(SendPort toMain) {
       }
 
       toMain.send(SimulationDetails(
-        timesSimulated: (i + 1) * 200,
-        timesWillBeSimulated: 500 * 200,
+        timesSimulated: (i + 1) * _numberOfSimulationEachTick,
+        timesWillBeSimulated:
+            _numberOfSimulationEachTick * _numberOfTimesOfTick,
         results: newResults,
       ));
 
@@ -119,3 +120,6 @@ void _isolateFunction(SendPort toMain) {
 
   toMain.send(receivePort.sendPort);
 }
+
+const _numberOfSimulationEachTick = 250;
+const _numberOfTimesOfTick = 200;
