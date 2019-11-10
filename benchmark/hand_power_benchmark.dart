@@ -9,7 +9,7 @@ class HandPowerBenchmark extends BenchmarkBase {
 
   @override
   void run() {
-    _hand.power;
+    _hand.compareStrongnessTo(_hand);
   }
 
   @override

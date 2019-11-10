@@ -73,7 +73,7 @@ class Hand {
       : assert(cards != null),
         assert(type != null),
         _cards = cards,
-        power = calculateHandPower(cards, type);
+        _power = calculateHandPower(cards, type);
 
   factory Hand.bestFrom(Iterable<Card> cards) {
     assert(cards.length <= 7);
@@ -234,10 +234,12 @@ class Hand {
 
   final HandType type;
 
-  final int power;
+  final int _power;
+
+  int compareStrongnessTo(Hand other) => _power - other._power;
 
   @override
-  int get hashCode => power;
+  int get hashCode => _power;
 
   @override
   bool operator ==(Object other) =>

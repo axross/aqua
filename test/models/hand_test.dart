@@ -164,99 +164,47 @@ final _sevenHigh = Hand.bestFrom({
 void main() {
   test("Hand#power is integer that is to compare with other's", () {
     expect(
-      _aceHighStraightFlush.power,
-      equals(Hand.bestFrom({
+      _aceHighStraightFlush.compareStrongnessTo(Hand.bestFrom({
         Card(rank: Rank.ace, suit: Suit.heart),
         Card(rank: Rank.king, suit: Suit.heart),
         Card(rank: Rank.queen, suit: Suit.heart),
         Card(rank: Rank.jack, suit: Suit.heart),
         Card(rank: Rank.ten, suit: Suit.heart),
-      }).power),
+      })),
+      equals(0),
     );
+
+    final handsInStrongnessOrder = [
+      _aceHighStraightFlush,
+      _kingHighStraightFlush,
+      _fiveHighStraightFlush,
+      _fourOfAKindOfAce,
+      _fourOfAKindOfTwo,
+      _fullHouseOfAce,
+      _fullHouseOfKing,
+      _fullHouseOfJack,
+      _fullHouseOfTen,
+      _aceHighFlush,
+      _jackHighFlush,
+      _aceHighStraight,
+      _fiveHighStraight,
+      _threeOfAKindOfSeven,
+      _threeOfAKindOfFour,
+      _twoPairsOfAceAndKing,
+      _twoPairsOfAceAndTwo,
+      _twoPairsOfTenAndFive,
+      _pairOfAce,
+      _pairOfTwo,
+      _aceHigh,
+      _sevenHigh,
+    ];
+
     expect(
-      _aceHighStraightFlush.power,
-      greaterThan(_kingHighStraightFlush.power),
-    );
-    expect(
-      _aceHighStraightFlush.power,
-      greaterThan(_fiveHighStraightFlush.power),
-    );
-    expect(
-      _fiveHighStraightFlush.power,
-      greaterThan(_fourOfAKindOfAce.power),
-    );
-    expect(
-      _fourOfAKindOfAce.power,
-      greaterThan(_fourOfAKindOfTwo.power),
-    );
-    expect(
-      _fourOfAKindOfTwo.power,
-      greaterThan(_fullHouseOfAce.power),
-    );
-    expect(
-      _fullHouseOfAce.power,
-      greaterThan(_fullHouseOfKing.power),
-    );
-    expect(
-      _fullHouseOfKing.power,
-      greaterThan(_fullHouseOfJack.power),
-    );
-    expect(
-      _fullHouseOfJack.power,
-      greaterThan(_fullHouseOfTen.power),
-    );
-    expect(
-      _fullHouseOfTen.power,
-      greaterThan(_aceHighFlush.power),
-    );
-    expect(
-      _aceHighFlush.power,
-      greaterThan(_jackHighFlush.power),
-    );
-    expect(
-      _jackHighFlush.power,
-      greaterThan(_aceHighStraight.power),
-    );
-    expect(
-      _aceHighStraight.power,
-      greaterThan(_fiveHighStraight.power),
-    );
-    expect(
-      _fiveHighStraight.power,
-      greaterThan(_threeOfAKindOfSeven.power),
-    );
-    expect(
-      _threeOfAKindOfSeven.power,
-      greaterThan(_threeOfAKindOfFour.power),
-    );
-    expect(
-      _threeOfAKindOfFour.power,
-      greaterThan(_twoPairsOfAceAndKing.power),
-    );
-    expect(
-      _twoPairsOfAceAndKing.power,
-      greaterThan(_twoPairsOfAceAndTwo.power),
-    );
-    expect(
-      _twoPairsOfAceAndTwo.power,
-      greaterThan(_twoPairsOfTenAndFive.power),
-    );
-    expect(
-      _twoPairsOfTenAndFive.power,
-      greaterThan(_pairOfAce.power),
-    );
-    expect(
-      _pairOfAce.power,
-      greaterThan(_pairOfTwo.power),
-    );
-    expect(
-      _pairOfTwo.power,
-      greaterThan(_aceHigh.power),
-    );
-    expect(
-      _aceHigh.power,
-      greaterThan(_sevenHigh.power),
-    );
+        [...handsInStrongnessOrder]
+          ..shuffle()
+          ..sort((a, b) => b.compareStrongnessTo(a)),
+        equals(handsInStrongnessOrder));
+
     expect(
       Hand.bestFrom({
         Card(rank: Rank.ace, suit: Suit.spade),
@@ -264,14 +212,14 @@ void main() {
         Card(rank: Rank.king, suit: Suit.club),
         Card(rank: Rank.jack, suit: Suit.spade),
         Card(rank: Rank.seven, suit: Suit.diamond),
-      }).power,
-      greaterThan(Hand.bestFrom({
+      }).compareStrongnessTo(Hand.bestFrom({
         Card(rank: Rank.king, suit: Suit.spade),
         Card(rank: Rank.king, suit: Suit.club),
         Card(rank: Rank.jack, suit: Suit.spade),
         Card(rank: Rank.queen, suit: Suit.club),
         Card(rank: Rank.ten, suit: Suit.club),
-      }).power),
+      })),
+      greaterThan(0),
     );
   });
 
