@@ -2,6 +2,7 @@ import "dart:math";
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/card_pair.dart';
 import 'package:aqua/models/deck.dart';
+import 'package:aqua/models/hand.dart';
 import 'package:aqua/models/hand_type.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/showdown.dart';
@@ -58,7 +59,7 @@ class Simulator {
       }
 
       final holeCards =
-          _getHoleCardPermutationRandomly(holeCardsEachPlayer, board);
+          getHoleCardPermutationRandomly(holeCardsEachPlayer, board);
 
       for (final holeCard in holeCards) {
         deck.remove(holeCard[0]);
@@ -74,15 +75,19 @@ class Simulator {
       );
 
       Set<int> wonPlayers = Set<int>();
-      int wonPower = 0;
+      Hand bestHand;
 
       for (int index = 0; index < showdown.hands.length; ++index) {
         final hand = showdown.hands.elementAt(index);
 
-        if (hand.power > wonPower) {
+        if (bestHand == null || hand.compareStrongnessTo(bestHand) > 0) {
           wonPlayers = {index};
-          wonPower = hand.power;
-        } else if (hand.power == wonPower) {
+          bestHand = hand;
+
+          continue;
+        }
+
+        if (hand.compareStrongnessTo(bestHand) == 0) {
           wonPlayers.add(index);
         }
       }
@@ -136,7 +141,7 @@ class NoPossibleCombinationException implements SimulationCancelException {
   NoPossibleCombinationException();
 }
 
-Iterable<CardPair> _getHoleCardPermutationRandomly(
+Iterable<CardPair> getHoleCardPermutationRandomly(
   List<Set<CardPair>> holeCardsEachPlayer,
   Set<Card> unavailableCards,
 ) {

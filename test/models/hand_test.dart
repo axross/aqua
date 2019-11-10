@@ -5,140 +5,155 @@ import 'package:aqua/models/rank.dart';
 import 'package:aqua/models/suit.dart';
 import 'package:test/test.dart';
 
-final aceHighStraightFlush = Hand({
+final _aceHighStraightFlush = Hand.bestFrom({
   Card(rank: Rank.king, suit: Suit.spade),
   Card(rank: Rank.queen, suit: Suit.spade),
   Card(rank: Rank.jack, suit: Suit.spade),
   Card(rank: Rank.ten, suit: Suit.spade),
   Card(rank: Rank.ace, suit: Suit.spade),
 });
-final kingHighStraightFlush = Hand({
+final _kingHighStraightFlush = Hand.bestFrom({
   Card(rank: Rank.king, suit: Suit.spade),
   Card(rank: Rank.queen, suit: Suit.spade),
   Card(rank: Rank.nine, suit: Suit.spade),
   Card(rank: Rank.jack, suit: Suit.spade),
   Card(rank: Rank.ten, suit: Suit.spade),
 });
-final fiveHighStraightFlush = Hand({
+final _fiveHighStraightFlush = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.spade),
   Card(rank: Rank.two, suit: Suit.spade),
   Card(rank: Rank.three, suit: Suit.spade),
   Card(rank: Rank.four, suit: Suit.spade),
   Card(rank: Rank.five, suit: Suit.spade),
 });
-final fourOfAKindOfAce = Hand({
+final _fourOfAKindOfAce = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.spade),
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.three, suit: Suit.spade),
   Card(rank: Rank.ace, suit: Suit.club),
   Card(rank: Rank.ace, suit: Suit.diamond),
 });
-final fourOfAKindOfTwo = Hand({
+final _fourOfAKindOfTwo = Hand.bestFrom({
   Card(rank: Rank.two, suit: Suit.spade),
   Card(rank: Rank.two, suit: Suit.heart),
   Card(rank: Rank.three, suit: Suit.spade),
   Card(rank: Rank.two, suit: Suit.club),
   Card(rank: Rank.two, suit: Suit.diamond),
 });
-final fullHouseOfJack = Hand({
+final _fullHouseOfAce = Hand.bestFrom({
+  Card(rank: Rank.king, suit: Suit.spade),
+  Card(rank: Rank.ace, suit: Suit.heart),
+  Card(rank: Rank.king, suit: Suit.diamond),
+  Card(rank: Rank.king, suit: Suit.club),
+  Card(rank: Rank.ace, suit: Suit.diamond),
+  Card(rank: Rank.ace, suit: Suit.spade),
+});
+final _fullHouseOfKing = Hand.bestFrom({
+  Card(rank: Rank.king, suit: Suit.spade),
+  Card(rank: Rank.ace, suit: Suit.heart),
+  Card(rank: Rank.king, suit: Suit.diamond),
+  Card(rank: Rank.king, suit: Suit.club),
+  Card(rank: Rank.ace, suit: Suit.diamond),
+});
+final _fullHouseOfJack = Hand.bestFrom({
   Card(rank: Rank.jack, suit: Suit.spade),
   Card(rank: Rank.two, suit: Suit.heart),
   Card(rank: Rank.jack, suit: Suit.diamond),
   Card(rank: Rank.jack, suit: Suit.club),
   Card(rank: Rank.two, suit: Suit.diamond),
 });
-final fullHouseOfTen = Hand({
+final _fullHouseOfTen = Hand.bestFrom({
   Card(rank: Rank.ten, suit: Suit.spade),
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.ten, suit: Suit.heart),
   Card(rank: Rank.ten, suit: Suit.club),
   Card(rank: Rank.ace, suit: Suit.spade),
 });
-final aceHighFlush = Hand({
+final _aceHighFlush = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.diamond),
   Card(rank: Rank.nine, suit: Suit.diamond),
   Card(rank: Rank.queen, suit: Suit.diamond),
   Card(rank: Rank.two, suit: Suit.diamond),
   Card(rank: Rank.five, suit: Suit.diamond),
 });
-final jackHighFlush = Hand({
+final _jackHighFlush = Hand.bestFrom({
   Card(rank: Rank.jack, suit: Suit.club),
   Card(rank: Rank.nine, suit: Suit.club),
   Card(rank: Rank.three, suit: Suit.club),
   Card(rank: Rank.two, suit: Suit.club),
   Card(rank: Rank.five, suit: Suit.club),
 });
-final aceHighStraight = Hand({
+final _aceHighStraight = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.diamond),
   Card(rank: Rank.king, suit: Suit.spade),
   Card(rank: Rank.queen, suit: Suit.club),
   Card(rank: Rank.jack, suit: Suit.club),
   Card(rank: Rank.ten, suit: Suit.spade),
 });
-final fiveHighStraight = Hand({
+final _fiveHighStraight = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.spade),
   Card(rank: Rank.two, suit: Suit.spade),
   Card(rank: Rank.three, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.spade),
   Card(rank: Rank.five, suit: Suit.spade),
 });
-final threeOfAKindOfSeven = Hand({
+final _threeOfAKindOfSeven = Hand.bestFrom({
   Card(rank: Rank.jack, suit: Suit.spade),
   Card(rank: Rank.seven, suit: Suit.club),
   Card(rank: Rank.three, suit: Suit.heart),
   Card(rank: Rank.seven, suit: Suit.spade),
   Card(rank: Rank.seven, suit: Suit.heart),
 });
-final threeOfAKindOfFour = Hand({
+final _threeOfAKindOfFour = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.king, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.diamond),
   Card(rank: Rank.four, suit: Suit.heart),
 });
-final twoPairsOfAceAndKing = Hand({
+final _twoPairsOfAceAndKing = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.king, suit: Suit.diamond),
   Card(rank: Rank.ace, suit: Suit.diamond),
   Card(rank: Rank.king, suit: Suit.heart),
 });
-final twoPairsOfAceAndTwo = Hand({
+final _twoPairsOfAceAndTwo = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.two, suit: Suit.diamond),
   Card(rank: Rank.ace, suit: Suit.diamond),
   Card(rank: Rank.two, suit: Suit.heart),
 });
-final twoPairsOfTenAndFive = Hand({
+final _twoPairsOfTenAndFive = Hand.bestFrom({
   Card(rank: Rank.five, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.ten, suit: Suit.diamond),
   Card(rank: Rank.ten, suit: Suit.spade),
   Card(rank: Rank.five, suit: Suit.club),
 });
-final pairOfAce = Hand({
+final _pairOfAce = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.six, suit: Suit.diamond),
   Card(rank: Rank.ace, suit: Suit.diamond),
   Card(rank: Rank.five, suit: Suit.heart),
 });
-final pairOfTwo = Hand({
+final _pairOfTwo = Hand.bestFrom({
   Card(rank: Rank.two, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.two, suit: Suit.diamond),
   Card(rank: Rank.ace, suit: Suit.diamond),
   Card(rank: Rank.five, suit: Suit.heart),
 });
-final aceHigh = Hand({
+final _aceHigh = Hand.bestFrom({
   Card(rank: Rank.ace, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.six, suit: Suit.diamond),
   Card(rank: Rank.ten, suit: Suit.diamond),
   Card(rank: Rank.five, suit: Suit.heart),
 });
-final sevenHigh = Hand({
+final _sevenHigh = Hand.bestFrom({
   Card(rank: Rank.two, suit: Suit.heart),
   Card(rank: Rank.four, suit: Suit.club),
   Card(rank: Rank.six, suit: Suit.diamond),
@@ -149,129 +164,99 @@ final sevenHigh = Hand({
 void main() {
   test("Hand#power is integer that is to compare with other's", () {
     expect(
-      aceHighStraightFlush.power,
-      equals(Hand({
+      _aceHighStraightFlush.compareStrongnessTo(Hand.bestFrom({
         Card(rank: Rank.ace, suit: Suit.heart),
         Card(rank: Rank.king, suit: Suit.heart),
         Card(rank: Rank.queen, suit: Suit.heart),
         Card(rank: Rank.jack, suit: Suit.heart),
         Card(rank: Rank.ten, suit: Suit.heart),
-      }).power),
+      })),
+      equals(0),
     );
+
+    final handsInStrongnessOrder = [
+      _aceHighStraightFlush,
+      _kingHighStraightFlush,
+      _fiveHighStraightFlush,
+      _fourOfAKindOfAce,
+      _fourOfAKindOfTwo,
+      _fullHouseOfAce,
+      _fullHouseOfKing,
+      _fullHouseOfJack,
+      _fullHouseOfTen,
+      _aceHighFlush,
+      _jackHighFlush,
+      _aceHighStraight,
+      _fiveHighStraight,
+      _threeOfAKindOfSeven,
+      _threeOfAKindOfFour,
+      _twoPairsOfAceAndKing,
+      _twoPairsOfAceAndTwo,
+      _twoPairsOfTenAndFive,
+      _pairOfAce,
+      _pairOfTwo,
+      _aceHigh,
+      _sevenHigh,
+    ];
+
     expect(
-      aceHighStraightFlush.power,
-      greaterThan(kingHighStraightFlush.power),
-    );
+        [...handsInStrongnessOrder]
+          ..shuffle()
+          ..sort((a, b) => b.compareStrongnessTo(a)),
+        equals(handsInStrongnessOrder));
+
     expect(
-      aceHighStraightFlush.power,
-      greaterThan(fiveHighStraightFlush.power),
-    );
-    expect(
-      fiveHighStraightFlush.power,
-      greaterThan(fourOfAKindOfAce.power),
-    );
-    expect(
-      fourOfAKindOfAce.power,
-      greaterThan(fourOfAKindOfTwo.power),
-    );
-    expect(
-      fourOfAKindOfTwo.power,
-      greaterThan(fullHouseOfJack.power),
-    );
-    expect(
-      fullHouseOfJack.power,
-      greaterThan(fullHouseOfTen.power),
-    );
-    expect(
-      fullHouseOfTen.power,
-      greaterThan(aceHighFlush.power),
-    );
-    expect(
-      aceHighFlush.power,
-      greaterThan(jackHighFlush.power),
-    );
-    expect(
-      jackHighFlush.power,
-      greaterThan(aceHighStraight.power),
-    );
-    expect(
-      aceHighStraight.power,
-      greaterThan(fiveHighStraight.power),
-    );
-    expect(
-      fiveHighStraight.power,
-      greaterThan(threeOfAKindOfSeven.power),
-    );
-    expect(
-      threeOfAKindOfSeven.power,
-      greaterThan(threeOfAKindOfFour.power),
-    );
-    expect(
-      threeOfAKindOfFour.power,
-      greaterThan(twoPairsOfAceAndKing.power),
-    );
-    expect(
-      twoPairsOfAceAndKing.power,
-      greaterThan(twoPairsOfAceAndTwo.power),
-    );
-    expect(
-      twoPairsOfAceAndTwo.power,
-      greaterThan(twoPairsOfTenAndFive.power),
-    );
-    expect(
-      twoPairsOfTenAndFive.power,
-      greaterThan(pairOfAce.power),
-    );
-    expect(
-      pairOfAce.power,
-      greaterThan(pairOfTwo.power),
-    );
-    expect(
-      pairOfTwo.power,
-      greaterThan(aceHigh.power),
-    );
-    expect(
-      aceHigh.power,
-      greaterThan(sevenHigh.power),
-    );
-    expect(
-      Hand({
+      Hand.bestFrom({
         Card(rank: Rank.ace, suit: Suit.spade),
         Card(rank: Rank.king, suit: Suit.spade),
         Card(rank: Rank.king, suit: Suit.club),
         Card(rank: Rank.jack, suit: Suit.spade),
         Card(rank: Rank.seven, suit: Suit.diamond),
-      }).power,
-      greaterThan(Hand({
+      }).compareStrongnessTo(Hand.bestFrom({
         Card(rank: Rank.king, suit: Suit.spade),
         Card(rank: Rank.king, suit: Suit.club),
         Card(rank: Rank.jack, suit: Suit.spade),
         Card(rank: Rank.queen, suit: Suit.club),
         Card(rank: Rank.ten, suit: Suit.club),
-      }).power),
+      })),
+      greaterThan(0),
     );
   });
 
   test('Hand()#type is HandType', () {
-    expect(aceHighStraightFlush.type, equals(HandType.straightFlush));
-    expect(kingHighStraightFlush.type, equals(HandType.straightFlush));
-    expect(fiveHighStraightFlush.type, equals(HandType.straightFlush));
-    expect(fourOfAKindOfAce.type, equals(HandType.fourOfAKind));
-    expect(fourOfAKindOfTwo.type, equals(HandType.fourOfAKind));
-    expect(fullHouseOfJack.type, equals(HandType.fullHouse));
-    expect(fullHouseOfTen.type, equals(HandType.fullHouse));
-    expect(aceHighFlush.type, equals(HandType.flush));
-    expect(jackHighFlush.type, equals(HandType.flush));
-    expect(aceHighStraight.type, equals(HandType.straight));
-    expect(fiveHighStraight.type, equals(HandType.straight));
-    expect(threeOfAKindOfSeven.type, equals(HandType.threeOfAKind));
-    expect(threeOfAKindOfFour.type, equals(HandType.threeOfAKind));
-    expect(twoPairsOfAceAndKing.type, equals(HandType.twoPairs));
-    expect(twoPairsOfAceAndTwo.type, equals(HandType.twoPairs));
-    expect(twoPairsOfTenAndFive.type, equals(HandType.twoPairs));
-    expect(pairOfAce.type, equals(HandType.pair));
-    expect(pairOfTwo.type, equals(HandType.pair));
-    expect(aceHigh.type, equals(HandType.high));
-    expect(sevenHigh.type, equals(HandType.high));
+    expect(_aceHighStraightFlush.type, equals(HandType.straightFlush));
+    expect(_kingHighStraightFlush.type, equals(HandType.straightFlush));
+    expect(_fiveHighStraightFlush.type, equals(HandType.straightFlush));
+    expect(_fourOfAKindOfAce.type, equals(HandType.fourOfAKind));
+    expect(_fourOfAKindOfTwo.type, equals(HandType.fourOfAKind));
+    expect(_fullHouseOfJack.type, equals(HandType.fullHouse));
+    expect(_fullHouseOfTen.type, equals(HandType.fullHouse));
+    expect(_aceHighFlush.type, equals(HandType.flush));
+    expect(_jackHighFlush.type, equals(HandType.flush));
+    expect(_aceHighStraight.type, equals(HandType.straight));
+    expect(_fiveHighStraight.type, equals(HandType.straight));
+    expect(_threeOfAKindOfSeven.type, equals(HandType.threeOfAKind));
+    expect(_threeOfAKindOfFour.type, equals(HandType.threeOfAKind));
+    expect(_twoPairsOfAceAndKing.type, equals(HandType.twoPairs));
+    expect(_twoPairsOfAceAndTwo.type, equals(HandType.twoPairs));
+    expect(_twoPairsOfTenAndFive.type, equals(HandType.twoPairs));
+    expect(_pairOfAce.type, equals(HandType.pair));
+    expect(_pairOfTwo.type, equals(HandType.pair));
+    expect(_aceHigh.type, equals(HandType.high));
+    expect(_sevenHigh.type, equals(HandType.high));
+  });
+
+  test('Hand.bestFrom() returns the best hand from the given 7 cards', () {
+    expect(
+        Hand.bestFrom({
+          Card(rank: Rank.king, suit: Suit.spade),
+          Card(rank: Rank.queen, suit: Suit.spade),
+          Card(rank: Rank.jack, suit: Suit.spade),
+          Card(rank: Rank.ten, suit: Suit.spade),
+          Card(rank: Rank.ace, suit: Suit.spade),
+          Card(rank: Rank.two, suit: Suit.spade),
+          Card(rank: Rank.nine, suit: Suit.spade),
+        }),
+        equals(_aceHighStraightFlush));
   });
 }

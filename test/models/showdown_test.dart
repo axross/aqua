@@ -46,7 +46,7 @@ void main() {
 
     expect(
       showdown.hands.elementAt(0),
-      equals(Hand({
+      equals(Hand.bestFrom({
         Card(rank: Rank.ace, suit: Suit.spade),
         Card(rank: Rank.king, suit: Suit.spade),
         Card(rank: Rank.queen, suit: Suit.spade),
@@ -56,7 +56,7 @@ void main() {
     );
     expect(
       showdown.hands.elementAt(1),
-      equals(Hand({
+      equals(Hand.bestFrom({
         Card(rank: Rank.queen, suit: Suit.spade),
         Card(rank: Rank.queen, suit: Suit.heart),
         Card(rank: Rank.queen, suit: Suit.diamond),
@@ -66,7 +66,7 @@ void main() {
     );
     expect(
       showdown.hands.elementAt(2),
-      equals(Hand({
+      equals(Hand.bestFrom({
         Card(rank: Rank.ten, suit: Suit.spade),
         Card(rank: Rank.ten, suit: Suit.club),
         Card(rank: Rank.ten, suit: Suit.heart),
@@ -76,7 +76,7 @@ void main() {
     );
     expect(
       showdown.hands.elementAt(3),
-      equals(Hand({
+      equals(Hand.bestFrom({
         Card(rank: Rank.seven, suit: Suit.spade),
         Card(rank: Rank.seven, suit: Suit.heart),
         Card(rank: Rank.seven, suit: Suit.diamond),
@@ -86,7 +86,7 @@ void main() {
     );
     expect(
       showdown.hands.elementAt(4),
-      equals(Hand({
+      equals(Hand.bestFrom({
         Card(rank: Rank.queen, suit: Suit.spade),
         Card(rank: Rank.jack, suit: Suit.spade),
         Card(rank: Rank.ten, suit: Suit.spade),
@@ -96,7 +96,7 @@ void main() {
     );
     expect(
       showdown.hands.elementAt(5),
-      equals(Hand({
+      equals(Hand.bestFrom({
         Card(rank: Rank.queen, suit: Suit.spade),
         Card(rank: Rank.jack, suit: Suit.spade),
         Card(rank: Rank.ten, suit: Suit.spade),
