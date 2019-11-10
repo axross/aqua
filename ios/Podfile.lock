@@ -72,7 +72,7 @@ PODS:
 
 DEPENDENCIES:
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
 
 SPEC REPOS:
   trunk:
@@ -92,7 +92,7 @@ EXTERNAL SOURCES:
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
 
 SPEC CHECKSUMS:
   Firebase: 5e6b7b12bf9adb90986688edc06b156c37e109cd
