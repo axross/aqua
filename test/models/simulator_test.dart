@@ -11,14 +11,14 @@ void main() {
       playerHandSettings: [
         PlayerHandSetting(parts: {
           HoleCards(
-            left: Card(rank: Rank.ace, suit: Suit.spade),
-            right: Card(rank: Rank.king, suit: Suit.spade),
+            left: const Card(rank: Rank.ace, suit: Suit.spade),
+            right: const Card(rank: Rank.king, suit: Suit.spade),
           )
         }),
         PlayerHandSetting(parts: {
           HoleCards(
-            left: Card(rank: Rank.king, suit: Suit.spade),
-            right: Card(rank: Rank.queen, suit: Suit.spade),
+            left: const Card(rank: Rank.king, suit: Suit.spade),
+            right: const Card(rank: Rank.queen, suit: Suit.spade),
           )
         }),
       ],
@@ -34,13 +34,13 @@ void main() {
       playerHandSettings: [
         PlayerHandSetting(parts: {
           HoleCards(
-            left: Card(rank: Rank.ace, suit: Suit.spade),
-            right: Card(rank: Rank.king, suit: Suit.spade),
+            left: const Card(rank: Rank.ace, suit: Suit.spade),
+            right: const Card(rank: Rank.king, suit: Suit.spade),
           )
         }),
         PlayerHandSetting(parts: {
           HoleCards(
-            left: Card(rank: Rank.king, suit: Suit.spade),
+            left: const Card(rank: Rank.king, suit: Suit.spade),
           )
         }),
       ],

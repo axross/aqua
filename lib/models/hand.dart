@@ -46,7 +46,7 @@ List<Card> chooseStraightCards(
 
     if (isStraight) {
       if (combination == straightRankCombinations.last) {
-        return cards..sort((a, b) => b.rank.compareTo(a.rank));
+        return cards..sort((a, b) => compareRank(b.rank, a.rank));
       }
 
       straightFlush = cards;
@@ -71,7 +71,7 @@ List<Card> chooseStraightCards(
 
     if (isStraight) {
       if (combination == straightRankCombinations.last) {
-        return cards..sort((a, b) => b.rank.compareTo(a.rank));
+        return cards..sort((a, b) => compareRank(b.rank, a.rank));
       }
 
       straight = cards;
@@ -96,7 +96,7 @@ class Hand {
     final sortedCards = cards.toList()
       ..sort((a, b) => a.rank == b.rank
           ? compareSuit(a.suit, b.suit)
-          : b.rank.compareStrongnessTo(a.rank));
+          : compareStrongnessOfRank(b.rank, a.rank));
     final cardsEachSuit = LinkedHashMap<Suit, List<Card>>();
     final cardsEachRank = LinkedHashMap<Rank, List<Card>>();
     final numberOfCardsEachRank = LinkedHashMap<Rank, int>();
@@ -286,32 +286,22 @@ int calculateHandPower(List<Card> cards, HandType type) {
           cards[0].rank == Rank.five;
 
   return getHandTypePower(type) +
-      (cards[0].rank == Rank.ace && !isBottomStraight
-              ? 13
-              : cards[0].rank.toInt()) *
+      getStrongnessOfRank(cards[0].rank, forBottomStraight: isBottomStraight) *
           math.pow(13, 4) +
-      (cards[1].rank == Rank.ace && !isBottomStraight
-              ? 13
-              : cards[1].rank.toInt()) *
+      getStrongnessOfRank(cards[1].rank, forBottomStraight: isBottomStraight) *
           math.pow(13, 3) +
-      (cards[2].rank == Rank.ace && !isBottomStraight
-              ? 13
-              : cards[2].rank.toInt()) *
+      getStrongnessOfRank(cards[2].rank, forBottomStraight: isBottomStraight) *
           math.pow(13, 2) +
-      (cards[3].rank == Rank.ace && !isBottomStraight
-              ? 13
-              : cards[3].rank.toInt()) *
+      getStrongnessOfRank(cards[3].rank, forBottomStraight: isBottomStraight) *
           math.pow(13, 1) +
-      (cards[4].rank == Rank.ace && !isBottomStraight
-              ? 13
-              : cards[4].rank.toInt()) *
+      getStrongnessOfRank(cards[4].rank, forBottomStraight: isBottomStraight) *
           math.pow(13, 0);
 }
 
 // 13 * 13 ** 4 + 13 * 13 ** 3 + 13 * 13 ** 2 + 13 * 13 ** 1 + 13 * 13 ** 0
 const _powerBaseForHandType = 100402233;
 
-final straightRankCombinations = [
+const straightRankCombinations = [
   [Rank.ace, Rank.king, Rank.queen, Rank.jack, Rank.ten],
   [Rank.king, Rank.queen, Rank.jack, Rank.ten, Rank.nine],
   [Rank.queen, Rank.jack, Rank.ten, Rank.nine, Rank.eight],

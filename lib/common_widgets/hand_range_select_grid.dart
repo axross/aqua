@@ -41,12 +41,12 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 constraints.maxHeight;
             final handRangePart = x > y
                 ? HandRangePart(
-                    high: Rank.valuesInStrongnessOrder[y],
-                    kicker: Rank.valuesInStrongnessOrder[x],
+                    high: ranksInStrongnessOrder[y],
+                    kicker: ranksInStrongnessOrder[x],
                     isSuited: true)
                 : HandRangePart(
-                    high: Rank.valuesInStrongnessOrder[x],
-                    kicker: Rank.valuesInStrongnessOrder[y],
+                    high: ranksInStrongnessOrder[x],
+                    kicker: ranksInStrongnessOrder[y],
                     isSuited: false);
 
             isToCheck = !selectedRange.contains(handRangePart);
@@ -74,12 +74,12 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
 
             final handRangePart = x > y
                 ? HandRangePart(
-                    high: Rank.valuesInStrongnessOrder[y],
-                    kicker: Rank.valuesInStrongnessOrder[x],
+                    high: ranksInStrongnessOrder[y],
+                    kicker: ranksInStrongnessOrder[x],
                     isSuited: true)
                 : HandRangePart(
-                    high: Rank.valuesInStrongnessOrder[x],
-                    kicker: Rank.valuesInStrongnessOrder[y],
+                    high: ranksInStrongnessOrder[x],
+                    kicker: ranksInStrongnessOrder[y],
                     isSuited: false);
 
             if (isToCheck) {
@@ -110,13 +110,13 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                     final x = j ~/ 2;
                     final handRangePart = x > y
                         ? HandRangePart(
-                            high: Rank.valuesInStrongnessOrder[y],
-                            kicker: Rank.valuesInStrongnessOrder[x],
+                            high: ranksInStrongnessOrder[y],
+                            kicker: ranksInStrongnessOrder[x],
                             isSuited: true,
                           )
                         : HandRangePart(
-                            high: Rank.valuesInStrongnessOrder[x],
-                            kicker: Rank.valuesInStrongnessOrder[y],
+                            high: ranksInStrongnessOrder[x],
+                            kicker: ranksInStrongnessOrder[y],
                             isSuited: false,
                           );
 
@@ -181,7 +181,7 @@ class HandRangeSelectGridItem extends StatelessWidget {
   }
 }
 
-final _rankTextData = {
+const _rankTextData = {
   Rank.ace: "A",
   Rank.king: "K",
   Rank.queen: "Q",
