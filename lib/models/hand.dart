@@ -95,7 +95,7 @@ class Hand {
 
     final sortedCards = cards.toList()
       ..sort((a, b) => a.rank == b.rank
-          ? a.suit.compareTo(b.suit)
+          ? compareSuit(a.suit, b.suit)
           : b.rank.compareStrongnessTo(a.rank));
     final cardsEachSuit = LinkedHashMap<Suit, List<Card>>();
     final cardsEachRank = LinkedHashMap<Rank, List<Card>>();
