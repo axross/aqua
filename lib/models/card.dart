@@ -37,7 +37,8 @@ class Card {
   bool operator <(Card other) {
     if (this == other) return false;
 
-    return suit < other.suit || rank < other.rank;
+    return compareSuit(suit, other.suit) < 0 ||
+        compareRank(rank, other.rank) < 0;
   }
 
   bool operator >(Card other) {

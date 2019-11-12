@@ -61,10 +61,10 @@ void main() {
     for (int i = 0; i < 1000000; ++i) {
       final deck = Deck();
 
-      deck.remove(Card(rank: Rank.ace, suit: Suit.spade));
-      deck.remove(Card(rank: Rank.seven, suit: Suit.diamond));
-      deck.remove(Card(rank: Rank.queen, suit: Suit.club));
-      deck.remove(Card(rank: Rank.ten, suit: Suit.club));
+      deck.remove(const Card(rank: Rank.ace, suit: Suit.spade));
+      deck.remove(const Card(rank: Rank.seven, suit: Suit.diamond));
+      deck.remove(const Card(rank: Rank.queen, suit: Suit.club));
+      deck.remove(const Card(rank: Rank.ten, suit: Suit.club));
 
       deck.shuffle();
 

@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 
 @immutable
 class PlayerHandSetting {
-  PlayerHandSetting({@required this.parts}) : assert(parts != null);
+  const PlayerHandSetting({@required this.parts}) : assert(parts != null);
 
   PlayerHandSetting.emptyHoleCards() : parts = {HoleCards()};
 

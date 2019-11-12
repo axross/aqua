@@ -2,7 +2,7 @@ import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/suit.dart';
 import 'package:flutter/widgets.dart';
 
-final lightThemeData = AquaThemeData(
+const lightThemeData = AquaThemeData(
   textStyle: TextStyle(
     fontFamily: "Montserrat",
     fontWeight: FontWeight.w700,
@@ -60,7 +60,7 @@ final lightThemeData = AquaThemeData(
   ),
 );
 
-final darkThemeData = AquaThemeData(
+const darkThemeData = AquaThemeData(
   textStyle: TextStyle(
     fontFamily: "Montserrat",
     fontWeight: FontWeight.w700,

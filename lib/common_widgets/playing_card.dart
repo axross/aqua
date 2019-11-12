@@ -93,7 +93,7 @@ class PlayingCardBack extends StatelessWidget {
   }
 }
 
-final _rankStrings = {
+const _rankStrings = {
   Rank.ace: "A",
   Rank.king: "K",
   Rank.queen: "Q",

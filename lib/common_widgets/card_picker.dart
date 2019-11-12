@@ -51,7 +51,7 @@ class CardPicker extends StatelessWidget {
   }
 }
 
-final _cards = [
+const _cards = [
   [
     Card(rank: Rank.ace, suit: Suit.spade),
     Card(rank: Rank.king, suit: Suit.spade),
