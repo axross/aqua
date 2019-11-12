@@ -82,24 +82,8 @@ flutter:
   fonts:
     - family: Work Sans
       fonts:
-        - asset: assets/fonts/WorkSans-Thin.ttf
-          weight: 100
-        - asset: assets/fonts/WorkSans-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/WorkSans-Light.ttf
-          weight: 300
-        - asset: assets/fonts/WorkSans-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/WorkSans-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/WorkSans-SemiBold.ttf
+        - asset: assets/fonts/work-sans-600-subset.ttf
           weight: 600
-        - asset: assets/fonts/WorkSans-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/WorkSans-ExtraBold.ttf
-          weight: 800
-        - asset: assets/fonts/WorkSans-Black.ttf
-          weight: 900
     - family: Source Code Pro
       fonts:
         - asset: assets/fonts/SourceCodePro-Black.ttf
