@@ -7,6 +7,7 @@ import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import './top_buttons.dart';
 
 class BoardSettingPage extends StatefulWidget {
   @override
@@ -57,51 +58,12 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
             builder: (context, playerHandSettings, _) => Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 16),
-                      child: GestureDetector(
-                        onTap: () {
-                          simulationSession.board.value = [
-                            null,
-                            null,
-                            null,
-                            null,
-                            null
-                          ];
-
-                          setState(() {
-                            selectedIndex = 0;
-                          });
-
-                          Analytics.of(context).logEvent(
-                            name: "clear_board_cards",
-                          );
-                        },
-                        child: Container(
-                          decoration: ShapeDecoration(
-                            shape: StadiumBorder(),
-                            color: board.any((card) => card != null)
-                                ? Color(0xffff6b6b)
-                                : Color(0x3fc8d6e5),
-                          ),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                          child: Text(
-                            "Clear",
-                            style: theme.textStyle.copyWith(
-                              color: board.any((card) => card != null)
-                                  ? Color(0xffffffff)
-                                  : Color(0xffc8d6e5),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                TopButtons(
+                  onClearButtonTapped: () {
+                    setState(() {
+                      selectedIndex = 0;
+                    });
+                  },
                 ),
                 SizedBox(height: 16),
                 Row(

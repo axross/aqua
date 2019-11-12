@@ -1,5 +1,5 @@
 import 'package:aqua/common_widgets/analytics.dart';
-import 'package:aqua/common_widgets/aqua_theme.dart';
+import 'package:aqua/models/TinyStadiumButton.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/widgets.dart';
@@ -13,7 +13,6 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = AquaTheme.of(context);
     final simulationSession = Provider.of<SimulationSession>(context);
 
     return ValueListenableBuilder<List<PlayerHandSetting>>(
@@ -24,7 +23,16 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GestureDetector(
+            TinyStadiumButton(
+              label: "Certain Cards",
+              foregroundColor:
+                  playerHandSetting.type == PlayerHandSettingType.holeCards
+                      ? _holeCardsButtonSelectedForegroundColor
+                      : _holeCardsButtonForegroundColor,
+              backgroundColor:
+                  playerHandSetting.type == PlayerHandSettingType.holeCards
+                      ? _holeCardsButtonSelectedBackgroundColor
+                      : _holeCardsButtonBackgroundColor,
               onTap: playerHandSetting.type != PlayerHandSettingType.holeCards
                   ? () {
                       simulationSession.playerHandSettings.value = [
@@ -37,29 +45,18 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
                       );
                     }
                   : null,
-              child: Container(
-                decoration: ShapeDecoration(
-                  shape: StadiumBorder(),
-                  color:
-                      playerHandSetting.type == PlayerHandSettingType.holeCards
-                          ? Color(0xff54a0ff)
-                          : Color(0x3f54a0ff),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                child: Text(
-                  "Certain Cards",
-                  style: theme.textStyle.copyWith(
-                    color: playerHandSetting.type ==
-                            PlayerHandSettingType.holeCards
-                        ? Color(0xffffffff)
-                        : Color(0xff54a0ff),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
             ),
             SizedBox(width: 16),
-            GestureDetector(
+            TinyStadiumButton(
+              label: "Range",
+              foregroundColor:
+                  playerHandSetting.type == PlayerHandSettingType.handRange
+                      ? _handRangeButtonSelectedForegroundColor
+                      : _handRangeButtonForegroundColor,
+              backgroundColor:
+                  playerHandSetting.type == PlayerHandSettingType.handRange
+                      ? _handRangeButtonSelectedBackgroundColor
+                      : _handRangeButtonBackgroundColor,
               onTap: playerHandSetting.type != PlayerHandSettingType.handRange
                   ? () {
                       simulationSession.playerHandSettings.value = [
@@ -72,26 +69,6 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
                       );
                     }
                   : null,
-              child: Container(
-                decoration: ShapeDecoration(
-                  shape: StadiumBorder(),
-                  color:
-                      playerHandSetting.type == PlayerHandSettingType.handRange
-                          ? Color(0xff1dd1a1)
-                          : Color(0x3f1dd1a1),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                child: Text(
-                  "Range",
-                  style: theme.textStyle.copyWith(
-                    color: playerHandSetting.type ==
-                            PlayerHandSettingType.handRange
-                        ? Color(0xffffffff)
-                        : Color(0xff1dd1a1),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
             ),
           ],
         );
@@ -99,3 +76,12 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
     );
   }
 }
+
+const _holeCardsButtonForegroundColor = Color(0xff54a0ff);
+const _holeCardsButtonBackgroundColor = Color(0x3f54a0ff);
+const _holeCardsButtonSelectedForegroundColor = Color(0xffffffff);
+const _holeCardsButtonSelectedBackgroundColor = Color(0xff54a0ff);
+const _handRangeButtonForegroundColor = Color(0xff1dd1a1);
+const _handRangeButtonBackgroundColor = Color(0x3f1dd1a1);
+const _handRangeButtonSelectedForegroundColor = Color(0xffffffff);
+const _handRangeButtonSelectedBackgroundColor = Color(0xff1dd1a1);
