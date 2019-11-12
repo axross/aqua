@@ -347,7 +347,7 @@ class PlayerListViewItem extends StatelessWidget {
                                 textBaseline: TextBaseline.alphabetic,
                                 children: [
                                   Text(
-                                    "${(result.winRate * 100).floor()}",
+                                    "${((result.winRate + result.drawRate) * 100).floor()}",
                                     style: theme.digitTextStyle.copyWith(
                                       color: theme.foregroundColor,
                                       fontSize: 32,
@@ -362,7 +362,7 @@ class PlayerListViewItem extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "${_twoDigitFormat.format((result.winRate * 10000 % 100).floor())}",
+                                    "${_twoDigitFormat.format(((result.winRate + result.drawRate) * 10000 % 100).floor())}",
                                     style: theme.digitTextStyle.copyWith(
                                       color: theme.foregroundColor,
                                       fontSize: 18,
@@ -516,11 +516,9 @@ class PlayerListViewNewItem extends StatelessWidget {
 }
 
 String _format(double value) {
-  if (value > 0 && value < 1) {
-    return ">0";
-  }
+  if (value % 1 == 0) return "${value.floor()}";
 
-  return "${value.floor()}";
+  return "≈${value.round()}";
 }
 
 final _twoDigitFormat = NumberFormat("#00");
