@@ -1,4 +1,5 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class AquaTabs extends StatefulWidget {
@@ -82,6 +83,8 @@ class _AquaTabsState extends State<AquaTabs> {
                             isActive: _selectedIndex == i ~/ 2,
                             onPressed: _selectedIndex != i ~/ 2
                                 ? () {
+                                    HapticFeedback.lightImpact();
+
                                     setState(() => _selectedIndex = i ~/ 2);
 
                                     if (widget.onChanged != null) {

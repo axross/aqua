@@ -1,6 +1,7 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/rank.dart';
+import 'package:flutter/services.dart';
 import "package:flutter/widgets.dart";
 
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
@@ -52,10 +53,14 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
             isToCheck = !selectedRange.contains(handRangePart);
 
             if (isToCheck) {
+              HapticFeedback.lightImpact();
+
               setState(() {
                 selectedRange.add(handRangePart);
               });
             } else {
+              HapticFeedback.lightImpact();
+
               setState(() {
                 selectedRange.remove(handRangePart);
               });
@@ -83,16 +88,26 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                     isSuited: false);
 
             if (isToCheck) {
+              if (selectedRange.contains(handRangePart)) return;
+
+              HapticFeedback.selectionClick();
+
               setState(() {
                 selectedRange.add(handRangePart);
               });
             } else {
+              if (!selectedRange.contains(handRangePart)) return;
+
+              HapticFeedback.selectionClick();
+
               setState(() {
                 selectedRange.remove(handRangePart);
               });
             }
           },
           onPanEnd: (_) {
+            HapticFeedback.lightImpact();
+
             widget.onUpdate(selectedRange);
           },
           behavior: HitTestBehavior.opaque,
