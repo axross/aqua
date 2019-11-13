@@ -34,12 +34,12 @@ class PlayerHandSettingPage extends StatelessWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                PlayerHandSettingTypeSelector(index: index),
-                SizedBox(height: 32),
                 if (playerHandSetting.type == PlayerHandSettingType.holeCards)
                   PlayerHoleCardSelect(index: index),
                 if (playerHandSetting.type == PlayerHandSettingType.handRange)
                   PlayerHandRangeSelect(index: index),
+                SizedBox(height: 32),
+                PlayerHandSettingTypeSelector(index: index),
               ],
             );
           },

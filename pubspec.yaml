@@ -80,6 +80,9 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   fonts:
+    - family: Icons
+      fonts:
+        - asset: assets/fonts/icons.ttf
     - family: Work Sans
       fonts:
         - asset: assets/fonts/work-sans-600-subset.ttf

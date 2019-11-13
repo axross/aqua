@@ -1,5 +1,6 @@
 import 'package:aqua/common_widgets/analytics.dart';
-import 'package:aqua/models/TinyStadiumButton.dart';
+import 'package:aqua/common_widgets/aqua_icons.dart';
+import 'package:aqua/common_widgets/aqua_tabs.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/widgets.dart';
@@ -20,68 +21,40 @@ class PlayerHandSettingTypeSelector extends StatelessWidget {
       builder: (context, playerHandSettings, _) {
         final playerHandSetting = playerHandSettings[index];
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TinyStadiumButton(
-              label: "Certain Cards",
-              foregroundColor:
-                  playerHandSetting.type == PlayerHandSettingType.holeCards
-                      ? _holeCardsButtonSelectedForegroundColor
-                      : _holeCardsButtonForegroundColor,
-              backgroundColor:
-                  playerHandSetting.type == PlayerHandSettingType.holeCards
-                      ? _holeCardsButtonSelectedBackgroundColor
-                      : _holeCardsButtonBackgroundColor,
-              onTap: playerHandSetting.type != PlayerHandSettingType.holeCards
-                  ? () {
-                      simulationSession.playerHandSettings.value = [
-                        ...playerHandSettings
-                      ]..[index] = PlayerHandSetting.emptyHoleCards();
+        const items = [
+          AquaTabsItemData(label: "Cards", icon: AquaIcons.holeCards),
+          AquaTabsItemData(label: "Range", icon: AquaIcons.handRange)
+        ];
 
-                      Analytics.of(context).logEvent(
-                        name: "update_player_hand_setting_type",
-                        parameters: {"to": "hole_cards"},
-                      );
-                    }
-                  : null,
-            ),
-            SizedBox(width: 16),
-            TinyStadiumButton(
-              label: "Range",
-              foregroundColor:
-                  playerHandSetting.type == PlayerHandSettingType.handRange
-                      ? _handRangeButtonSelectedForegroundColor
-                      : _handRangeButtonForegroundColor,
-              backgroundColor:
-                  playerHandSetting.type == PlayerHandSettingType.handRange
-                      ? _handRangeButtonSelectedBackgroundColor
-                      : _handRangeButtonBackgroundColor,
-              onTap: playerHandSetting.type != PlayerHandSettingType.handRange
-                  ? () {
-                      simulationSession.playerHandSettings.value = [
-                        ...playerHandSettings
-                      ]..[index] = PlayerHandSetting.emptyHandRange();
+        return AquaTabs(
+          items: items,
+          initialIndex:
+              playerHandSetting.type == PlayerHandSettingType.holeCards ? 0 : 1,
+          onChanged: (i) {
+            if (i == 0) {
+              simulationSession.playerHandSettings.value = [
+                ...playerHandSettings
+              ]..[index] = PlayerHandSetting.emptyHoleCards();
 
-                      Analytics.of(context).logEvent(
-                        name: "update_player_hand_setting_type",
-                        parameters: {"to": "range"},
-                      );
-                    }
-                  : null,
-            ),
-          ],
+              Analytics.of(context).logEvent(
+                name: "update_player_hand_setting_type",
+                parameters: {"to": "hole_cards"},
+              );
+            }
+
+            if (i == 1) {
+              simulationSession.playerHandSettings.value = [
+                ...playerHandSettings
+              ]..[index] = PlayerHandSetting.emptyHandRange();
+
+              Analytics.of(context).logEvent(
+                name: "update_player_hand_setting_type",
+                parameters: {"to": "range"},
+              );
+            }
+          },
         );
       },
     );
   }
 }
-
-const _holeCardsButtonForegroundColor = Color(0xff54a0ff);
-const _holeCardsButtonBackgroundColor = Color(0x3f54a0ff);
-const _holeCardsButtonSelectedForegroundColor = Color(0xffffffff);
-const _holeCardsButtonSelectedBackgroundColor = Color(0xff54a0ff);
-const _handRangeButtonForegroundColor = Color(0xff1dd1a1);
-const _handRangeButtonBackgroundColor = Color(0x3f1dd1a1);
-const _handRangeButtonSelectedForegroundColor = Color(0xffffffff);
-const _handRangeButtonSelectedBackgroundColor = Color(0xff1dd1a1);

@@ -1,4 +1,5 @@
 import 'package:aqua/common_widgets/analytics.dart';
+import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/TinyStadiumButton.dart';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/view_models/simulation_session.dart';
@@ -14,6 +15,7 @@ class TopButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
     final simulationSession = Provider.of<SimulationSession>(context);
 
     return ValueListenableBuilder<List<Card>>(
@@ -26,11 +28,11 @@ class TopButtons extends StatelessWidget {
             child: TinyStadiumButton(
               label: "Clear",
               foregroundColor: board.any((card) => card != null)
-                  ? _clearButtonForegroundColor
-                  : _clearButtonDisabledForegroundColor,
+                  ? Color(0xffffffff)
+                  : theme.secondaryBackgroundColor,
               backgroundColor: board.any((card) => card != null)
-                  ? _clearButtonBackgroundColor
-                  : _clearButtonDisabledBackgroundColor,
+                  ? theme.heartForegroundColor
+                  : theme.playingCardBackgroundColor,
               onTap: () {
                 simulationSession.board.value = [null, null, null, null, null];
 
@@ -48,7 +50,7 @@ class TopButtons extends StatelessWidget {
   }
 }
 
-const _clearButtonForegroundColor = Color(0xffffffff);
-const _clearButtonBackgroundColor = Color(0xffff6b6b);
-const _clearButtonDisabledForegroundColor = Color(0xffc8d6e5);
-const _clearButtonDisabledBackgroundColor = Color(0x3fc8d6e5);
+// const _clearButtonForegroundColor = Color(0xffffffff);
+// const _clearButtonBackgroundColor = Color(0xffff6b6b);
+// const _clearButtonDisabledForegroundColor = Color(0xffc8d6e5);
+// const _clearButtonDisabledBackgroundColor = Color(0x3fc8d6e5);
