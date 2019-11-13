@@ -1,5 +1,3 @@
-import 'package:aqua/common_widgets/aqua_icons.dart';
-import 'package:aqua/common_widgets/aqua_tabs.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
