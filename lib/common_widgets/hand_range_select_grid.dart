@@ -7,13 +7,13 @@ import "package:flutter/widgets.dart";
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
 
 class HandRangeSelectGrid extends StatefulWidget {
-  HandRangeSelectGrid({@required this.onUpdate, this.initial, Key key})
+  HandRangeSelectGrid({@required this.onUpdate, this.value, Key key})
       : assert(onUpdate != null),
         super(key: key);
 
   final OnRangeSelectorUpdate onUpdate;
 
-  final Set<HandRangePart> initial;
+  final Set<HandRangePart> value;
 
   @override
   State<HandRangeSelectGrid> createState() => _HandRangeSelectGridState();
@@ -27,7 +27,18 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
   void initState() {
     super.initState();
 
-    selectedRange = widget.initial == null ? {} : widget.initial;
+    selectedRange = widget.value == null ? {} : widget.value;
+  }
+
+  @override
+  void didUpdateWidget(HandRangeSelectGrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.value != widget.value) {
+      setState(() {
+        selectedRange = widget.value;
+      });
+    }
   }
 
   @override
@@ -58,12 +69,16 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
               setState(() {
                 selectedRange.add(handRangePart);
               });
+
+              widget.onUpdate(selectedRange);
             } else {
               HapticFeedback.lightImpact();
 
               setState(() {
                 selectedRange.remove(handRangePart);
               });
+
+              widget.onUpdate(selectedRange);
             }
           },
           onPanUpdate: (details) {
@@ -95,6 +110,8 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
               setState(() {
                 selectedRange.add(handRangePart);
               });
+
+              widget.onUpdate(selectedRange);
             } else {
               if (!selectedRange.contains(handRangePart)) return;
 
@@ -103,12 +120,9 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
               setState(() {
                 selectedRange.remove(handRangePart);
               });
-            }
-          },
-          onPanEnd: (_) {
-            HapticFeedback.lightImpact();
 
-            widget.onUpdate(selectedRange);
+              widget.onUpdate(selectedRange);
+            }
           },
           behavior: HitTestBehavior.opaque,
           child: Column(

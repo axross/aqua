@@ -1,3 +1,4 @@
+import 'dart:async' show Timer;
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/simulation_result.dart';
@@ -32,59 +33,66 @@ class SimulationSession {
 
   SimulationIsolateService _simulationIsolateService;
 
-  void _onSituationChanged() async {
-    if (_simulationIsolateService != null) {
-      _simulationIsolateService.dispose();
+  Timer _timer;
 
-      analytics.logEvent(name: "end_simulation", parameters: {
-        "number_of_players": playerHandSettings.value.length,
-        "number_of_cards_in_board": board.value.length,
-      });
+  void _onSituationChanged() {
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
     }
 
-    results.value = [];
+    _timer = Timer(Duration(milliseconds: 600), () async {
+      _timer = null;
 
-    _simulationIsolateService = SimulationIsolateService();
+      if (_simulationIsolateService != null) {
+        _simulationIsolateService.dispose();
 
-    await _simulationIsolateService.initialize();
-
-    _simulationIsolateService
-      ..onSimulated.listen(
-        (details) {
-          error.value = null;
-          results.value = details.results;
-          progress.value =
-              details.timesSimulated / details.timesWillBeSimulated;
-
-          // print(
-          //     "[0] ${(details.results.elementAt(0).totalWin / details.results.elementAt(0).totalGames).toStringAsFixed(2)}, ${(details.results.elementAt(0).totalDraw / details.results.elementAt(0).totalGames).toStringAsFixed(2)} / ${details.results.elementAt(0).totalGames}");
-          // print(
-          //     "[1] ${(details.results.elementAt(1).totalWin / details.results.elementAt(1).totalGames).toStringAsFixed(2)}, ${(details.results.elementAt(1).totalDraw / details.results.elementAt(1).totalGames).toStringAsFixed(2)} / ${details.results.elementAt(1).totalGames}");
-        },
-        onError: (error) {
-          _simulationIsolateService.dispose();
-          _simulationIsolateService = null;
-
-          if (error is SimulationCancelException) {
-            debugPrint("simulation canceled: ${error.runtimeType}");
-
-            this.error.value = error;
-
-            return;
-          }
-
-          throw error;
-        },
-      )
-      ..onSimulated.first.then((_) {
-        analytics.logEvent(name: "receive_simulation_first_tick", parameters: {
+        analytics.logEvent(name: "end_simulation", parameters: {
           "number_of_players": playerHandSettings.value.length,
           "number_of_cards_in_board": board.value.length,
         });
-      })
-      ..requestSimulation(
-        playerHandSettings: playerHandSettings.value,
-        board: board.value,
-      );
+      }
+
+      results.value = [];
+
+      _simulationIsolateService = SimulationIsolateService();
+
+      await _simulationIsolateService.initialize();
+
+      _simulationIsolateService
+        ..onSimulated.listen(
+          (details) {
+            error.value = null;
+            results.value = details.results;
+            progress.value =
+                details.timesSimulated / details.timesWillBeSimulated;
+          },
+          onError: (error) {
+            _simulationIsolateService.dispose();
+            _simulationIsolateService = null;
+
+            if (error is SimulationCancelException) {
+              debugPrint("simulation canceled: ${error.runtimeType}");
+
+              this.error.value = error;
+
+              return;
+            }
+
+            throw error;
+          },
+        )
+        ..onSimulated.first.then((_) {
+          analytics
+              .logEvent(name: "receive_simulation_first_tick", parameters: {
+            "number_of_players": playerHandSettings.value.length,
+            "number_of_cards_in_board": board.value.length,
+          });
+        })
+        ..requestSimulation(
+          playerHandSettings: playerHandSettings.value,
+          board: board.value,
+        );
+    });
   }
 }
