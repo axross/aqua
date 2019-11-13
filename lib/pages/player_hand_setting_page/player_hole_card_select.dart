@@ -46,7 +46,7 @@ class _PlayerHoleCardSelectState extends State<PlayerHoleCardSelect> {
                     width: 64,
                     decoration: BoxDecoration(
                       color: selectedIndex == 0
-                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          ? theme.highlightBackgroundColor
                           : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -65,7 +65,7 @@ class _PlayerHoleCardSelectState extends State<PlayerHoleCardSelect> {
                     width: 64,
                     decoration: BoxDecoration(
                       color: selectedIndex == 1
-                          ? theme.highlightBackgroundColor.withOpacity(0.5)
+                          ? theme.highlightBackgroundColor
                           : null,
                       borderRadius: BorderRadius.circular(8),
                     ),
