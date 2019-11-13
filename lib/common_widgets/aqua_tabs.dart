@@ -178,7 +178,7 @@ class _AquaTabItemState extends State<_AquaTabItem>
                   begin: theme.foregroundColor,
                   end: theme.whiteForegroundColor,
                 ).animate(_animationController).value,
-                size: 16,
+                size: 20,
               ),
             ),
             SizeTransition(
