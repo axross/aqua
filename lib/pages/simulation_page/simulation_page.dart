@@ -297,10 +297,10 @@ class PlayerListViewItem extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                "${playerHandSetting.cardPairCombinations.length} combs",
+                "${(playerHandSetting.cardPairCombinations.length * 100 / 1326).round()}% combs",
                 style: theme.textStyle.copyWith(
                   color: theme.secondaryBackgroundColor,
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
             ],
