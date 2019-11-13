@@ -68,7 +68,7 @@ class _AquaTabsState extends State<AquaTabs> {
                   height: 36,
                   decoration: ShapeDecoration(
                     shape: StadiumBorder(),
-                    color: theme.primaryBackgroundColor,
+                    color: theme.foregroundColor,
                   ),
                 ),
               ),
@@ -190,10 +190,10 @@ class _AquaTabItemState extends State<_AquaTabItem>
               child: Row(
                 children: [
                   SizedBox(width: 4),
-                  ScaleTransition(
-                    scale: Tween(
-                      begin: 0.0,
-                      end: 1.0,
+                  SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(0, 1),
+                      end: Offset(0, 0),
                     ).animate(_animationController),
                     child: Text(
                       widget.label,
