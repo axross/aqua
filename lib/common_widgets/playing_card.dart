@@ -98,7 +98,7 @@ const _rankStrings = {
   Rank.king: "K",
   Rank.queen: "Q",
   Rank.jack: "J",
-  Rank.ten: "10",
+  Rank.ten: "T",
   Rank.nine: "9",
   Rank.eight: "8",
   Rank.seven: "7",
