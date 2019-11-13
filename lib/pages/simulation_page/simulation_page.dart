@@ -143,11 +143,40 @@ class SimulationPage extends StatelessWidget {
             if (error != null)
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                child: Text(
-                  getMessageBySimulationCencelException(error),
-                  style: theme.textStyle
-                      .copyWith(color: theme.errorForegroundColor),
-                ),
+                child: (() {
+                  if (error is InsafficientHandSettingException) {
+                    return Text(
+                      "At least 2 players to calculate",
+                      style: theme.textStyle
+                          .copyWith(color: theme.dimForegroundColor),
+                    );
+                  }
+                  if (error is InvalidBoardException) {
+                    return Text(
+                      "Set the board to be preflop, flop, turn or river to calculate",
+                      style: theme.textStyle
+                          .copyWith(color: theme.errorForegroundColor),
+                    );
+                  }
+
+                  if (error is IncompleteHandSettingException) {
+                    return Text(
+                      "Swipe to delete empty player to calculate",
+                      style: theme.textStyle
+                          .copyWith(color: theme.errorForegroundColor),
+                    );
+                  }
+
+                  if (error is NoPossibleCombinationException) {
+                    return Text(
+                      "No possible combination. Change any player's certain cards or range to calculate",
+                      style: theme.textStyle
+                          .copyWith(color: theme.errorForegroundColor),
+                    );
+                  }
+
+                  throw AssertionError("unreachable here.");
+                })(),
               ),
             Expanded(
               child: PlayerListView(),
@@ -542,19 +571,3 @@ final _handTypeStrings = {
   HandType.pair: "Pair",
   HandType.high: "High",
 };
-
-String getMessageBySimulationCencelException(
-    SimulationCancelException exception) {
-  if (exception is InsafficientHandSettingException)
-    return "At least 2 players to calculate";
-  if (exception is InvalidBoardException)
-    return "Set the board to be preflop, flop, turn or river to calculate";
-  if (exception is IncompleteHandSettingException)
-    return "Swipe to delete empty player to calculate";
-  if (exception is NoPossibleCombinationException)
-    return "No possible combination. Change any player's certain cards or range to calculate";
-
-  assert(false, "unreachable here.");
-
-  return "";
-}
