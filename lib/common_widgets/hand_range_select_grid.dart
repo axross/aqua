@@ -180,7 +180,7 @@ class HandRangeSelectGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
     final backgroundColor = isSelected
-        ? theme.primaryBackgroundColor
+        ? theme.highlightBackgroundColor
         : handRangePart.isPocket
             ? theme.secondaryBackgroundColor
             : theme.dimBackgroundColor;

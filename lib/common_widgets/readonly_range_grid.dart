@@ -60,7 +60,7 @@ class ReadonlyRangeGrid extends StatelessWidget {
                     height: constraints.maxWidth / 13,
                     decoration: BoxDecoration(
                       color: handRange.contains(handRangePart)
-                          ? theme.primaryBackgroundColor
+                          ? theme.highlightBackgroundColor
                           : null,
                       borderRadius: borderRadius,
                     ),
