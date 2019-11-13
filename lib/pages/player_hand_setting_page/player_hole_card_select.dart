@@ -5,6 +5,7 @@ import 'package:aqua/common_widgets/playing_card.dart';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -105,6 +106,8 @@ class _PlayerHoleCardSelectState extends State<PlayerHoleCardSelect> {
   }
 
   void _onCardTapToReplace(int index) {
+    HapticFeedback.lightImpact();
+
     setState(() {
       selectedIndex = index;
     });

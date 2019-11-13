@@ -3,6 +3,7 @@ import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/TinyStadiumButton.dart';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +35,8 @@ class TopButtons extends StatelessWidget {
                   ? theme.heartForegroundColor
                   : theme.dimBackgroundColor,
               onTap: () {
+                HapticFeedback.lightImpact();
+
                 simulationSession.board.value = [null, null, null, null, null];
 
                 Analytics.of(context).logEvent(

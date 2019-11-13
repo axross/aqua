@@ -2,6 +2,7 @@ import 'package:aqua/common_widgets/playing_card.dart';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/rank.dart';
 import 'package:aqua/models/suit.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class CardPicker extends StatelessWidget {
@@ -35,8 +36,11 @@ class CardPicker extends StatelessWidget {
                                       ),
                                     )
                                   : GestureDetector(
-                                      onTap: () =>
-                                          onCardTap(_cards[i ~/ 2][j ~/ 2]),
+                                      onTap: () {
+                                        HapticFeedback.selectionClick();
+
+                                        onCardTap(_cards[i ~/ 2][j ~/ 2]);
+                                      },
                                       child: PlayingCard(
                                         card: _cards[i ~/ 2][j ~/ 2],
                                       ),

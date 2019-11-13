@@ -13,6 +13,7 @@ import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show LinearProgressIndicator;
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
@@ -84,6 +85,8 @@ class SimulationPage extends StatelessWidget {
             SizedBox(height: 10), // LinearProgressIndicator has 6 height
             GestureDetector(
               onTap: () {
+                HapticFeedback.lightImpact();
+
                 Navigator.of(context).push(BoardSettingDialogRoute());
 
                 Analytics.of(context).logEvent(
@@ -173,6 +176,8 @@ class PlayerListView extends StatelessWidget {
 
           return Dismissible(
             onDismissed: (_) {
+              HapticFeedback.mediumImpact();
+
               simulationSession.playerHandSettings.value = [
                 ...playerHandSetting
               ]..removeAt(index);
@@ -276,6 +281,8 @@ class PlayerListViewItem extends StatelessWidget {
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
+            HapticFeedback.lightImpact();
+
             Navigator.of(context).push(PlayerHandSettingDialogRoute(
               settings: RouteSettings(
                 arguments: {"index": index},
@@ -453,6 +460,8 @@ class PlayerListViewNewItem extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
+        HapticFeedback.lightImpact();
+
         final simulationSession = Provider.of<SimulationSession>(context);
         final playerHandSettings = simulationSession.playerHandSettings.value;
 

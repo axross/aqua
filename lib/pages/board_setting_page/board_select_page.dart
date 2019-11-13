@@ -5,6 +5,7 @@ import 'package:aqua/common_widgets/playing_card.dart';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import './top_buttons.dart';
@@ -79,7 +80,11 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       ),
                       padding: EdgeInsets.all(4),
                       child: GestureDetector(
-                        onTap: () => _onCardTapToReplace(0),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+
+                          _onCardTapToReplace(0);
+                        },
                         child: board[0] == null
                             ? PlayingCardBack()
                             : PlayingCard(
@@ -97,7 +102,11 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       ),
                       padding: EdgeInsets.all(4),
                       child: GestureDetector(
-                        onTap: () => _onCardTapToReplace(1),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+
+                          _onCardTapToReplace(1);
+                        },
                         child: board[1] == null
                             ? PlayingCardBack()
                             : PlayingCard(
@@ -115,7 +124,11 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       ),
                       padding: EdgeInsets.all(4),
                       child: GestureDetector(
-                        onTap: () => _onCardTapToReplace(2),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+
+                          _onCardTapToReplace(2);
+                        },
                         child: board[2] == null
                             ? PlayingCardBack()
                             : PlayingCard(
@@ -134,7 +147,11 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       ),
                       padding: EdgeInsets.all(4),
                       child: GestureDetector(
-                        onTap: () => _onCardTapToReplace(3),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+
+                          _onCardTapToReplace(3);
+                        },
                         child: board[3] == null
                             ? PlayingCardBack()
                             : PlayingCard(
@@ -153,7 +170,11 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       ),
                       padding: EdgeInsets.all(4),
                       child: GestureDetector(
-                        onTap: () => _onCardTapToReplace(4),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+
+                          _onCardTapToReplace(4);
+                        },
                         child: board[4] == null
                             ? PlayingCardBack()
                             : PlayingCard(
