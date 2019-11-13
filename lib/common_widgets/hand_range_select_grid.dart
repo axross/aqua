@@ -151,15 +151,15 @@ class HandRangeSelectGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
     final backgroundColor = isSelected
-        ? theme.selectedRangeBackgroundColor
+        ? theme.primaryBackgroundColor
         : handRangePart.isPocket
-            ? theme.pocketRangeBackgroundColor
-            : theme.rangeBackgroundColor;
+            ? theme.secondaryBackgroundColor
+            : theme.dimBackgroundColor;
     final textColor = isSelected
-        ? theme.selectedRangeForegroundColor
+        ? theme.whiteForegroundColor
         : handRangePart.isPocket
-            ? theme.pocketRangeForegroundColor
-            : theme.rangeForegroundColor;
+            ? theme.secondaryForegroundColor
+            : theme.dimForegroundColor;
 
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
@@ -170,7 +170,7 @@ class HandRangeSelectGridItem extends StatelessWidget {
         child: Center(
           child: Text(
             '${_rankTextData[handRangePart.high]}${_rankTextData[handRangePart.kicker]}',
-            style: theme.rangeTextStyle.copyWith(
+            style: theme.textStyle.copyWith(
               color: textColor,
               fontSize: constraints.maxWidth / 2,
             ),

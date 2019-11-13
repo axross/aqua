@@ -73,7 +73,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       width: 64,
                       decoration: BoxDecoration(
                         color: selectedIndex == 0
-                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            ? theme.highlightBackgroundColor
                             : null,
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -91,7 +91,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       width: 64,
                       decoration: BoxDecoration(
                         color: selectedIndex == 1
-                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            ? theme.highlightBackgroundColor
                             : null,
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -109,7 +109,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       width: 64,
                       decoration: BoxDecoration(
                         color: selectedIndex == 2
-                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            ? theme.highlightBackgroundColor
                             : null,
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -128,7 +128,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       width: 64,
                       decoration: BoxDecoration(
                         color: selectedIndex == 3
-                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            ? theme.highlightBackgroundColor
                             : null,
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -147,7 +147,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
                       width: 64,
                       decoration: BoxDecoration(
                         color: selectedIndex == 4
-                            ? theme.highlightBackgroundColor.withOpacity(0.5)
+                            ? theme.highlightBackgroundColor
                             : null,
                         borderRadius: BorderRadius.circular(8),
                       ),

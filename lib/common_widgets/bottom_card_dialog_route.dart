@@ -37,7 +37,7 @@ class BottomCardDialogRoute<T> extends PopupRoute<T> {
     final theme = AquaTheme.of(context);
 
     setSystemUIOverlayStyle(
-      topColor: theme.appBarBackgroundColor,
+      topColor: theme.dimBackgroundColor,
       bottomColor: theme.backgroundColor,
     );
 

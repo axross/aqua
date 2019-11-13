@@ -17,7 +17,7 @@ class ReadonlyRangeGrid extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.rangeBackgroundColor,
+          color: theme.dimBackgroundColor,
           borderRadius: BorderRadius.circular(constraints.maxWidth * 0.05),
         ),
         child: Table(
@@ -60,7 +60,7 @@ class ReadonlyRangeGrid extends StatelessWidget {
                     height: constraints.maxWidth / 13,
                     decoration: BoxDecoration(
                       color: handRange.contains(handRangePart)
-                          ? theme.selectedRangeBackgroundColor
+                          ? theme.primaryBackgroundColor
                           : null,
                       borderRadius: borderRadius,
                     ),
