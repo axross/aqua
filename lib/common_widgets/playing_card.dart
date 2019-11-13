@@ -37,7 +37,7 @@ class PlayingCard extends StatelessWidget {
       child: LayoutBuilder(
         builder: (_, constraints) => DecoratedBox(
           decoration: BoxDecoration(
-            color: theme.playingCardBackgroundColor,
+            color: theme.dimBackgroundColor,
             borderRadius: BorderRadius.circular(constraints.maxWidth * 0.1),
           ),
           child: Stack(
@@ -46,7 +46,7 @@ class PlayingCard extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 child: Text(
                   _rankStrings[card.rank],
-                  style: theme.playingCardTextStyle.copyWith(
+                  style: theme.rankTextStyle.copyWith(
                     color: color,
                     fontSize: constraints.maxHeight * 0.45,
                   ),
@@ -84,7 +84,7 @@ class PlayingCardBack extends StatelessWidget {
       child: LayoutBuilder(
         builder: (_, constraints) => Container(
           decoration: BoxDecoration(
-            color: theme.playingCardBackgroundColor,
+            color: theme.dimBackgroundColor,
             borderRadius: BorderRadius.circular(constraints.maxWidth * 0.1),
           ),
         ),

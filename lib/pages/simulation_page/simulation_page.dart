@@ -25,7 +25,7 @@ class SimulationPage extends StatelessWidget {
     final simulationSession = Provider.of<SimulationSession>(context);
 
     setSystemUIOverlayStyle(
-      topColor: theme.appBarBackgroundColor,
+      topColor: theme.dimBackgroundColor,
       bottomColor: theme.backgroundColor,
     );
 
@@ -36,7 +36,7 @@ class SimulationPage extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              color: theme.appBarBackgroundColor,
+              color: theme.dimBackgroundColor,
               child: SafeArea(
                 bottom: false,
                 child: Container(
@@ -59,8 +59,7 @@ class SimulationPage extends StatelessWidget {
                               return "Odds Calculation";
                           }
                         }(),
-                        style: theme.appBarTextStyle
-                            .copyWith(color: theme.appBarForegroundColor),
+                        style: theme.appBarTextStyle,
                       ),
                     ),
                   ),
@@ -76,7 +75,7 @@ class SimulationPage extends StatelessWidget {
                   valueColor: progress == 1.0
                       ? AlwaysStoppedAnimation<Color>(Color(0x00000000))
                       : AlwaysStoppedAnimation<Color>(
-                          theme.secondaryBackgroundColor,
+                          theme.dimForegroundColor,
                         ),
                   backgroundColor: Color(0x00000000),
                 ),
@@ -183,27 +182,29 @@ class PlayerListView extends StatelessWidget {
               );
             },
             background: Container(
-              color: Color(0xffff6b6b),
+              color: theme.errorBackgroundColor,
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Text(
                     "Delete".toUpperCase(),
-                    style: theme.textStyle.copyWith(color: Color(0xffffffff)),
+                    style: theme.textStyle
+                        .copyWith(color: theme.whiteForegroundColor),
                   ),
                 ),
               ),
             ),
             secondaryBackground: Container(
-              color: Color(0xffff6b6b),
+              color: theme.errorBackgroundColor,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Padding(
                   padding: EdgeInsets.only(right: 16),
                   child: Text(
                     "Delete".toUpperCase(),
-                    style: theme.textStyle.copyWith(color: Color(0xffffffff)),
+                    style: theme.textStyle
+                        .copyWith(color: theme.whiteForegroundColor),
                   ),
                 ),
               ),
@@ -384,14 +385,14 @@ class PlayerListViewItem extends StatelessWidget {
                                   Text(
                                     "${_format(result.drawRate * 100)}",
                                     style: theme.digitTextStyle.copyWith(
-                                      color: theme.secondaryForegroundColor,
+                                      color: theme.dimForegroundColor,
                                       fontSize: 18,
                                     ),
                                   ),
                                   Text(
                                     "% chop",
                                     style: theme.textStyle.copyWith(
-                                      color: theme.secondaryForegroundColor,
+                                      color: theme.dimForegroundColor,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -410,8 +411,7 @@ class PlayerListViewItem extends StatelessWidget {
                                             "${_format(entry.value / result.totalGames * 100)}",
                                             style:
                                                 theme.digitTextStyle.copyWith(
-                                              color: theme
-                                                  .secondaryForegroundColor,
+                                              color: theme.dimForegroundColor,
                                               fontSize: 18,
                                             ),
                                             textAlign: TextAlign.right,
@@ -421,8 +421,7 @@ class PlayerListViewItem extends StatelessWidget {
                                           child: Text(
                                             "% win at ${_handTypeStrings[entry.key].toUpperCase()}",
                                             style: theme.textStyle.copyWith(
-                                              color: theme
-                                                  .secondaryForegroundColor,
+                                              color: theme.dimForegroundColor,
                                               fontSize: 14,
                                             ),
                                             textAlign: TextAlign.left,
@@ -500,11 +499,11 @@ class PlayerListViewNewItem extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Feather.getIconData("plus-circle"),
-                      size: 20, color: theme.secondaryBackgroundColor),
+                      size: 20, color: theme.dimForegroundColor),
                   SizedBox(width: 8),
                   Text("Tap here to add player",
                       style: theme.textStyle
-                          .copyWith(color: theme.secondaryBackgroundColor)),
+                          .copyWith(color: theme.dimForegroundColor)),
                 ],
               ),
             ),

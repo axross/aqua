@@ -28,11 +28,11 @@ class TopButtons extends StatelessWidget {
             child: TinyStadiumButton(
               label: "Clear",
               foregroundColor: board.any((card) => card != null)
-                  ? Color(0xffffffff)
-                  : theme.secondaryBackgroundColor,
+                  ? theme.whiteForegroundColor
+                  : theme.dimForegroundColor,
               backgroundColor: board.any((card) => card != null)
                   ? theme.heartForegroundColor
-                  : theme.playingCardBackgroundColor,
+                  : theme.dimBackgroundColor,
               onTap: () {
                 simulationSession.board.value = [null, null, null, null, null];
 
@@ -49,8 +49,3 @@ class TopButtons extends StatelessWidget {
     );
   }
 }
-
-// const _clearButtonForegroundColor = Color(0xffffffff);
-// const _clearButtonBackgroundColor = Color(0xffff6b6b);
-// const _clearButtonDisabledForegroundColor = Color(0xffc8d6e5);
-// const _clearButtonDisabledBackgroundColor = Color(0x3fc8d6e5);
