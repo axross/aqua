@@ -24,6 +24,7 @@ class _PlayerHandRangeSelectState extends State<PlayerHandRangeSelect> {
         simulationSession.playerHandSettings.value[widget.index];
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         AspectRatio(
           aspectRatio: 1,

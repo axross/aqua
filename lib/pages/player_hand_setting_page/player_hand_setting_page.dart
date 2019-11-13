@@ -1,3 +1,5 @@
+import 'package:aqua/common_widgets/aqua_icons.dart';
+import 'package:aqua/common_widgets/aqua_tabs.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
@@ -34,12 +36,12 @@ class PlayerHandSettingPage extends StatelessWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                PlayerHandSettingTypeSelector(index: index),
-                SizedBox(height: 32),
                 if (playerHandSetting.type == PlayerHandSettingType.holeCards)
                   PlayerHoleCardSelect(index: index),
                 if (playerHandSetting.type == PlayerHandSettingType.handRange)
                   PlayerHandRangeSelect(index: index),
+                SizedBox(height: 32),
+                PlayerHandSettingTypeSelector(index: index),
               ],
             );
           },
