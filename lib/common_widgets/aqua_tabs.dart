@@ -68,7 +68,7 @@ class _AquaTabsState extends State<AquaTabs> {
                   height: 36,
                   decoration: ShapeDecoration(
                     shape: StadiumBorder(),
-                    color: theme.foregroundColor,
+                    color: theme.secondaryBackgroundColor,
                   ),
                 ),
               ),
@@ -176,7 +176,7 @@ class _AquaTabItemState extends State<_AquaTabItem>
                 widget.icon,
                 color: ColorTween(
                   begin: theme.foregroundColor,
-                  end: theme.whiteForegroundColor,
+                  end: theme.foregroundColor,
                 ).animate(_animationController).value,
                 size: 20,
               ),
@@ -198,7 +198,7 @@ class _AquaTabItemState extends State<_AquaTabItem>
                     child: Text(
                       widget.label,
                       style: theme.textStyle
-                          .copyWith(color: theme.whiteForegroundColor),
+                          .copyWith(color: theme.foregroundColor),
                     ),
                   ),
                 ],
