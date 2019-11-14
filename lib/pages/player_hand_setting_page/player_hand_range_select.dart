@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/hand_range_select_grid.dart';
@@ -92,7 +94,9 @@ class _PlayerHandRangeSelectState extends State<PlayerHandRangeSelect> {
                     (value * handRangePartsInStrongnessOrder.length).round();
 
                 if (handRangeLengthTaken != _previousHandRangeLengthTaken) {
-                  HapticFeedback.selectionClick();
+                  if (Platform.isIOS) {
+                    HapticFeedback.selectionClick();
+                  }
 
                   final handRange = handRangePartsInStrongnessOrder
                       .take(handRangeLengthTaken);
