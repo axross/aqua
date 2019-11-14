@@ -41,7 +41,7 @@ class SimulationSession {
       _timer = null;
     }
 
-    _timer = Timer(Duration(milliseconds: 600), () async {
+    _timer = Timer(Duration(milliseconds: 300), () async {
       _timer = null;
 
       if (_simulationIsolateService != null) {
