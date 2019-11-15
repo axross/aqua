@@ -6,14 +6,8 @@ import 'package:meta/meta.dart';
 class Card {
   const Card({@required this.rank, @required this.suit});
 
-  Card.fromJson(Map<String, dynamic> json)
-      : rank = json['rank'],
-        suit = json['suit'];
-
   final Rank rank;
   final Suit suit;
-
-  Map<String, dynamic> toJson() => {'rank': rank, 'suit': suit};
 
   @override
   String toString() {

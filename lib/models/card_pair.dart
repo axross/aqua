@@ -6,14 +6,8 @@ import 'package:meta/meta.dart';
 class CardPair with IterableMixin<Card> {
   CardPair(this._a, this._b);
 
-  CardPair.fromJson(List<Map<String, dynamic>> json)
-      : _a = Card.fromJson(json[0]),
-        _b = Card.fromJson(json[1]);
-
   final Card _a;
   final Card _b;
-
-  List<Map<String, dynamic>> toJson() => [_a.toJson(), _b.toJson()];
 
   @override
   Iterator<Card> get iterator => {_a, _b}.iterator;
