@@ -1,7 +1,9 @@
 import 'dart:io' show Platform;
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/hand_range_select_grid.dart';
+import 'package:aqua/models/card_pair.dart';
 import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/utilities/number_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -92,7 +94,7 @@ class _HandRangeSliderState extends State<_HandRangeSlider> {
           value: widget.playerHandSetting.onlyHandRange.length.toDouble() /
               handRangePartsInStrongnessOrder.length,
           label:
-              "${(widget.playerHandSetting.cardPairCombinations.length * 100 / 1326).round()}% Range",
+              "${formatOnlyWholeNumberPart(widget.playerHandSetting.cardPairCombinations.length / numberOfAllHoleCardCombinations)}% combs",
           onChanged: (value) {
             final handRangeLengthTaken =
                 (value * handRangePartsInStrongnessOrder.length).round();
