@@ -49,8 +49,10 @@ class _AquaAppState extends State<AquaApp> {
             routes: {
               "/": (_) => SimulationPage(),
             },
-            pageRouteBuilder: <T>(settings, builder) =>
-                MaterialPageRoute<T>(builder: builder, settings: settings),
+            pageRouteBuilder: <T>(settings, builder) => MaterialPageRoute<T>(
+              builder: (context) => builder(context),
+              settings: settings,
+            ),
           ),
         ),
       ),

@@ -11,51 +11,68 @@ import './error_message.dart';
 import './player_list.dart';
 import './progress_indicator.dart';
 
-class SimulationPage extends StatelessWidget {
+class SimulationPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
+  _SimulationPageState createState() => _SimulationPageState();
+}
+
+class _SimulationPageState extends State<SimulationPage> {
+  SimulationSession _simulationSession;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
     final theme = AquaTheme.of(context);
-    final simulationSession = SimulationSessionProvider.of(context);
 
     setSystemUIOverlayStyle(
       topColor: theme.dimBackgroundColor,
       bottomColor: theme.backgroundColor,
     );
 
+    if (_simulationSession == null) {
+      _simulationSession = SimulationSessionProvider.of(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
     return AnimatedBuilder(
-      animation: simulationSession,
+      animation: _simulationSession,
       builder: (context, _) => Container(
         color: theme.backgroundColor,
         child: Column(
           children: [
-            AppBarIshBar(board: simulationSession.board),
-            ProgressIndicator(progress: simulationSession.progress),
+            AppBarIshBar(board: _simulationSession.board),
+            ProgressIndicator(progress: _simulationSession.progress),
             SizedBox(height: 14),
             Board(
-              board: simulationSession.board,
+              board: _simulationSession.board,
               onPressed: () {
-                simulationSession.lockStartingSimulation();
+                _simulationSession.lockStartingSimulation();
 
                 Navigator.of(context)
                     .push(BoardSettingDialogRoute())
                     .whenComplete(
-                        () => simulationSession.unlockStartingSimulation());
+                        () => _simulationSession.unlockStartingSimulation());
 
                 Analytics.of(context).logEvent(
                   name: "open_board_select_dialog",
                 );
               },
             ),
-            ErrorMessage(error: simulationSession.error),
+            ErrorMessage(error: _simulationSession.error),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     PlayerList(
-                      playerHandSettings: simulationSession.playerHandSettings,
-                      results: simulationSession.results,
+                      playerHandSettings: _simulationSession.playerHandSettings,
+                      results: _simulationSession.results,
                       onItemPressed: (index) {
-                        simulationSession.lockStartingSimulation();
+                        _simulationSession.lockStartingSimulation();
 
                         Navigator.of(context)
                             .push(PlayerHandSettingDialogRoute(
@@ -64,31 +81,31 @@ class SimulationPage extends StatelessWidget {
                               ),
                             ))
                             .whenComplete(() =>
-                                simulationSession.unlockStartingSimulation());
+                                _simulationSession.unlockStartingSimulation());
 
                         Analytics.of(context).logEvent(
                           name: "open_player_hand_setting_dialog",
                         );
                       },
                       onItemDismissed: (index) =>
-                          simulationSession.removePlayerHandSettingAt(index),
+                          _simulationSession.removePlayerHandSettingAt(index),
                       onNewItemPressed: () {
-                        simulationSession.addPlayerHandSetting();
+                        _simulationSession.addPlayerHandSetting();
 
-                        simulationSession.lockStartingSimulation();
+                        _simulationSession.lockStartingSimulation();
 
                         Navigator.of(context)
                             .push(PlayerHandSettingDialogRoute(
                               settings: RouteSettings(
                                 arguments: {
-                                  "index": simulationSession
+                                  "index": _simulationSession
                                           .playerHandSettings.length -
                                       1,
                                 },
                               ),
                             ))
                             .whenComplete(() =>
-                                simulationSession.unlockStartingSimulation());
+                                _simulationSession.unlockStartingSimulation());
 
                         Analytics.of(context).logEvent(
                           name: "open_player_hand_setting_dialog",
