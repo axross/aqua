@@ -1,5 +1,7 @@
 # Aqua
 
+[![Build Status](https://app.bitrise.io/app/c991d5e40b6ae077/status.svg?token=fLXSCW4kXWgtw8BAcH-kLA&branch=master)](https://app.bitrise.io/app/c991d5e40b6ae077)
+
 ♠️ Beautiful Texas Hold'em poker odds calculator made of Flutter.
 
 <img src="https://user-images.githubusercontent.com/4289883/68385840-81151080-010f-11ea-82e8-78289add7894.gif" alt="Aqua" width="320" />
