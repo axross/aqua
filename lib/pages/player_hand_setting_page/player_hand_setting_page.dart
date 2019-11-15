@@ -4,10 +4,12 @@ import 'package:aqua/common_widgets/aqua_tab.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
-import "package:flutter/widgets.dart";
+import 'package:flutter/widgets.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
-import './player_hand_range_select.dart';
-import './player_hole_card_select.dart';
+import './hand_range_tab_content.dart';
+import './hole_cards_tab_content.dart';
+import './preset_tab_content.dart';
 
 class PlayerHandSettingPage extends StatefulWidget {
   @override
@@ -39,7 +41,7 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
       }
 
       _controller = AquaTabController(
-        length: 2,
+        length: 3,
         initialSelectedTabIndex: initialSelectedTabIndex,
       );
 
@@ -48,24 +50,40 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
         final playerHandSetting = playerHandSettings[index];
         final selectedIndex = _controller.selectedIndex;
 
+        switch (selectedIndex) {
+          case 0:
+            Analytics.of(context).logEvent(
+              name: "update_player_hand_setting_type",
+              parameters: {"to": "hole_cards"},
+            );
+
+            break;
+          case 1:
+            Analytics.of(context).logEvent(
+              name: "update_player_hand_setting_type",
+              parameters: {"to": "range"},
+            );
+
+            break;
+          case 2:
+            Analytics.of(context).logEvent(
+              name: "update_player_hand_setting_type",
+              parameters: {"to": "presets"},
+            );
+
+            break;
+        }
+
         if (selectedIndex == 0 &&
             playerHandSetting.type != PlayerHandSettingType.holeCards) {
           simulationSession.playerHandSettings.value = [...playerHandSettings]
             ..[index] = PlayerHandSetting.emptyHoleCards();
-          Analytics.of(context).logEvent(
-            name: "update_player_hand_setting_type",
-            parameters: {"to": "hole_cards"},
-          );
         }
 
         if (selectedIndex == 1 &&
             playerHandSetting.type != PlayerHandSettingType.handRange) {
           simulationSession.playerHandSettings.value = [...playerHandSettings]
             ..[index] = PlayerHandSetting.emptyHandRange();
-          Analytics.of(context).logEvent(
-            name: "update_player_hand_setting_type",
-            parameters: {"to": "range"},
-          );
         }
       };
 
@@ -91,14 +109,19 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
       child: SafeArea(
         top: false,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 16),
             AquaTabView(
               controller: _controller,
               views: [
-                PlayerHoleCardSelect(index: index),
-                PlayerHandRangeSelect(index: index),
+                HoleCardsTabContent(index: index),
+                HandRangeTabContent(index: index),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: PresetTabContent(index: index),
+                ),
               ],
             ),
             SizedBox(height: 32),
@@ -112,6 +135,10 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
                 AquaTabItem(
                   label: "Range",
                   icon: AquaIcons.handRange,
+                ),
+                AquaTabItem(
+                  label: "Presets",
+                  icon: Feather.getIconData("save"),
                 ),
               ],
             ),
