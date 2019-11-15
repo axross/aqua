@@ -1,6 +1,6 @@
 import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:aqua/models/TinyStadiumButton.dart';
+import 'package:aqua/common_widgets/tiny_stadium_button.dart';
 import 'package:aqua/models/card.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/services.dart';
