@@ -5,7 +5,6 @@ import 'package:aqua/theme_data.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AquaApp extends StatefulWidget {
   AquaApp({@required this.analytics, Key key})
@@ -36,8 +35,8 @@ class _AquaAppState extends State<AquaApp> {
         child: AquaTheme(
           lightThemeData: lightThemeData,
           darkThemeData: darkThemeData,
-          child: Provider.value(
-            value: _simulationSession,
+          child: SimulationSessionProvider(
+            simulationSession: _simulationSession,
             child: WidgetsApp(
               title: 'Odds Calculator',
               color: Color(0xff19232e),

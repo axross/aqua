@@ -7,7 +7,6 @@ import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import './top_buttons.dart';
 
 class BoardSettingPage extends StatefulWidget {
@@ -23,7 +22,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
     super.initState();
 
     Future.microtask(() {
-      final simulationSession = Provider.of<SimulationSession>(context);
+      final simulationSession = SimulationSessionProvider.of(context);
       final firstNullIndex =
           simulationSession.board.value.indexWhere((card) => card == null);
 
@@ -37,7 +36,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
     final theme = AquaTheme.of(context);
 
     return Container(
@@ -218,7 +217,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
   void _onCardTapInPicker(Card card) {
     if (selectedIndex == null) return;
 
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     simulationSession.board.value = [...simulationSession.board.value]
       ..[selectedIndex] = card;

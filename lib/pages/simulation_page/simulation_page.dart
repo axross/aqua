@@ -17,13 +17,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class SimulationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     setSystemUIOverlayStyle(
       topColor: theme.dimBackgroundColor,
@@ -192,7 +191,7 @@ class PlayerListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     return ValueListenableBuilder(
       valueListenable: simulationSession.playerHandSettings,
@@ -263,7 +262,7 @@ class PlayerListViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     return ValueListenableBuilder<List<PlayerHandSetting>>(
       valueListenable: simulationSession.playerHandSettings,
@@ -491,7 +490,7 @@ class PlayerListViewNewItem extends StatelessWidget {
       onTap: () {
         HapticFeedback.lightImpact();
 
-        final simulationSession = Provider.of<SimulationSession>(context);
+        final simulationSession = SimulationSessionProvider.of(context);
         final playerHandSettings = simulationSession.playerHandSettings.value;
 
         simulationSession.playerHandSettings.value = [

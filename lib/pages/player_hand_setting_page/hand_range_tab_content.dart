@@ -7,7 +7,6 @@ import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class HandRangeTabContent extends StatefulWidget {
   HandRangeTabContent({this.index, Key key})
@@ -28,7 +27,7 @@ class _HandRangeTabContentState extends State<HandRangeTabContent> {
     super.initState();
 
     Future.microtask(() {
-      final simulationSession = Provider.of<SimulationSession>(context);
+      final simulationSession = SimulationSessionProvider.of(context);
       final handSetting =
           simulationSession.playerHandSettings.value[widget.index];
 
@@ -40,7 +39,7 @@ class _HandRangeTabContentState extends State<HandRangeTabContent> {
 
   @override
   Widget build(BuildContext context) {
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
     final handSetting =
         simulationSession.playerHandSettings.value[widget.index];
     final theme = AquaTheme.of(context);

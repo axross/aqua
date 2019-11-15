@@ -5,7 +5,7 @@ import 'package:aqua/models/simulation_result.dart';
 import 'package:aqua/models/simulator.dart';
 import 'package:aqua/services/simulation_isolate_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 class SimulationSession {
   SimulationSession.initial({@required this.analytics})
@@ -95,4 +95,24 @@ class SimulationSession {
         );
     });
   }
+}
+
+class SimulationSessionProvider extends InheritedWidget {
+  SimulationSessionProvider({
+    @required this.simulationSession,
+    Widget child,
+    Key key,
+  })  : assert(simulationSession != null),
+        super(key: key, child: child);
+
+  final SimulationSession simulationSession;
+
+  @override
+  bool updateShouldNotify(SimulationSessionProvider old) =>
+      simulationSession != old.simulationSession;
+
+  static SimulationSession of(BuildContext context) =>
+      (context.inheritFromWidgetOfExactType(SimulationSessionProvider)
+              as SimulationSessionProvider)
+          .simulationSession;
 }

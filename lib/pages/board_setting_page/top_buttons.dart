@@ -5,7 +5,6 @@ import 'package:aqua/models/card.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class TopButtons extends StatelessWidget {
   TopButtons({@required this.onClearButtonTapped, Key key})
@@ -17,7 +16,7 @@ class TopButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     return ValueListenableBuilder<List<Card>>(
       valueListenable: simulationSession.board,
