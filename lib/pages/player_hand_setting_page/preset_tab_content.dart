@@ -1,17 +1,23 @@
 import 'package:aqua/bundled_presets.dart';
-import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/preset_list_item.dart';
+import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/player_hand_setting_preset.dart';
-import 'package:aqua/view_models/simulation_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class PresetTabContent extends StatelessWidget {
-  PresetTabContent({this.index, Key key})
-      : assert(index != null),
+  PresetTabContent({
+    this.playerHandSetting,
+    this.onPresetSelected,
+    Key key,
+  })  : assert(playerHandSetting != null),
+        assert(onPresetSelected != null),
         super(key: key);
 
-  final int index;
+  final PlayerHandSetting playerHandSetting;
+
+  final void Function(PlayerHandSettingPreset) onPresetSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -42,21 +48,7 @@ class PresetTabContent extends StatelessWidget {
   }
 
   _onPresetTapped(BuildContext context, PlayerHandSettingPreset preset) {
-    final simulationSession = SimulationSessionProvider.of(context);
-
-    simulationSession.playerHandSettings.value = [
-      ...simulationSession.playerHandSettings.value
-    ]..[index] = preset.toPlayerHandSetting();
-
-    Analytics.of(context).logEvent(
-      name: "update_player_hand_setting",
-      parameters: {
-        "type": "range",
-        "length": preset.parts.length,
-        "via": "preset",
-        "is_custom": false,
-      },
-    );
+    onPresetSelected(preset);
 
     Navigator.of(context).pop();
   }

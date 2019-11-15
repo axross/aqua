@@ -1,9 +1,7 @@
-import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/card_picker.dart';
 import 'package:aqua/common_widgets/playing_card.dart';
 import 'package:aqua/models/card.dart';
-import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -15,28 +13,28 @@ class BoardSettingPage extends StatefulWidget {
 }
 
 class _BoardSettingPageState extends State<BoardSettingPage> {
-  int selectedIndex = 0;
+  SimulationSession _simulationSession;
+
+  int _selectedIndex;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    Future.microtask(() {
-      final simulationSession = SimulationSessionProvider.of(context);
+    if (_simulationSession == null) {
+      _simulationSession = SimulationSessionProvider.of(context);
+    }
+
+    if (_selectedIndex == null) {
       final firstNullIndex =
-          simulationSession.board.value.indexWhere((card) => card == null);
+          _simulationSession.board.indexWhere((card) => card == null);
 
-      if (firstNullIndex != -1) {
-        setState(() {
-          selectedIndex = firstNullIndex;
-        });
-      }
-    });
+      _selectedIndex = firstNullIndex == -1 ? 0 : firstNullIndex;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final simulationSession = SimulationSessionProvider.of(context);
     final theme = AquaTheme.of(context);
 
     return Container(
@@ -50,185 +48,167 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
       padding: EdgeInsets.symmetric(vertical: 16),
       child: SafeArea(
         top: false,
-        child: ValueListenableBuilder<List<Card>>(
-          valueListenable: simulationSession.board,
-          builder: (context, board, _) =>
-              ValueListenableBuilder<List<PlayerHandSetting>>(
-            valueListenable: simulationSession.playerHandSettings,
-            builder: (context, playerHandSettings, _) => Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TopButtons(
-                  onClearButtonTapped: () {
-                    setState(() {
-                      selectedIndex = 0;
-                    });
-                  },
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 64,
-                      decoration: BoxDecoration(
-                        color: selectedIndex == 0
-                            ? theme.highlightBackgroundColor
-                            : null,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-
-                          _onCardTapToReplace(0);
-                        },
-                        child: board[0] == null
-                            ? PlayingCardBack()
-                            : PlayingCard(
-                                card: board[0],
-                              ),
-                      ),
+        child: AnimatedBuilder(
+          animation: _simulationSession,
+          builder: (context, _) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TopButtons(
+                canClear: _simulationSession.board.any((card) => card != null),
+                onClearButtonTapped: _onClearButtonTapped,
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: _selectedIndex == 0
+                          ? theme.highlightBackgroundColor
+                          : null,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    Container(
-                      width: 64,
-                      decoration: BoxDecoration(
-                        color: selectedIndex == 1
-                            ? theme.highlightBackgroundColor
-                            : null,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
 
-                          _onCardTapToReplace(1);
-                        },
-                        child: board[1] == null
-                            ? PlayingCardBack()
-                            : PlayingCard(
-                                card: board[1],
-                              ),
-                      ),
+                        _onCardTapToReplace(0);
+                      },
+                      child: _simulationSession.board[0] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: _simulationSession.board[0],
+                            ),
                     ),
-                    Container(
-                      width: 64,
-                      decoration: BoxDecoration(
-                        color: selectedIndex == 2
-                            ? theme.highlightBackgroundColor
-                            : null,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-
-                          _onCardTapToReplace(2);
-                        },
-                        child: board[2] == null
-                            ? PlayingCardBack()
-                            : PlayingCard(
-                                card: board[2],
-                              ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Container(
-                      width: 64,
-                      decoration: BoxDecoration(
-                        color: selectedIndex == 3
-                            ? theme.highlightBackgroundColor
-                            : null,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-
-                          _onCardTapToReplace(3);
-                        },
-                        child: board[3] == null
-                            ? PlayingCardBack()
-                            : PlayingCard(
-                                card: board[3],
-                              ),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Container(
-                      width: 64,
-                      decoration: BoxDecoration(
-                        color: selectedIndex == 4
-                            ? theme.highlightBackgroundColor
-                            : null,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-
-                          _onCardTapToReplace(4);
-                        },
-                        child: board[4] == null
-                            ? PlayingCardBack()
-                            : PlayingCard(
-                                card: board[4],
-                              ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 32),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: CardPicker(
-                    unavailableCards: {
-                      ...board,
-                      ...playerHandSettings
-                          .where((playerHandSetting) =>
-                              playerHandSetting.type ==
-                              PlayerHandSettingType.holeCards)
-                          .fold<Set<Card>>(
-                              Set<Card>(),
-                              (set, playerHandSetting) => set
-                                ..add(playerHandSetting.onlyHoleCards.left)
-                                ..add(playerHandSetting.onlyHoleCards.right))
-                    },
-                    onCardTap: _onCardTapInPicker,
                   ),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: _selectedIndex == 1
+                          ? theme.highlightBackgroundColor
+                          : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+
+                        _onCardTapToReplace(1);
+                      },
+                      child: _simulationSession.board[1] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: _simulationSession.board[1],
+                            ),
+                    ),
+                  ),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: _selectedIndex == 2
+                          ? theme.highlightBackgroundColor
+                          : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+
+                        _onCardTapToReplace(2);
+                      },
+                      child: _simulationSession.board[2] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: _simulationSession.board[2],
+                            ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: _selectedIndex == 3
+                          ? theme.highlightBackgroundColor
+                          : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+
+                        _onCardTapToReplace(3);
+                      },
+                      child: _simulationSession.board[3] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: _simulationSession.board[3],
+                            ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    width: 64,
+                    decoration: BoxDecoration(
+                      color: _selectedIndex == 4
+                          ? theme.highlightBackgroundColor
+                          : null,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(4),
+                    child: GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+
+                        _onCardTapToReplace(4);
+                      },
+                      child: _simulationSession.board[4] == null
+                          ? PlayingCardBack()
+                          : PlayingCard(
+                              card: _simulationSession.board[4],
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 32),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: CardPicker(
+                  unavailableCards: _simulationSession.usedCards,
+                  onCardTap: _onCardTapInPicker,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
+  void _onClearButtonTapped() {
+    setState(() {
+      _selectedIndex = 0;
+    });
+
+    _simulationSession.clearBoard();
+  }
+
   void _onCardTapToReplace(int index) => setState(() {
-        selectedIndex = index;
+        _selectedIndex = index;
       });
 
   void _onCardTapInPicker(Card card) {
-    if (selectedIndex == null) return;
+    if (_selectedIndex == null) return;
 
-    final simulationSession = SimulationSessionProvider.of(context);
-
-    simulationSession.board.value = [...simulationSession.board.value]
-      ..[selectedIndex] = card;
+    _simulationSession.setBoardAt(_selectedIndex, card);
 
     setState(() {
-      selectedIndex = (selectedIndex + 1) % 5;
+      _selectedIndex = (_selectedIndex + 1) % 5;
     });
-
-    Analytics.of(context).logEvent(
-      name: "update_board_cards",
-      parameters: {"next_length": simulationSession.board.value.length},
-    );
   }
 }
