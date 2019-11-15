@@ -8,6 +8,11 @@ import 'package:meta/meta.dart';
 class PlayerHandSetting {
   const PlayerHandSetting({@required this.parts}) : assert(parts != null);
 
+  PlayerHandSetting.fromHoleCards({
+    @required Card left,
+    @required Card right,
+  }) : parts = {HoleCards(left: left, right: right)};
+
   PlayerHandSetting.emptyHoleCards() : parts = {HoleCards()};
 
   PlayerHandSetting.emptyHandRange() : parts = {};

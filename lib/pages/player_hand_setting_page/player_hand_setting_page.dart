@@ -20,17 +20,28 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
 
   Function _listener;
 
+  int _index;
+
+  SimulationSession _simulationSession;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final simulationSession = SimulationSessionProvider.of(context);
-    final index = (ModalRoute.of(context).settings.arguments
-        as Map<String, int>)["index"];
+
+    if (_index == null) {
+      _index = (ModalRoute.of(context).settings.arguments
+          as Map<String, int>)["index"];
+    }
+
+    if (_simulationSession == null) {
+      _simulationSession = SimulationSessionProvider.of(context);
+    }
 
     if (_controller == null) {
+      final playerHandSetting = _simulationSession.playerHandSettings[_index];
       int initialSelectedTabIndex;
 
-      switch (simulationSession.playerHandSettings.value[index].type) {
+      switch (playerHandSetting.type) {
         case PlayerHandSettingType.holeCards:
           initialSelectedTabIndex = 0;
           break;
@@ -45,8 +56,7 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
       );
 
       _listener = () {
-        final playerHandSettings = simulationSession.playerHandSettings.value;
-        final playerHandSetting = playerHandSettings[index];
+        final playerHandSetting = _simulationSession.playerHandSettings[_index];
         final selectedIndex = _controller.selectedIndex;
 
         switch (selectedIndex) {
@@ -75,14 +85,14 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
 
         if (selectedIndex == 0 &&
             playerHandSetting.type != PlayerHandSettingType.holeCards) {
-          simulationSession.playerHandSettings.value = [...playerHandSettings]
-            ..[index] = PlayerHandSetting.emptyHoleCards();
+          _simulationSession.setEmptyPlayerHandSettingAt(_index,
+              type: PlayerHandSettingType.holeCards);
         }
 
         if (selectedIndex == 1 &&
             playerHandSetting.type != PlayerHandSettingType.handRange) {
-          simulationSession.playerHandSettings.value = [...playerHandSettings]
-            ..[index] = PlayerHandSetting.emptyHandRange();
+          _simulationSession.setEmptyPlayerHandSettingAt(_index,
+              type: PlayerHandSettingType.handRange);
         }
       };
 
@@ -92,8 +102,6 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final index = (ModalRoute.of(context).settings.arguments
-        as Map<String, int>)["index"];
     final theme = AquaTheme.of(context);
 
     return Container(
@@ -112,16 +120,50 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 16),
-            AquaTabView(
-              controller: _controller,
-              views: [
-                HoleCardsTabContent(index: index),
-                HandRangeTabContent(index: index),
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: PresetTabContent(index: index),
+            Flexible(
+              fit: FlexFit.loose,
+              child: AnimatedBuilder(
+                animation: _simulationSession,
+                builder: (context, _) => AquaTabView(
+                  controller: _controller,
+                  views: [
+                    HoleCardsTabContent(
+                      playerHandSetting:
+                          _simulationSession.playerHandSettings[_index],
+                      unavailableCards: _simulationSession.usedCards,
+                      onCardPicked: (left, right) {
+                        _simulationSession.setHoleCardsAt(
+                          _index,
+                          left: left,
+                          right: right,
+                        );
+                      },
+                    ),
+                    HandRangeTabContent(
+                      playerHandSetting:
+                          _simulationSession.playerHandSettings[_index],
+                      onChanged: (handRange, {@required String via}) {
+                        _simulationSession.setHandRangeAt(
+                          _index,
+                          handRange,
+                          via: via,
+                        );
+                      },
+                    ),
+                    PresetTabContent(
+                      playerHandSetting:
+                          _simulationSession.playerHandSettings[_index],
+                      onPresetSelected: (preset) {
+                        _simulationSession.setPlayerHandSettingFromPresetAt(
+                          _index,
+                          preset,
+                          via: "preset",
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
             SizedBox(height: 32),
             AquaTabBar(

@@ -1,59 +1,237 @@
 import 'dart:async' show Timer;
 import 'package:aqua/models/card.dart';
 import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/models/player_hand_setting_preset.dart';
 import 'package:aqua/models/simulation_result.dart';
 import 'package:aqua/models/simulator.dart';
 import 'package:aqua/services/simulation_isolate_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/widgets.dart';
 
-class SimulationSession {
-  SimulationSession.initial({@required this.analytics})
+class SimulationSession extends ChangeNotifier {
+  SimulationSession.initial({@required FirebaseAnalytics analytics})
       : assert(analytics != null),
-        board = ValueNotifier(<Card>[null, null, null, null, null]),
-        playerHandSettings = ValueNotifier([]),
-        results = ValueNotifier([]),
-        error = ValueNotifier(null),
-        progress = ValueNotifier(0) {
-    board.addListener(_onSituationChanged);
-    playerHandSettings.addListener(_onSituationChanged);
+        _analytics = analytics,
+        _board = [null, null, null, null, null],
+        _playerHandSettings = [],
+        _usedCards = {},
+        _results = [],
+        _error = null,
+        _progress = 0;
+
+  final FirebaseAnalytics _analytics;
+
+  Set<Card> _usedCards;
+
+  Set<Card> get usedCards => _usedCards;
+
+  List<Card> _board;
+
+  List<Card> get board => _board;
+
+  setBoardAt(int index, Card card) {
+    _board[index] = card;
+
+    _refreshUsedCards();
+    _enqueueSimulation();
+    notifyListeners();
+
+    _analytics.logEvent(
+      name: "update_board_cards",
+      parameters: {"next_length": _board.length},
+    );
   }
 
-  final FirebaseAnalytics analytics;
+  clearBoard() {
+    _board = [null, null, null, null, null];
 
-  final ValueNotifier<List<Card>> board;
+    _refreshUsedCards();
+    _enqueueSimulation();
+    notifyListeners();
 
-  final ValueNotifier<List<PlayerHandSetting>> playerHandSettings;
+    _analytics.logEvent(
+      name: "update_board_cards",
+      parameters: {
+        "next_length": _board.length,
+        "is_clear": true,
+      },
+    );
+  }
 
-  final ValueNotifier<List<SimulationResult>> results;
+  List<PlayerHandSetting> _playerHandSettings;
 
-  final ValueNotifier<SimulationCancelException> error;
+  List<PlayerHandSetting> get playerHandSettings => _playerHandSettings;
 
-  final ValueNotifier<double> progress;
+  void addPlayerHandSetting() {
+    _playerHandSettings.add(PlayerHandSetting.emptyHoleCards());
+
+    _refreshUsedCards();
+    notifyListeners();
+
+    _analytics.logEvent(
+      name: "add_player_hand_setting",
+    );
+  }
+
+  void removePlayerHandSettingAt(int index) {
+    _playerHandSettings.removeAt(index);
+
+    _analytics.logEvent(
+      name: "delete_player_hand_setting",
+    );
+
+    _refreshUsedCards();
+    _enqueueSimulation();
+    notifyListeners();
+  }
+
+  void setEmptyPlayerHandSettingAt(
+    int index, {
+    @required PlayerHandSettingType type,
+    String via,
+  }) {
+    if (type == PlayerHandSettingType.holeCards) {
+      _setPlayerHandSettingAt(index, PlayerHandSetting.emptyHoleCards());
+
+      return;
+    }
+
+    if (type == PlayerHandSettingType.handRange) {
+      _setPlayerHandSettingAt(index, PlayerHandSetting.emptyHandRange());
+
+      return;
+    }
+
+    throw AssertionError("unreachable here.");
+  }
+
+  void setHoleCardsAt(
+    int index, {
+    @required Card left,
+    @required Card right,
+    String via,
+  }) {
+    assert(_playerHandSettings[index].type == PlayerHandSettingType.holeCards);
+
+    _setPlayerHandSettingAt(
+      index,
+      PlayerHandSetting.fromHoleCards(left: left, right: right),
+      via: via,
+    );
+  }
+
+  void setHandRangeAt(
+    int index,
+    Set<HandRangePart> handRange, {
+    String via,
+  }) {
+    assert(_playerHandSettings[index].type == PlayerHandSettingType.handRange);
+
+    _setPlayerHandSettingAt(
+      index,
+      PlayerHandSetting(parts: handRange),
+      via: via,
+    );
+  }
+
+  void setPlayerHandSettingFromPresetAt(
+    int index,
+    PlayerHandSettingPreset preset, {
+    String via,
+  }) {
+    _setPlayerHandSettingAt(
+      index,
+      preset.toPlayerHandSetting(),
+      via: via,
+    );
+  }
+
+  void _setPlayerHandSettingAt(
+    int index,
+    PlayerHandSetting playerHandSetting, {
+    String via,
+  }) {
+    _playerHandSettings[index] = playerHandSetting;
+
+    _refreshUsedCards();
+    _enqueueSimulation();
+    notifyListeners();
+
+    _analytics.logEvent(
+      name: "update_player_hand_setting",
+      parameters: {
+        "type": (() {
+          switch (playerHandSetting.type) {
+            case PlayerHandSettingType.holeCards:
+              return "hole_cards";
+            case PlayerHandSettingType.handRange:
+              return "hand_range";
+          }
+
+          throw AssertionError("unreachable here.");
+        })(),
+        if (via != null) ...{
+          "via": via,
+        },
+        if (playerHandSetting.type == PlayerHandSettingType.handRange) ...{
+          "length": playerHandSetting.onlyHandRange.length,
+        },
+      },
+    );
+  }
+
+  List<SimulationResult> _results;
+
+  get results => _results;
+
+  SimulationCancelException _error;
+
+  get error => _error;
+
+  double _progress;
+
+  get progress => _progress;
 
   SimulationIsolateService _simulationIsolateService;
 
   Timer _timer;
 
-  void _onSituationChanged() {
+  void _refreshUsedCards() {
+    _usedCards = {
+      ..._board,
+      ..._playerHandSettings
+          .where((playerHandSetting) =>
+              playerHandSetting.type == PlayerHandSettingType.holeCards)
+          .fold<Set<Card>>(
+              Set<Card>(),
+              (set, playerHandSetting) => set
+                ..add(playerHandSetting.onlyHoleCards.left)
+                ..add(playerHandSetting.onlyHoleCards.right))
+    };
+  }
+
+  void _enqueueSimulation() {
     if (_timer != null) {
       _timer.cancel();
       _timer = null;
     }
 
-    _timer = Timer(Duration(milliseconds: 300), () async {
+    _timer = Timer(const Duration(milliseconds: 300), () async {
       _timer = null;
 
       if (_simulationIsolateService != null) {
         _simulationIsolateService.dispose();
 
-        analytics.logEvent(name: "end_simulation", parameters: {
-          "number_of_players": playerHandSettings.value.length,
-          "number_of_cards_in_board": board.value.length,
+        _analytics.logEvent(name: "end_simulation", parameters: {
+          "number_of_players": _playerHandSettings.length,
+          "number_of_cards_in_board": _board.length,
         });
       }
 
-      results.value = [];
+      _results = [];
+      _progress = 0;
+
+      notifyListeners();
 
       _simulationIsolateService = SimulationIsolateService();
 
@@ -62,10 +240,11 @@ class SimulationSession {
       _simulationIsolateService
         ..onSimulated.listen(
           (details) {
-            error.value = null;
-            results.value = details.results;
-            progress.value =
-                details.timesSimulated / details.timesWillBeSimulated;
+            _error = null;
+            _results = details.results;
+            _progress = details.timesSimulated / details.timesWillBeSimulated;
+
+            notifyListeners();
           },
           onError: (error) {
             _simulationIsolateService.dispose();
@@ -74,7 +253,9 @@ class SimulationSession {
             if (error is SimulationCancelException) {
               debugPrint("simulation canceled: ${error.runtimeType}");
 
-              this.error.value = error;
+              this._error = error;
+
+              notifyListeners();
 
               return;
             }
@@ -83,15 +264,17 @@ class SimulationSession {
           },
         )
         ..onSimulated.first.then((_) {
-          analytics
-              .logEvent(name: "receive_simulation_first_tick", parameters: {
-            "number_of_players": playerHandSettings.value.length,
-            "number_of_cards_in_board": board.value.length,
-          });
+          _analytics.logEvent(
+            name: "receive_simulation_first_tick",
+            parameters: {
+              "number_of_players": _playerHandSettings.length,
+              "number_of_cards_in_board": _board.length,
+            },
+          );
         })
         ..requestSimulation(
-          playerHandSettings: playerHandSettings.value,
-          board: board.value,
+          playerHandSettings: _playerHandSettings.toList(),
+          board: _board,
         );
     });
   }
