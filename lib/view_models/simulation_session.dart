@@ -66,6 +66,7 @@ class SimulationSession extends ChangeNotifier {
     _playerHandSettings.add(PlayerHandSetting.emptyHoleCards());
 
     _refreshUsedCards();
+    _enqueueSimulation();
     notifyListeners();
 
     _analytics.logEvent(
