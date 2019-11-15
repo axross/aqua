@@ -4,13 +4,12 @@ import 'package:flutter/widgets.dart';
 class Analytics extends InheritedWidget {
   Analytics({
     @required this.analytics,
-    @required this.child,
+    Widget child,
+    Key key,
   })  : assert(analytics != null),
-        assert(child != null);
+        super(key: key, child: child);
 
   final FirebaseAnalytics analytics;
-
-  final Widget child;
 
   @override
   bool updateShouldNotify(Analytics old) => analytics != old.analytics;
