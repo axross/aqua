@@ -7,7 +7,6 @@ import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class HoleCardsTabContent extends StatefulWidget {
   HoleCardsTabContent({this.index, Key key})
@@ -26,7 +25,7 @@ class _HoleCardsTabContentState extends State<HoleCardsTabContent> {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     return ValueListenableBuilder<List<Card>>(
       valueListenable: simulationSession.board,
@@ -116,7 +115,7 @@ class _HoleCardsTabContentState extends State<HoleCardsTabContent> {
   void _onCardTapInPicker(Card card) {
     if (selectedIndex == null) return;
 
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
     final handSetting =
         simulationSession.playerHandSettings.value[widget.index];
 

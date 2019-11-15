@@ -5,7 +5,6 @@ import 'package:aqua/common_widgets/preset_list_item.dart';
 import 'package:aqua/models/player_hand_setting_preset.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class PresetTabContent extends StatelessWidget {
   PresetTabContent({this.index, Key key})
@@ -43,7 +42,7 @@ class PresetTabContent extends StatelessWidget {
   }
 
   _onPresetTapped(BuildContext context, PlayerHandSettingPreset preset) {
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     simulationSession.playerHandSettings.value = [
       ...simulationSession.playerHandSettings.value

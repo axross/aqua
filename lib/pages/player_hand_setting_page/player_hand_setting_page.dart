@@ -6,7 +6,6 @@ import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:provider/provider.dart';
 import './hand_range_tab_content.dart';
 import './hole_cards_tab_content.dart';
 import './preset_tab_content.dart';
@@ -24,7 +23,7 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
     final index = (ModalRoute.of(context).settings.arguments
         as Map<String, int>)["index"];
 

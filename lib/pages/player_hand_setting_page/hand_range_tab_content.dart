@@ -7,7 +7,6 @@ import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class HandRangeTabContent extends StatelessWidget {
   HandRangeTabContent({this.index, Key key})
@@ -18,7 +17,7 @@ class HandRangeTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -72,7 +71,8 @@ class _HandRangeSliderState extends State<_HandRangeSlider> {
     super.didChangeDependencies();
 
     if (_previousHandRangeLengthTaken == null) {
-      final simulationSession = Provider.of<SimulationSession>(context);
+      final simulationSession = SimulationSessionProvider.of(context);
+
       final handSetting =
           simulationSession.playerHandSettings.value[widget.index];
 
@@ -84,7 +84,7 @@ class _HandRangeSliderState extends State<_HandRangeSlider> {
 
   @override
   Widget build(BuildContext context) {
-    final simulationSession = Provider.of<SimulationSession>(context);
+    final simulationSession = SimulationSessionProvider.of(context);
     final theme = AquaTheme.of(context);
 
     return ValueListenableBuilder<List<PlayerHandSetting>>(
