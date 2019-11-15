@@ -80,11 +80,15 @@ class SimulationPage extends StatelessWidget {
               onTap: () {
                 HapticFeedback.lightImpact();
 
-                Navigator.of(context).push(BoardSettingDialogRoute());
-
                 Analytics.of(context).logEvent(
                   name: "open_board_select_dialog",
                 );
+
+                simulationSession.lockStartingSimulation();
+
+                Navigator.of(context)
+                    .push(BoardSettingDialogRoute())
+                    .then((_) => simulationSession.unlockStartingSimulation());
               },
               behavior: HitTestBehavior.opaque,
               child: Padding(
@@ -210,17 +214,22 @@ class PlayerListView extends StatelessWidget {
             onTap: () {
               simulationSession.addPlayerHandSetting();
 
-              Navigator.of(context).push(PlayerHandSettingDialogRoute(
-                settings: RouteSettings(
-                  arguments: {
-                    "index": simulationSession.playerHandSettings.length - 1,
-                  },
-                ),
-              ));
-
               Analytics.of(context).logEvent(
                 name: "open_player_hand_setting_dialog",
               );
+
+              simulationSession.lockStartingSimulation();
+
+              Navigator.of(context)
+                  .push(PlayerHandSettingDialogRoute(
+                    settings: RouteSettings(
+                      arguments: {
+                        "index":
+                            simulationSession.playerHandSettings.length - 1,
+                      },
+                    ),
+                  ))
+                  .then((_) => simulationSession.unlockStartingSimulation());
             },
           );
         }
@@ -262,16 +271,20 @@ class PlayerListView extends StatelessWidget {
           child: PlayerListViewItem(
               playerHandSetting: playerHandSettings[index],
               result: results.length > index ? results[index] : null,
-              onTap: () {
-                Navigator.of(context).push(PlayerHandSettingDialogRoute(
-                  settings: RouteSettings(
-                    arguments: {"index": index},
-                  ),
-                ));
-
+              onTap: () async {
                 Analytics.of(context).logEvent(
                   name: "open_player_hand_setting_dialog",
                 );
+
+                simulationSession.lockStartingSimulation();
+
+                Navigator.of(context)
+                    .push(PlayerHandSettingDialogRoute(
+                      settings: RouteSettings(
+                        arguments: {"index": index},
+                      ),
+                    ))
+                    .then((_) => simulationSession.unlockStartingSimulation());
               }),
           key: ObjectKey(playerHandSettings[index]),
         );

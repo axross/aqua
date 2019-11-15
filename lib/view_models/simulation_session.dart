@@ -192,6 +192,25 @@ class SimulationSession extends ChangeNotifier {
 
   get progress => _progress;
 
+  int _lockCount = 0;
+  bool _isEnqueuedWhileLock = false;
+
+  void lockStartingSimulation() {
+    _lockCount += 1;
+  }
+
+  void unlockStartingSimulation() {
+    assert(_lockCount >= 1);
+
+    _lockCount -= 1;
+
+    if (_lockCount == 0 && _isEnqueuedWhileLock) {
+      _isEnqueuedWhileLock = false;
+
+      _enqueueSimulation();
+    }
+  }
+
   SimulationIsolateService _simulationIsolateService;
 
   Timer _timer;
@@ -210,73 +229,75 @@ class SimulationSession extends ChangeNotifier {
     };
   }
 
-  void _enqueueSimulation() {
+  void _enqueueSimulation() async {
+    if (_lockCount >= 1) {
+      _isEnqueuedWhileLock = true;
+
+      return;
+    }
+
     if (_timer != null) {
       _timer.cancel();
       _timer = null;
     }
 
-    _timer = Timer(const Duration(milliseconds: 300), () async {
-      _timer = null;
+    if (_simulationIsolateService != null) {
+      _simulationIsolateService.dispose();
 
-      if (_simulationIsolateService != null) {
-        _simulationIsolateService.dispose();
+      _analytics.logEvent(name: "end_simulation", parameters: {
+        "number_of_players": _playerHandSettings.length,
+        "number_of_cards_in_board": _board.length,
+      });
+    }
 
-        _analytics.logEvent(name: "end_simulation", parameters: {
-          "number_of_players": _playerHandSettings.length,
-          "number_of_cards_in_board": _board.length,
-        });
-      }
+    _results = [];
+    _progress = 0;
 
-      _results = [];
-      _progress = 0;
+    notifyListeners();
 
-      notifyListeners();
+    _simulationIsolateService = SimulationIsolateService();
 
-      _simulationIsolateService = SimulationIsolateService();
+    await _simulationIsolateService.initialize();
 
-      await _simulationIsolateService.initialize();
+    _simulationIsolateService
+      ..onSimulated.listen(
+        (details) {
+          _error = null;
+          _results = details.results;
+          _progress = details.timesSimulated / details.timesWillBeSimulated;
 
-      _simulationIsolateService
-        ..onSimulated.listen(
-          (details) {
-            _error = null;
-            _results = details.results;
-            _progress = details.timesSimulated / details.timesWillBeSimulated;
+          notifyListeners();
+        },
+        onError: (error) {
+          _simulationIsolateService.dispose();
+          _simulationIsolateService = null;
+
+          if (error is SimulationCancelException) {
+            debugPrint("simulation canceled: ${error.runtimeType}");
+
+            this._error = error;
 
             notifyListeners();
+
+            return;
+          }
+
+          throw error;
+        },
+      )
+      ..onSimulated.first.then((_) {
+        _analytics.logEvent(
+          name: "receive_simulation_first_tick",
+          parameters: {
+            "number_of_players": _playerHandSettings.length,
+            "number_of_cards_in_board": _board.length,
           },
-          onError: (error) {
-            _simulationIsolateService.dispose();
-            _simulationIsolateService = null;
-
-            if (error is SimulationCancelException) {
-              debugPrint("simulation canceled: ${error.runtimeType}");
-
-              this._error = error;
-
-              notifyListeners();
-
-              return;
-            }
-
-            throw error;
-          },
-        )
-        ..onSimulated.first.then((_) {
-          _analytics.logEvent(
-            name: "receive_simulation_first_tick",
-            parameters: {
-              "number_of_players": _playerHandSettings.length,
-              "number_of_cards_in_board": _board.length,
-            },
-          );
-        })
-        ..requestSimulation(
-          playerHandSettings: _playerHandSettings.toList(),
-          board: _board,
         );
-    });
+      })
+      ..requestSimulation(
+        playerHandSettings: _playerHandSettings.toList(),
+        board: _board,
+      );
   }
 }
 
