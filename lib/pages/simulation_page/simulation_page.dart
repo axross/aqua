@@ -11,16 +11,28 @@ import './error_message.dart';
 import './player_list.dart';
 import './progress_indicator.dart';
 
-class SimulationPage extends StatelessWidget {
+class SimulationPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
+  _SimulationPageState createState() => _SimulationPageState();
+}
+
+class _SimulationPageState extends State<SimulationPage> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
     final theme = AquaTheme.of(context);
-    final simulationSession = SimulationSessionProvider.of(context);
 
     setSystemUIOverlayStyle(
       topColor: theme.dimBackgroundColor,
       bottomColor: theme.backgroundColor,
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+    final simulationSession = SimulationSessionProvider.of(context);
 
     return AnimatedBuilder(
       animation: simulationSession,

@@ -36,15 +36,18 @@ class BottomCardDialogRoute<T> extends PopupRoute<T> {
     Widget child,
   ) {
     final theme = AquaTheme.of(context);
-
-    setSystemUIOverlayStyle(
-      topColor: theme.dimBackgroundColor,
-      bottomColor: theme.backgroundColor,
-    );
-
     final curvedAnimation = CurvedAnimation(
       parent: animation,
       curve: Curves.easeInOutCubic,
+    );
+
+    setSystemUIOverlayStyle(
+      topColor: Color.lerp(
+        theme.dimBackgroundColor,
+        const Color(0xff000000),
+        Tween(begin: 0.0, end: .5).animate(curvedAnimation).value,
+      ),
+      bottomColor: theme.backgroundColor,
     );
 
     return Stack(
