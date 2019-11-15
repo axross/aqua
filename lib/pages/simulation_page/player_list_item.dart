@@ -290,7 +290,7 @@ class _RightEmptyItem extends StatelessWidget {
   }
 }
 
-final _handTypeStrings = {
+const _handTypeStrings = {
   HandType.straightFlush: "Str. Flush",
   HandType.fourOfAKind: "Four of a Kind",
   HandType.fullHouse: "Fullhouse",

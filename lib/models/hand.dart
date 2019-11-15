@@ -88,7 +88,7 @@ class Hand {
       : assert(cards != null),
         assert(type != null),
         _cards = cards,
-        _power = calculateHandPower(cards, type);
+        _power = _calculateHandPower(cards, type);
 
   factory Hand.bestFrom(Iterable<Card> cards) {
     assert(cards.length <= 7);
@@ -266,26 +266,12 @@ class Hand {
       other is Hand && other.cards.difference(cards).length == 0;
 }
 
-int getHandTypePower(HandType handType) {
-  if (handType == HandType.high) return _powerBaseForHandType;
-  if (handType == HandType.pair) return _powerBaseForHandType * 2;
-  if (handType == HandType.twoPairs) return _powerBaseForHandType * 3;
-  if (handType == HandType.threeOfAKind) return _powerBaseForHandType * 4;
-  if (handType == HandType.straight) return _powerBaseForHandType * 5;
-  if (handType == HandType.flush) return _powerBaseForHandType * 6;
-  if (handType == HandType.fullHouse) return _powerBaseForHandType * 7;
-  if (handType == HandType.fourOfAKind) return _powerBaseForHandType * 8;
-  if (handType == HandType.straightFlush) return _powerBaseForHandType * 9;
-
-  throw AssertionError("unreachable here.");
-}
-
-int calculateHandPower(List<Card> cards, HandType type) {
+int _calculateHandPower(List<Card> cards, HandType type) {
   final isBottomStraight =
       (type == HandType.straightFlush || type == HandType.straight) &&
           cards[0].rank == Rank.five;
 
-  return getHandTypePower(type) +
+  return powerEachHandType[type] +
       getStrongnessOfRank(cards[0].rank, forBottomStraight: isBottomStraight) *
           math.pow(13, 4) +
       getStrongnessOfRank(cards[1].rank, forBottomStraight: isBottomStraight) *
@@ -297,6 +283,18 @@ int calculateHandPower(List<Card> cards, HandType type) {
       getStrongnessOfRank(cards[4].rank, forBottomStraight: isBottomStraight) *
           math.pow(13, 0);
 }
+
+const powerEachHandType = {
+  HandType.straightFlush: _powerBaseForHandType * 9,
+  HandType.fourOfAKind: _powerBaseForHandType * 8,
+  HandType.fullHouse: _powerBaseForHandType * 7,
+  HandType.flush: _powerBaseForHandType * 6,
+  HandType.straight: _powerBaseForHandType * 5,
+  HandType.threeOfAKind: _powerBaseForHandType * 4,
+  HandType.twoPairs: _powerBaseForHandType * 3,
+  HandType.pair: _powerBaseForHandType * 2,
+  HandType.high: _powerBaseForHandType,
+};
 
 // 13 * 13 ** 4 + 13 * 13 ** 3 + 13 * 13 ** 2 + 13 * 13 ** 1 + 13 * 13 ** 0
 const _powerBaseForHandType = 100402233;

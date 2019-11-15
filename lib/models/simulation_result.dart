@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 @immutable
 class SimulationResult {
   SimulationResult.empty()
-      : _resultEachHandType = {
+      : _resultEachHandType = const {
           HandType.high: SimulationResultEachHandType.zero(),
           HandType.pair: SimulationResultEachHandType.zero(),
           HandType.twoPairs: SimulationResultEachHandType.zero(),
@@ -118,13 +118,13 @@ class SimulationResult {
 
 @immutable
 class SimulationResultEachHandType {
-  SimulationResultEachHandType(
+  const SimulationResultEachHandType(
       {@required this.win, @required this.lose, @required this.draw})
       : assert(win != null),
         assert(lose != null),
         assert(draw != null);
 
-  SimulationResultEachHandType.zero()
+  const SimulationResultEachHandType.zero()
       : win = 0,
         lose = 0,
         draw = 0;
