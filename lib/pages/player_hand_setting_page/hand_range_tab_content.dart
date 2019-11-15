@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/hand_range_select_grid.dart';
@@ -10,18 +9,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class PlayerHandRangeSelect extends StatefulWidget {
-  PlayerHandRangeSelect({this.index, Key key})
+class HandRangeTabContent extends StatefulWidget {
+  HandRangeTabContent({this.index, Key key})
       : assert(index != null),
         super(key: key);
 
   final int index;
 
   @override
-  _PlayerHandRangeSelectState createState() => _PlayerHandRangeSelectState();
+  _HandRangeTabContentState createState() => _HandRangeTabContentState();
 }
 
-class _PlayerHandRangeSelectState extends State<PlayerHandRangeSelect> {
+class _HandRangeTabContentState extends State<HandRangeTabContent> {
   int _previousHandRangeLengthTaken = 0;
 
   @override

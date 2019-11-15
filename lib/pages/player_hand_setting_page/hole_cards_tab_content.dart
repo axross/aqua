@@ -9,18 +9,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-class PlayerHoleCardSelect extends StatefulWidget {
-  PlayerHoleCardSelect({this.index, Key key})
+class HoleCardsTabContent extends StatefulWidget {
+  HoleCardsTabContent({this.index, Key key})
       : assert(index != null),
         super(key: key);
 
   final int index;
 
   @override
-  _PlayerHoleCardSelectState createState() => _PlayerHoleCardSelectState();
+  _HoleCardsTabContentState createState() => _HoleCardsTabContentState();
 }
 
-class _PlayerHoleCardSelectState extends State<PlayerHoleCardSelect> {
+class _HoleCardsTabContentState extends State<HoleCardsTabContent> {
   int selectedIndex = 0;
 
   @override

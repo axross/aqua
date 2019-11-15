@@ -80,11 +80,14 @@ class BottomCardDialogRoute<T> extends PopupRoute<T> {
               opacity: curvedAnimation,
               child: Align(
                 alignment: Alignment.bottomLeft,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: DefaultTextStyle(
-                    style: TextStyle(decoration: TextDecoration.none),
-                    child: child,
+                child: SafeArea(
+                  bottom: false,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: DefaultTextStyle(
+                      style: TextStyle(decoration: TextDecoration.none),
+                      child: child,
+                    ),
                   ),
                 ),
               ),
