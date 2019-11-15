@@ -31,3 +31,5 @@ class CardPair with IterableMixin<Card> {
     return index == 0 ? _a : _b;
   }
 }
+
+const numberOfAllHoleCardCombinations = 1326;

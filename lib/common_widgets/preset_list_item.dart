@@ -1,6 +1,8 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/readonly_range_grid.dart';
+import 'package:aqua/models/card_pair.dart';
 import 'package:aqua/models/player_hand_setting_preset.dart';
+import 'package:aqua/utilities/number_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -45,7 +47,7 @@ class PresetListItem extends StatelessWidget {
               Text(preset.name, style: theme.textStyle),
               SizedBox(height: 4),
               Text(
-                "${(playerHandSetting.cardPairCombinations.length * 100 / 1326).round()}% combs",
+                "${formatOnlyWholeNumberPart(playerHandSetting.cardPairCombinations.length / numberOfAllHoleCardCombinations)}% combs",
                 style: theme.textStyle.copyWith(
                   color: theme.secondaryBackgroundColor,
                   fontSize: 14,
