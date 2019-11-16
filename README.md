@@ -4,7 +4,7 @@
 
 ♠️ Beautiful Texas Hold'em poker odds calculator made of Flutter.
 
-<img src="https://user-images.githubusercontent.com/4289883/68385840-81151080-010f-11ea-82e8-78289add7894.gif" alt="Aqua" width="320" />
+<img src="https://user-images.githubusercontent.com/4289883/68985938-4e35e100-07cf-11ea-8f0f-bfe3694f9f1b.gif" alt="Aqua" width="320" />
 
 ## Download
 
