@@ -1,6 +1,7 @@
 import 'package:aqua/bundled_presets.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/readonly_range_grid.dart';
+import 'package:aqua/common_widgets/tiny_stadium_button.dart';
 import 'package:aqua/models/card_pair.dart';
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/player_hand_setting_preset.dart';
@@ -34,6 +35,18 @@ class PresetTabContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TinyStadiumButton(
+                    label: "Customize",
+                    backgroundColor: theme.primaryBackgroundColor,
+                    foregroundColor: theme.whiteForegroundColor,
+                    onTap: () {
+                      Navigator.of(context).pushNamed("/presets");
+                    },
+                  ),
+                ),
+                SizedBox(height: 16),
                 Text(
                   "Reference Hand Ranges",
                   style: theme.textStyle.copyWith(

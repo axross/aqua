@@ -4,25 +4,25 @@ import 'package:flutter/widgets.dart';
 
 const lightThemeData = AquaThemeData(
   textStyle: TextStyle(
-    color: Color(0xff343e4a),
+    // color: Color(0xff343e4a),
     fontFamily: "Montserrat",
     fontWeight: FontWeight.w700,
     fontSize: 16,
   ),
   digitTextStyle: TextStyle(
-    color: Color(0xff343e4a),
+    // color: Color(0xff343e4a),
     fontFamily: "Source Code Pro",
     fontWeight: FontWeight.w700,
     fontSize: 16,
   ),
   rankTextStyle: TextStyle(
-    color: Color(0xff343e4a),
+    // color: Color(0xff343e4a),
     fontFamily: "Work Sans",
     fontWeight: FontWeight.w600,
     fontSize: 16,
   ),
   appBarTextStyle: TextStyle(
-    color: Color(0xff343e4a),
+    // color: Color(0xff343e4a),
     fontFamily: "Montserrat",
     fontWeight: FontWeight.w700,
     fontSize: 20,
@@ -56,25 +56,25 @@ const lightThemeData = AquaThemeData(
 
 const darkThemeData = AquaThemeData(
   textStyle: TextStyle(
-    color: Color(0xff343e4a),
+    // color: Color(0xff343e4a),
     fontFamily: "Montserrat",
     fontWeight: FontWeight.w700,
     fontSize: 16,
   ),
   digitTextStyle: TextStyle(
-    color: Color(0xff343e4a),
+    // color: Color(0xff343e4a),
     fontFamily: "Source Code Pro",
     fontWeight: FontWeight.w700,
     fontSize: 16,
   ),
   rankTextStyle: TextStyle(
-    color: Color(0xff343e4a),
+    // color: Color(0xff343e4a),
     fontFamily: "Work Sans",
     fontWeight: FontWeight.w600,
     fontSize: 16,
   ),
   appBarTextStyle: TextStyle(
-    color: Color(0xfff1f4f8),
+    // color: Color(0xfff1f4f8),
     fontFamily: "Montserrat",
     fontWeight: FontWeight.w700,
     fontSize: 20,

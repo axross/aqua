@@ -82,7 +82,7 @@ class HandRangePart implements PlayerHandSettingRangePart {
   const HandRangePart({
     @required this.high,
     @required this.kicker,
-    bool isSuited,
+    bool isSuited = false,
   })  : assert(high != null),
         assert(kicker != null),
         isSuited = isSuited ?? false;

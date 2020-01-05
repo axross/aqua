@@ -29,8 +29,8 @@ class HandRangeTabContent extends StatelessWidget {
           AspectRatio(
             aspectRatio: 1,
             child: HandRangeSelectGrid(
-              value: playerHandSetting.onlyHandRange,
-              onUpdate: (handRange) => onChanged(handRange, via: "grid"),
+              initialValue: playerHandSetting.onlyHandRange,
+              onChanged: (handRange) => onChanged(handRange, via: "grid"),
             ),
           ),
           SizedBox(height: 16),

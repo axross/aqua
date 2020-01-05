@@ -1,10 +1,10 @@
 import 'package:aqua/models/player_hand_setting.dart';
 import 'package:meta/meta.dart';
 
+@immutable
 class PlayerHandSettingPreset {
   PlayerHandSettingPreset({@required this.name, @required this.parts})
-      : assert(name != null),
-        assert(parts != null);
+      : assert(parts != null);
 
   final String name;
 

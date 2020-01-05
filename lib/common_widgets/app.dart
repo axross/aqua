@@ -1,5 +1,7 @@
 import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
+import 'package:aqua/pages/preset_edit_page/preset_edit_page.dart';
+import 'package:aqua/pages/preset_list_page/preset_list_page.dart';
 import 'package:aqua/pages/simulation_page/simulation_page.dart';
 import 'package:aqua/theme_data.dart';
 import 'package:aqua/view_models/simulation_session.dart';
@@ -48,6 +50,8 @@ class _AquaAppState extends State<AquaApp> {
             initialRoute: "/",
             routes: {
               "/": (_) => SimulationPage(),
+              "/presets": (_) => PresetListPage(),
+              "/presets/edit": (_) => PresetEditPage(),
             },
             pageRouteBuilder: <T>(settings, builder) => MaterialPageRoute<T>(
               builder: (context) => builder(context),

@@ -7,13 +7,13 @@ import "package:flutter/widgets.dart";
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
 
 class HandRangeSelectGrid extends StatefulWidget {
-  HandRangeSelectGrid({@required this.onUpdate, this.value, Key key})
-      : assert(onUpdate != null),
+  HandRangeSelectGrid({@required this.initialValue, this.onChanged, Key key})
+      : assert(initialValue != null),
         super(key: key);
 
-  final OnRangeSelectorUpdate onUpdate;
+  final Set<HandRangePart> initialValue;
 
-  final Set<HandRangePart> value;
+  final OnRangeSelectorUpdate onChanged;
 
   @override
   State<HandRangeSelectGrid> createState() => _HandRangeSelectGridState();
@@ -27,18 +27,7 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
   void initState() {
     super.initState();
 
-    selectedRange = widget.value == null ? {} : widget.value;
-  }
-
-  @override
-  void didUpdateWidget(HandRangeSelectGrid oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.value != widget.value) {
-      setState(() {
-        selectedRange = widget.value;
-      });
-    }
+    selectedRange = widget.initialValue;
   }
 
   @override
@@ -70,7 +59,7 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 selectedRange.add(handRangePart);
               });
 
-              widget.onUpdate(selectedRange);
+              widget.onChanged(selectedRange);
             } else {
               HapticFeedback.lightImpact();
 
@@ -78,7 +67,7 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 selectedRange.remove(handRangePart);
               });
 
-              widget.onUpdate(selectedRange);
+              widget.onChanged(selectedRange);
             }
           },
           onPanUpdate: (details) {
@@ -111,7 +100,7 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 selectedRange.add(handRangePart);
               });
 
-              widget.onUpdate(selectedRange);
+              widget.onChanged(selectedRange);
             } else {
               if (!selectedRange.contains(handRangePart)) return;
 
@@ -121,7 +110,7 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 selectedRange.remove(handRangePart);
               });
 
-              widget.onUpdate(selectedRange);
+              widget.onChanged(selectedRange);
             }
           },
           behavior: HitTestBehavior.opaque,

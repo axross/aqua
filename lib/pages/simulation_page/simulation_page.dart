@@ -1,11 +1,11 @@
 import 'package:aqua/common_widgets/analytics.dart';
+import 'package:aqua/common_widgets//app_bar_ish_bar.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/popup_routes/board_setting_dialog_route%20copy.dart';
 import 'package:aqua/popup_routes/player_hand_setting_dialog_route.dart';
 import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/widgets.dart';
-import './app_bar_ish_bar.dart';
 import './board.dart';
 import './error_message.dart';
 import './player_list.dart';
@@ -45,7 +45,24 @@ class _SimulationPageState extends State<SimulationPage> {
         color: theme.backgroundColor,
         child: Column(
           children: [
-            AppBarIshBar(board: _simulationSession.board),
+            AppBarIshBar(
+              title: Text(
+                () {
+                  switch (_simulationSession.board.indexOf(null)) {
+                    case 0:
+                      return "Odds at Preflop";
+                    case 3:
+                      return "Odds at Flop";
+                    case 4:
+                      return "Odds at Turn";
+                    case -1:
+                      return "Odds at River";
+                    default:
+                      return "Odds Calculation";
+                  }
+                }(),
+              ),
+            ),
             ProgressIndicator(progress: _simulationSession.progress),
             SizedBox(height: 14),
             Board(
