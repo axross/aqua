@@ -1,6 +1,6 @@
 import 'package:aqua/common_widgets/analytics.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:aqua/popup_routes/board_setting_dialog_route%20copy.dart';
+import 'package:aqua/popup_routes/board_setting_dialog_route.dart';
 import 'package:aqua/popup_routes/player_hand_setting_dialog_route.dart';
 import 'package:aqua/utilities/system_ui_overlay_style.dart';
 import 'package:aqua/view_models/simulation_session.dart';
@@ -45,11 +45,11 @@ class _SimulationPageState extends State<SimulationPage> {
         color: theme.backgroundColor,
         child: Column(
           children: [
-            AppBarIshBar(board: _simulationSession.board),
+            AppBarIshBar(board: _simulationSession.communityCards),
             ProgressIndicator(progress: _simulationSession.progress),
             SizedBox(height: 14),
             Board(
-              board: _simulationSession.board,
+              board: _simulationSession.communityCards,
               onPressed: () {
                 _simulationSession.lockStartingSimulation();
 
@@ -63,7 +63,13 @@ class _SimulationPageState extends State<SimulationPage> {
                 );
               },
             ),
-            ErrorMessage(error: _simulationSession.error),
+            ErrorMessage(
+              playerHandSettingLength:
+                  _simulationSession.playerHandSettings.length,
+              hasImcompletePlayerSetting:
+                  _simulationSession.hasImcompletePlayerSetting,
+              hasPossibleMatchup: _simulationSession.hasPossibleMatchup,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(

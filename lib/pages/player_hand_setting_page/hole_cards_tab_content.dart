@@ -1,10 +1,10 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/card_picker.dart';
 import 'package:aqua/common_widgets/playing_card.dart';
-import 'package:aqua/models/card.dart';
-import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/view_models/player_hand_setting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 
 class HoleCardsTabContent extends StatefulWidget {
   HoleCardsTabContent({
@@ -50,10 +50,10 @@ class _HoleCardsTabContentState extends State<HoleCardsTabContent> {
               padding: EdgeInsets.all(4),
               child: GestureDetector(
                 onTap: () => _onCardTapToReplace(0),
-                child: widget.playerHandSetting.onlyHoleCards.left == null
+                child: widget.playerHandSetting.holeCardPairs.first[0] == null
                     ? PlayingCardBack()
                     : PlayingCard(
-                        card: widget.playerHandSetting.onlyHoleCards.left,
+                        card: widget.playerHandSetting.holeCardPairs.first[0],
                       ),
               ),
             ),
@@ -68,10 +68,10 @@ class _HoleCardsTabContentState extends State<HoleCardsTabContent> {
               padding: EdgeInsets.all(4),
               child: GestureDetector(
                 onTap: () => _onCardTapToReplace(1),
-                child: widget.playerHandSetting.onlyHoleCards.right == null
+                child: widget.playerHandSetting.holeCardPairs.first[1] == null
                     ? PlayingCardBack()
                     : PlayingCard(
-                        card: widget.playerHandSetting.onlyHoleCards.right,
+                        card: widget.playerHandSetting.holeCardPairs.first[1],
                       ),
               ),
             ),
@@ -98,9 +98,11 @@ class _HoleCardsTabContentState extends State<HoleCardsTabContent> {
     if (selectedIndex == null) return;
 
     if (selectedIndex == 0) {
-      widget.onCardPicked(card, widget.playerHandSetting.onlyHoleCards.right);
+      widget.onCardPicked(
+          card, widget.playerHandSetting.holeCardPairs.first[1]);
     } else {
-      widget.onCardPicked(widget.playerHandSetting.onlyHoleCards.left, card);
+      widget.onCardPicked(
+          widget.playerHandSetting.holeCardPairs.first[0], card);
     }
 
     setState(() {

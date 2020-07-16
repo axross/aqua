@@ -1,9 +1,7 @@
 import 'package:aqua/common_widgets/playing_card.dart';
-import 'package:aqua/models/card.dart';
-import 'package:aqua/models/rank.dart';
-import 'package:aqua/models/suit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 
 class CardPicker extends StatelessWidget {
   CardPicker(
@@ -69,7 +67,7 @@ const _cards = [
     Card(rank: Rank.five, suit: Suit.spade),
     Card(rank: Rank.four, suit: Suit.spade),
     Card(rank: Rank.three, suit: Suit.spade),
-    Card(rank: Rank.two, suit: Suit.spade),
+    Card(rank: Rank.deuce, suit: Suit.spade),
   ],
   [
     Card(rank: Rank.ace, suit: Suit.heart),
@@ -84,7 +82,7 @@ const _cards = [
     Card(rank: Rank.five, suit: Suit.heart),
     Card(rank: Rank.four, suit: Suit.heart),
     Card(rank: Rank.three, suit: Suit.heart),
-    Card(rank: Rank.two, suit: Suit.heart),
+    Card(rank: Rank.deuce, suit: Suit.heart),
   ],
   [
     Card(rank: Rank.ace, suit: Suit.diamond),
@@ -99,7 +97,7 @@ const _cards = [
     Card(rank: Rank.five, suit: Suit.diamond),
     Card(rank: Rank.four, suit: Suit.diamond),
     Card(rank: Rank.three, suit: Suit.diamond),
-    Card(rank: Rank.two, suit: Suit.diamond),
+    Card(rank: Rank.deuce, suit: Suit.diamond),
   ],
   [
     Card(rank: Rank.ace, suit: Suit.club),
@@ -114,6 +112,6 @@ const _cards = [
     Card(rank: Rank.five, suit: Suit.club),
     Card(rank: Rank.four, suit: Suit.club),
     Card(rank: Rank.three, suit: Suit.club),
-    Card(rank: Rank.two, suit: Suit.club),
+    Card(rank: Rank.deuce, suit: Suit.club),
   ],
 ];

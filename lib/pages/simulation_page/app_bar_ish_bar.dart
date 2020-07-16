@@ -1,6 +1,6 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:aqua/models/card.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 
 class AppBarIshBar extends StatelessWidget {
   AppBarIshBar({@required this.board, Key key})

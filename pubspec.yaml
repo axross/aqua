@@ -19,10 +19,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  benchmark_harness: ^1.0.5
   firebase_analytics: ^5.0.2
   flutter_icons: ^0.3.1
   flutter_launcher_icons: ^0.7.4
+  poker: 0.0.12
 
 dev_dependencies:
   flutter_test:

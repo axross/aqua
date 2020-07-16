@@ -1,7 +1,7 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:aqua/models/player_hand_setting.dart';
-import 'package:aqua/models/rank.dart';
+import 'package:aqua/constants/card.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 
 class ReadonlyRangeGrid extends StatelessWidget {
   ReadonlyRangeGrid({@required this.handRange, Key key})
@@ -21,14 +21,14 @@ class ReadonlyRangeGrid extends StatelessWidget {
           borderRadius: BorderRadius.circular(constraints.maxWidth * 0.05),
         ),
         child: Table(
-          children: List.generate(_ranksInStrongnessOrder.length, (row) {
+          children: List.generate(ranksInStrongnessOrder.length, (row) {
             return TableRow(
-              children: List.generate(_ranksInStrongnessOrder.length, (column) {
+              children: List.generate(ranksInStrongnessOrder.length, (column) {
                 final high = row < column ? row : column;
                 final kicker = high == row ? column : row;
                 final handRangePart = HandRangePart(
-                  high: _ranksInStrongnessOrder[high],
-                  kicker: _ranksInStrongnessOrder[kicker],
+                  high: ranksInStrongnessOrder[high],
+                  kicker: ranksInStrongnessOrder[kicker],
                   isSuited: row < column,
                 );
                 BorderRadius borderRadius;
@@ -38,18 +38,18 @@ class ReadonlyRangeGrid extends StatelessWidget {
                       topLeft: Radius.circular(constraints.maxWidth * 0.05));
                 }
 
-                if (row == 0 && column == _ranksInStrongnessOrder.length - 1) {
+                if (row == 0 && column == ranksInStrongnessOrder.length - 1) {
                   borderRadius = BorderRadius.only(
                       topRight: Radius.circular(constraints.maxWidth * 0.05));
                 }
 
-                if (row == _ranksInStrongnessOrder.length - 1 && column == 0) {
+                if (row == ranksInStrongnessOrder.length - 1 && column == 0) {
                   borderRadius = BorderRadius.only(
                       bottomLeft: Radius.circular(constraints.maxWidth * 0.05));
                 }
 
-                if (row == _ranksInStrongnessOrder.length - 1 &&
-                    column == _ranksInStrongnessOrder.length - 1) {
+                if (row == ranksInStrongnessOrder.length - 1 &&
+                    column == ranksInStrongnessOrder.length - 1) {
                   borderRadius = BorderRadius.only(
                       bottomRight:
                           Radius.circular(constraints.maxWidth * 0.05));
@@ -74,19 +74,3 @@ class ReadonlyRangeGrid extends StatelessWidget {
     );
   }
 }
-
-const _ranksInStrongnessOrder = [
-  Rank.ace,
-  Rank.king,
-  Rank.queen,
-  Rank.jack,
-  Rank.ten,
-  Rank.nine,
-  Rank.eight,
-  Rank.seven,
-  Rank.six,
-  Rank.five,
-  Rank.four,
-  Rank.three,
-  Rank.two,
-];

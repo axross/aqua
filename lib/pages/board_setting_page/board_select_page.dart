@@ -1,10 +1,10 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/card_picker.dart';
 import 'package:aqua/common_widgets/playing_card.dart';
-import 'package:aqua/models/card.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 import './top_buttons.dart';
 
 class BoardSettingPage extends StatefulWidget {
@@ -27,7 +27,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
 
     if (_selectedIndex == null) {
       final firstNullIndex =
-          _simulationSession.board.indexWhere((card) => card == null);
+          _simulationSession.communityCards.indexWhere((card) => card == null);
 
       _selectedIndex = firstNullIndex == -1 ? 0 : firstNullIndex;
     }
@@ -54,7 +54,8 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TopButtons(
-                canClear: _simulationSession.board.any((card) => card != null),
+                canClear: _simulationSession.communityCards
+                    .any((card) => card != null),
                 onClearButtonTapped: _onClearButtonTapped,
               ),
               SizedBox(height: 16),
@@ -76,10 +77,10 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
 
                         _onCardTapToReplace(0);
                       },
-                      child: _simulationSession.board[0] == null
+                      child: _simulationSession.communityCards[0] == null
                           ? PlayingCardBack()
                           : PlayingCard(
-                              card: _simulationSession.board[0],
+                              card: _simulationSession.communityCards[0],
                             ),
                     ),
                   ),
@@ -98,10 +99,10 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
 
                         _onCardTapToReplace(1);
                       },
-                      child: _simulationSession.board[1] == null
+                      child: _simulationSession.communityCards[1] == null
                           ? PlayingCardBack()
                           : PlayingCard(
-                              card: _simulationSession.board[1],
+                              card: _simulationSession.communityCards[1],
                             ),
                     ),
                   ),
@@ -120,10 +121,10 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
 
                         _onCardTapToReplace(2);
                       },
-                      child: _simulationSession.board[2] == null
+                      child: _simulationSession.communityCards[2] == null
                           ? PlayingCardBack()
                           : PlayingCard(
-                              card: _simulationSession.board[2],
+                              card: _simulationSession.communityCards[2],
                             ),
                     ),
                   ),
@@ -143,10 +144,10 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
 
                         _onCardTapToReplace(3);
                       },
-                      child: _simulationSession.board[3] == null
+                      child: _simulationSession.communityCards[3] == null
                           ? PlayingCardBack()
                           : PlayingCard(
-                              card: _simulationSession.board[3],
+                              card: _simulationSession.communityCards[3],
                             ),
                     ),
                   ),
@@ -166,10 +167,10 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
 
                         _onCardTapToReplace(4);
                       },
-                      child: _simulationSession.board[4] == null
+                      child: _simulationSession.communityCards[4] == null
                           ? PlayingCardBack()
                           : PlayingCard(
-                              card: _simulationSession.board[4],
+                              card: _simulationSession.communityCards[4],
                             ),
                     ),
                   ),
@@ -195,7 +196,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
       _selectedIndex = 0;
     });
 
-    _simulationSession.clearBoard();
+    _simulationSession.clearCommunityCards();
   }
 
   void _onCardTapToReplace(int index) => setState(() {
@@ -205,7 +206,7 @@ class _BoardSettingPageState extends State<BoardSettingPage> {
   void _onCardTapInPicker(Card card) {
     if (_selectedIndex == null) return;
 
-    _simulationSession.setBoardAt(_selectedIndex, card);
+    _simulationSession.setCommunityCardAt(_selectedIndex, card);
 
     setState(() {
       _selectedIndex = (_selectedIndex + 1) % 5;

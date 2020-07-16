@@ -1,8 +1,8 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:aqua/models/player_hand_setting.dart';
-import 'package:aqua/models/rank.dart';
+import 'package:aqua/constants/card.dart';
 import 'package:flutter/services.dart';
 import "package:flutter/widgets.dart";
+import 'package:poker/poker.dart';
 
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
 
@@ -198,7 +198,7 @@ class HandRangeSelectGridItem extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            '${_rankTextData[handRangePart.high]}${_rankTextData[handRangePart.kicker]}',
+            '${rankChars[handRangePart.high]}${rankChars[handRangePart.kicker]}',
             style: theme.textStyle.copyWith(
               color: textColor,
               fontSize: constraints.maxWidth / 2,
@@ -209,19 +209,3 @@ class HandRangeSelectGridItem extends StatelessWidget {
     );
   }
 }
-
-const _rankTextData = {
-  Rank.ace: "A",
-  Rank.king: "K",
-  Rank.queen: "Q",
-  Rank.jack: "J",
-  Rank.ten: "T",
-  Rank.nine: "9",
-  Rank.eight: "8",
-  Rank.seven: "7",
-  Rank.six: "6",
-  Rank.five: "5",
-  Rank.four: "4",
-  Rank.three: "3",
-  Rank.two: "2",
-};
