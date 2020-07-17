@@ -27,11 +27,6 @@ class ErrorMessage extends StatelessWidget {
       textStyle = theme.textStyle.copyWith(color: theme.dimForegroundColor);
     }
 
-    // if (error is InvalidBoardException) {
-    //   message = "Set the board to be preflop, flop, turn or river to calculate";
-    //   textStyle = theme.textStyle.copyWith(color: theme.errorForegroundColor);
-    // }
-
     if (hasImcompletePlayerSetting) {
       message = "Swipe to delete empty player to calculate";
       textStyle = theme.textStyle.copyWith(color: theme.errorForegroundColor);
