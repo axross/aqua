@@ -1,9 +1,7 @@
 import 'dart:async' show Timer;
-import 'package:aqua/models/card.dart';
-import 'package:aqua/models/player_hand_setting.dart';
+import "package:poker/poker.dart";
 import 'package:aqua/models/player_hand_setting_preset.dart';
-import 'package:aqua/models/simulation_result.dart';
-import 'package:aqua/models/simulator.dart';
+import "package:aqua/view_models/player_hand_setting.dart";
 import 'package:aqua/services/simulation_isolate_service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/widgets.dart';
@@ -11,113 +9,115 @@ import 'package:flutter/widgets.dart';
 class SimulationSession extends ChangeNotifier {
   SimulationSession.initial({@required FirebaseAnalytics analytics})
       : assert(analytics != null),
-        _analytics = analytics,
-        _board = [null, null, null, null, null],
-        _playerHandSettings = [],
-        _usedCards = {},
-        _results = [],
-        _error = null,
-        _progress = 0;
+        _analytics = analytics;
 
   final FirebaseAnalytics _analytics;
 
-  Set<Card> _usedCards;
+  Set<Card> _usedCards = {};
 
   Set<Card> get usedCards => _usedCards;
 
-  List<Card> _board;
+  List<Card> _communityCards = [null, null, null, null, null];
 
-  List<Card> get board => _board;
+  List<Card> get communityCards => _communityCards;
 
-  setBoardAt(int index, Card card) {
-    _board[index] = card;
+  setCommunityCardAt(int index, Card card) {
+    _communityCards[index] = card;
 
     _refreshUsedCards();
+    _clearResults();
     _enqueueSimulation();
     notifyListeners();
 
     _analytics.logEvent(
-      name: "update_board_cards",
-      parameters: {"next_length": _board.length},
+      name: "update_communityCards_cards",
+      parameters: {"next_length": _communityCards.length},
     );
   }
 
-  clearBoard() {
-    _board = [null, null, null, null, null];
+  clearCommunityCards() {
+    _communityCards = [null, null, null, null, null];
 
     _refreshUsedCards();
+    _clearResults();
     _enqueueSimulation();
     notifyListeners();
 
     _analytics.logEvent(
-      name: "update_board_cards",
+      name: "update_communityCards_cards",
       parameters: {
-        "next_length": _board.length,
+        "next_length": _communityCards.length,
         "is_clear": true,
       },
     );
   }
 
-  List<PlayerHandSetting> _playerHandSettings;
+  List<PlayerHandSetting> _playerHandSettings = [];
 
   List<PlayerHandSetting> get playerHandSettings => _playerHandSettings;
 
+  final _playerHandSettingListners = <int, Function>{};
+
   void addPlayerHandSetting() {
-    _playerHandSettings.add(PlayerHandSetting.emptyHoleCards());
+    // hole cards by the default
+    final playerHandSetting = PlayerHandSetting.emptyHoleCards();
+    final listener = () {
+      _refreshUsedCards();
+      _clearResults();
+      _enqueueSimulation();
+      notifyListeners();
+    };
+
+    playerHandSetting.addListener(listener);
+
+    _playerHandSettings.add(playerHandSetting);
+    _playerHandSettingListners[_playerHandSettings.indexOf(playerHandSetting)] =
+        listener;
 
     _refreshUsedCards();
+    _clearResults();
     _enqueueSimulation();
     notifyListeners();
 
-    _analytics.logEvent(
-      name: "add_player_hand_setting",
-    );
+    _analytics.logEvent(name: "add_player_hand_setting");
   }
 
   void removePlayerHandSettingAt(int index) {
-    _playerHandSettings.removeAt(index);
+    final playerHandSetting = _playerHandSettings[index];
 
-    _analytics.logEvent(
-      name: "delete_player_hand_setting",
-    );
+    playerHandSetting.removeListener(_playerHandSettingListners[index]);
+    _playerHandSettings.removeAt(index);
+    _results = [];
 
     _refreshUsedCards();
+    _clearResults();
     _enqueueSimulation();
     notifyListeners();
+
+    _analytics.logEvent(name: "delete_player_hand_setting");
   }
 
-  void setEmptyPlayerHandSettingAt(
-    int index, {
-    @required PlayerHandSettingType type,
+  void setInitialHoleCardPairAt(
+    int index,
+    Card left,
+    Card right, {
     String via,
   }) {
-    if (type == PlayerHandSettingType.holeCards) {
-      _setPlayerHandSettingAt(index, PlayerHandSetting.emptyHoleCards());
+    _playerHandSettings[index].holeCardPairs = [
+      ..._playerHandSettings[index].holeCardPairs
+    ]..first = NullableCardPair(left, right);
 
-      return;
-    }
+    _refreshUsedCards();
+    _clearResults();
+    _enqueueSimulation();
+    notifyListeners();
 
-    if (type == PlayerHandSettingType.handRange) {
-      _setPlayerHandSettingAt(index, PlayerHandSetting.emptyHandRange());
-
-      return;
-    }
-
-    throw AssertionError("unreachable here.");
-  }
-
-  void setHoleCardsAt(
-    int index, {
-    @required Card left,
-    @required Card right,
-    String via,
-  }) {
-    assert(_playerHandSettings[index].type == PlayerHandSettingType.holeCards);
-
-    _setPlayerHandSettingAt(
-      index,
-      PlayerHandSetting.fromHoleCards(left: left, right: right),
-      via: via,
+    _analytics.logEvent(
+      name: "update_player_hand_setting",
+      parameters: {
+        "type": "hole_cards",
+        if (via != null) ...{"via": via},
+      },
     );
   }
 
@@ -126,12 +126,20 @@ class SimulationSession extends ChangeNotifier {
     Set<HandRangePart> handRange, {
     String via,
   }) {
-    assert(_playerHandSettings[index].type == PlayerHandSettingType.handRange);
+    _playerHandSettings[index].handRange = handRange;
 
-    _setPlayerHandSettingAt(
-      index,
-      PlayerHandSetting(parts: handRange),
-      via: via,
+    _refreshUsedCards();
+    _clearResults();
+    _enqueueSimulation();
+    notifyListeners();
+
+    _analytics.logEvent(
+      name: "update_player_hand_setting",
+      parameters: {
+        "type": "hand_range",
+        "length": handRange.length,
+        if (via != null) ...{"via": via},
+      },
     );
   }
 
@@ -140,21 +148,12 @@ class SimulationSession extends ChangeNotifier {
     PlayerHandSettingPreset preset, {
     String via,
   }) {
-    _setPlayerHandSettingAt(
-      index,
-      preset.toPlayerHandSetting(),
-      via: via,
-    );
-  }
+    final playerHandSetting = preset.toPlayerHandSetting();
 
-  void _setPlayerHandSettingAt(
-    int index,
-    PlayerHandSetting playerHandSetting, {
-    String via,
-  }) {
     _playerHandSettings[index] = playerHandSetting;
 
     _refreshUsedCards();
+    _clearResults();
     _enqueueSimulation();
     notifyListeners();
 
@@ -171,25 +170,23 @@ class SimulationSession extends ChangeNotifier {
 
           throw AssertionError("unreachable here.");
         })(),
-        if (via != null) ...{
-          "via": via,
-        },
-        if (playerHandSetting.type == PlayerHandSettingType.handRange) ...{
-          "length": playerHandSetting.onlyHandRange.length,
-        },
+        if (via != null) ...{"via": via},
       },
     );
   }
 
-  List<SimulationResult> _results;
+  List<PlayerSimulationOverallResult> _results = [];
 
   get results => _results;
 
-  SimulationCancelException _error;
+  bool _hasPossibleMatchup = true;
 
-  get error => _error;
+  get hasPossibleMatchup => _hasPossibleMatchup;
 
-  double _progress;
+  get hasImcompletePlayerSetting =>
+      _playerHandSettings.any((setting) => setting.isEmpty);
+
+  double _progress = 0;
 
   get progress => _progress;
 
@@ -218,19 +215,28 @@ class SimulationSession extends ChangeNotifier {
 
   void _refreshUsedCards() {
     _usedCards = {
-      ..._board,
+      ..._communityCards,
       ..._playerHandSettings
           .where((playerHandSetting) =>
-              playerHandSetting.type == PlayerHandSettingType.holeCards)
+              playerHandSetting.type == PlayerHandSettingType.holeCards &&
+              playerHandSetting.holeCardPairs.isNotEmpty)
           .fold<Set<Card>>(
               Set<Card>(),
               (set, playerHandSetting) => set
-                ..add(playerHandSetting.onlyHoleCards.left)
-                ..add(playerHandSetting.onlyHoleCards.right))
+                ..add(playerHandSetting.holeCardPairs.first[0])
+                ..add(playerHandSetting.holeCardPairs.first[1]))
     };
   }
 
+  void _clearResults() {
+    _results = [];
+    _progress = 0;
+  }
+
   void _enqueueSimulation() async {
+    if (_playerHandSettings.length <= 1) return;
+    if (hasImcompletePlayerSetting) return;
+
     if (_lockCount >= 1) {
       _isEnqueuedWhileLock = true;
 
@@ -247,7 +253,7 @@ class SimulationSession extends ChangeNotifier {
 
       _analytics.logEvent(name: "end_simulation", parameters: {
         "number_of_players": _playerHandSettings.length,
-        "number_of_cards_in_board": _board.length,
+        "number_of_cards_in_communityCards": _communityCards.length,
       });
     }
 
@@ -261,9 +267,9 @@ class SimulationSession extends ChangeNotifier {
     await _simulationIsolateService.initialize();
 
     _simulationIsolateService
-      ..onSimulated.listen(
+      ..onProgress.listen(
         (details) {
-          _error = null;
+          _hasPossibleMatchup = true;
           _results = details.results;
           _progress = details.timesSimulated / details.timesWillBeSimulated;
 
@@ -273,10 +279,10 @@ class SimulationSession extends ChangeNotifier {
           _simulationIsolateService.dispose();
           _simulationIsolateService = null;
 
-          if (error is SimulationCancelException) {
+          if (error is NoPossibleMatchupException) {
             debugPrint("simulation canceled: ${error.runtimeType}");
 
-            this._error = error;
+            _hasPossibleMatchup = false;
 
             notifyListeners();
 
@@ -286,18 +292,19 @@ class SimulationSession extends ChangeNotifier {
           throw error;
         },
       )
-      ..onSimulated.first.then((_) {
+      ..onProgress.first.then((_) {
         _analytics.logEvent(
           name: "receive_simulation_first_tick",
           parameters: {
             "number_of_players": _playerHandSettings.length,
-            "number_of_cards_in_board": _board.length,
+            "number_of_cards_in_communityCards": _communityCards.length,
           },
         );
       })
       ..requestSimulation(
-        playerHandSettings: _playerHandSettings.toList(),
-        board: _board,
+        cardPairCombinationsList:
+            _playerHandSettings.map((setting) => setting.components).toList(),
+        communityCards: _communityCards.where((card) => card != null).toSet(),
       );
   }
 }

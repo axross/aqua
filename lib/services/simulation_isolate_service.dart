@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:isolate';
-import 'package:aqua/models/card.dart';
-import 'package:aqua/models/player_hand_setting.dart';
-import 'package:aqua/models/simulation_result.dart';
-import 'package:aqua/models/simulator.dart';
+import "package:poker/poker.dart";
 import 'package:flutter/widgets.dart';
 
 class SimulationIsolateService {
@@ -11,17 +8,21 @@ class SimulationIsolateService {
 
   SendPort _toIsolate;
 
-  final _streamController = StreamController<SimulationDetails>.broadcast();
+  final _streamController = StreamController<SimulationProgress>.broadcast();
 
-  Stream<SimulationDetails> get onSimulated => _streamController.stream;
+  Stream<SimulationProgress> get onProgress => _streamController.stream;
 
   void requestSimulation({
-    @required List<PlayerHandSetting> playerHandSettings,
-    @required List<Card> board,
+    @required
+        List<Set<CardPairCombinationsGeneratable>> cardPairCombinationsList,
+    @required Set<Card> communityCards,
   }) {
     assert(_isolate != null);
 
-    _toIsolate.send([playerHandSettings, board]);
+    _toIsolate.send([
+      cardPairCombinationsList,
+      communityCards,
+    ]);
   }
 
   Future<void> initialize() async {
@@ -59,8 +60,8 @@ class SimulationIsolateService {
   }
 }
 
-class SimulationDetails {
-  SimulationDetails({
+class SimulationProgress {
+  SimulationProgress({
     @required this.timesSimulated,
     @required this.timesWillBeSimulated,
     @required this.results,
@@ -70,50 +71,79 @@ class SimulationDetails {
 
   final int timesSimulated;
   final int timesWillBeSimulated;
-  final List<SimulationResult> results;
+  final List<PlayerSimulationOverallResult> results;
+}
+
+class PlayerSimulationOverallResult {
+  PlayerSimulationOverallResult();
+
+  int wins = 0;
+
+  int defeats = 0;
+
+  int ties = 0;
+
+  int get games => wins + defeats + ties;
+
+  double get winRate => wins == 0 ? 0.0 : wins / games;
+
+  double get tieRate => ties == 0 ? 0.0 : ties / games;
+
+  Map<HandType, int> winsByHandType =
+      Map.fromEntries(HandType.values.map((type) => MapEntry(type, 0)));
 }
 
 void _isolateFunction(SendPort toMain) {
   final receivePort = ReceivePort();
 
   receivePort.listen((data) async {
-    final playerHandSettings = data[0] as List<PlayerHandSetting>;
-    final board = data[1] as List<Card>;
+    final cardPairCombinationsList =
+        data[0] as List<Set<CardPairCombinationsGeneratable>>;
+    final communityCards = data[1] as Set<Card>;
 
     final simulator = Simulator(
-      playerHandSettings: playerHandSettings,
-      board: board,
+      communityCards: communityCards,
+      players: cardPairCombinationsList,
     );
 
-    var results = List.generate(
-      playerHandSettings.length,
-      (_) => SimulationResult.empty(),
-    );
+    final results = List.generate(cardPairCombinationsList.length,
+        (_) => PlayerSimulationOverallResult());
 
-    for (int i = 0; i < 500; ++i) {
-      final newResults = <SimulationResult>[];
-
-      List<SimulationResult> _results;
+    for (int i = 1; i <= 100000; ++i) {
+      Matchup matchup;
 
       try {
-        _results = simulator.simulate(times: 200);
-      } on SimulationCancelException catch (error) {
+        matchup = simulator.evaluate();
+      } on Exception catch (error) {
+        print(cardPairCombinationsList);
+
         toMain.send(error);
-
-        break;
       }
 
-      for (int i = 0; i < _results.length; ++i) {
-        newResults.add(results[i] + _results[i]);
+      for (int playerIndex = 0;
+          playerIndex < cardPairCombinationsList.length;
+          ++playerIndex) {
+        if (matchup.bestHandIndexes.contains(playerIndex)) {
+          if (matchup.bestHandIndexes.length == 1) {
+            results[playerIndex].wins += 1;
+          } else {
+            results[playerIndex].ties += 1;
+          }
+
+          results[playerIndex]
+              .winsByHandType[matchup.hands[playerIndex].type] += 1;
+        } else {
+          results[playerIndex].defeats += 1;
+        }
       }
 
-      toMain.send(SimulationDetails(
-        timesSimulated: (i + 1) * 200,
-        timesWillBeSimulated: 500 * 200,
-        results: newResults,
-      ));
-
-      results = newResults;
+      if (i % 100 == 0) {
+        toMain.send(SimulationProgress(
+          timesSimulated: i,
+          timesWillBeSimulated: 100000,
+          results: results,
+        ));
+      }
     }
   });
 

@@ -3,6 +3,7 @@ import 'package:aqua/common_widgets/aqua_icons.dart';
 import 'package:aqua/common_widgets/aqua_tab.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/models/player_hand_setting.dart';
+import 'package:aqua/view_models/player_hand_setting.dart';
 import 'package:aqua/view_models/simulation_session.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -85,14 +86,20 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
 
         if (selectedIndex == 0 &&
             playerHandSetting.type != PlayerHandSettingType.holeCards) {
-          _simulationSession.setEmptyPlayerHandSettingAt(_index,
-              type: PlayerHandSettingType.holeCards);
+          _simulationSession.playerHandSettings[_index].type =
+              PlayerHandSettingType.holeCards;
         }
 
         if (selectedIndex == 1 &&
             playerHandSetting.type != PlayerHandSettingType.handRange) {
-          _simulationSession.setEmptyPlayerHandSettingAt(_index,
-              type: PlayerHandSettingType.handRange);
+          _simulationSession.playerHandSettings[_index].type =
+              PlayerHandSettingType.handRange;
+        }
+
+        if (selectedIndex == 2 &&
+            playerHandSetting.type != PlayerHandSettingType.handRange) {
+          _simulationSession.playerHandSettings[_index].type =
+              PlayerHandSettingType.handRange;
         }
       };
 
@@ -132,10 +139,10 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
                           _simulationSession.playerHandSettings[_index],
                       unavailableCards: _simulationSession.usedCards,
                       onCardPicked: (left, right) {
-                        _simulationSession.setHoleCardsAt(
+                        _simulationSession.setInitialHoleCardPairAt(
                           _index,
-                          left: left,
-                          right: right,
+                          left,
+                          right,
                         );
                       },
                     ),

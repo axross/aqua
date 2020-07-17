@@ -1,8 +1,7 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:aqua/models/card.dart';
-import 'package:aqua/models/rank.dart';
-import 'package:aqua/models/suit.dart';
+import 'package:aqua/constants/card.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 
 class PlayingCard extends StatelessWidget {
   PlayingCard({Key key, @required this.card})
@@ -45,7 +44,7 @@ class PlayingCard extends StatelessWidget {
               Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  _rankStrings[card.rank],
+                  rankChars[card.rank],
                   style: theme.rankTextStyle.copyWith(
                     color: color,
                     fontSize: constraints.maxHeight * 0.45,
@@ -92,19 +91,3 @@ class PlayingCardBack extends StatelessWidget {
     );
   }
 }
-
-const _rankStrings = {
-  Rank.ace: "A",
-  Rank.king: "K",
-  Rank.queen: "Q",
-  Rank.jack: "J",
-  Rank.ten: "T",
-  Rank.nine: "9",
-  Rank.eight: "8",
-  Rank.seven: "7",
-  Rank.six: "6",
-  Rank.five: "5",
-  Rank.four: "4",
-  Rank.three: "3",
-  Rank.two: "2",
-};

@@ -1,12 +1,13 @@
 import 'dart:io' show Platform;
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/hand_range_select_grid.dart';
-import 'package:aqua/models/card_pair.dart';
-import 'package:aqua/models/player_hand_setting.dart';
+import "package:aqua/constants/hand_range.dart";
 import 'package:aqua/utilities/number_format.dart';
+import 'package:aqua/view_models/player_hand_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 
 class HandRangeTabContent extends StatelessWidget {
   HandRangeTabContent({
@@ -29,7 +30,7 @@ class HandRangeTabContent extends StatelessWidget {
           AspectRatio(
             aspectRatio: 1,
             child: HandRangeSelectGrid(
-              value: playerHandSetting.onlyHandRange,
+              value: playerHandSetting.handRange,
               onUpdate: (handRange) => onChanged(handRange, via: "grid"),
             ),
           ),
@@ -68,7 +69,7 @@ class _HandRangeSliderState extends State<_HandRangeSlider> {
 
     if (_previousHandRangeLengthTaken == null) {
       _previousHandRangeLengthTaken =
-          widget.playerHandSetting.cardPairCombinations.length;
+          widget.playerHandSetting.handRangeComponents.length;
     }
   }
 
@@ -90,14 +91,15 @@ class _HandRangeSliderState extends State<_HandRangeSlider> {
           overlayColor: Color(0x00000000),
         ),
         child: Slider(
-          divisions: handRangePartsInStrongnessOrder.length,
-          value: widget.playerHandSetting.onlyHandRange.length.toDouble() /
-              handRangePartsInStrongnessOrder.length,
+          divisions: handRangeComponentsInStrongnessOrder.length,
+          value:
+              widget.playerHandSetting.handRangeComponents.length.toDouble() /
+                  handRangeComponentsInStrongnessOrder.length,
           label:
-              "${formatOnlyWholeNumberPart(widget.playerHandSetting.cardPairCombinations.length / numberOfAllHoleCardCombinations)}% combs",
+              "${formatOnlyWholeNumberPart(widget.playerHandSetting.handRangeCardPairCombinations.length / 1326)}% combs",
           onChanged: (value) {
             final handRangeLengthTaken =
-                (value * handRangePartsInStrongnessOrder.length).round();
+                (value * handRangeComponentsInStrongnessOrder.length).round();
 
             if (handRangeLengthTaken == _previousHandRangeLengthTaken) return;
 
@@ -109,7 +111,7 @@ class _HandRangeSliderState extends State<_HandRangeSlider> {
               _previousHandRangeLengthTaken = handRangeLengthTaken;
             });
 
-            widget.onSliderChanged(handRangePartsInStrongnessOrder
+            widget.onSliderChanged(handRangeComponentsInStrongnessOrder
                 .take(handRangeLengthTaken)
                 .toSet());
           },

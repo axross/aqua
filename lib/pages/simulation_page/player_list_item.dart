@@ -1,11 +1,10 @@
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/playing_card.dart';
 import 'package:aqua/common_widgets/readonly_range_grid.dart';
-import 'package:aqua/models/card_pair.dart';
-import 'package:aqua/models/hand_type.dart';
-import 'package:aqua/models/player_hand_setting.dart';
-import 'package:aqua/models/simulation_result.dart';
+import "package:aqua/constants/hand.dart";
+import 'package:aqua/services/simulation_isolate_service.dart';
 import 'package:aqua/utilities/number_format.dart';
+import 'package:aqua/view_models/player_hand_setting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -23,7 +22,7 @@ class PlayerListItem extends StatelessWidget {
 
   final PlayerHandSetting playerHandSetting;
 
-  final SimulationResult result;
+  final PlayerSimulationOverallResult result;
 
   final void Function() onPressed;
 
@@ -109,14 +108,14 @@ class _LeftItem extends StatelessWidget {
       return Row(
         children: [
           Expanded(
-            child: playerHandSetting.onlyHoleCards.left != null
-                ? PlayingCard(card: playerHandSetting.onlyHoleCards.left)
+            child: playerHandSetting.holeCardPairs.first[0] != null
+                ? PlayingCard(card: playerHandSetting.holeCardPairs.first[0])
                 : PlayingCardBack(),
           ),
           SizedBox(width: 8),
           Expanded(
-            child: playerHandSetting.onlyHoleCards.right != null
-                ? PlayingCard(card: playerHandSetting.onlyHoleCards.right)
+            child: playerHandSetting.holeCardPairs.first[1] != null
+                ? PlayingCard(card: playerHandSetting.holeCardPairs.first[1])
                 : PlayingCardBack(),
           ),
         ],
@@ -126,12 +125,10 @@ class _LeftItem extends StatelessWidget {
     if (playerHandSetting.type == PlayerHandSettingType.handRange) {
       return Column(
         children: [
-          ReadonlyRangeGrid(
-            handRange: playerHandSetting.onlyHandRange,
-          ),
+          ReadonlyRangeGrid(handRange: playerHandSetting.handRange),
           SizedBox(height: 8),
           Text(
-            "${formatOnlyWholeNumberPart(playerHandSetting.cardPairCombinations.length / numberOfAllHoleCardCombinations)}% combs",
+            "${formatOnlyWholeNumberPart(playerHandSetting.handRangeCardPairCombinations.length / 1326)}% combs",
             style: theme.textStyle.copyWith(
               color: theme.secondaryBackgroundColor,
               fontSize: 12,
@@ -150,12 +147,12 @@ class _RightItem extends StatelessWidget {
       : assert(result != null),
         super(key: key);
 
-  final SimulationResult result;
+  final PlayerSimulationOverallResult result;
 
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final winOrDrawRate = result.winRate + result.drawRate;
+    final winOrDrawRate = result.winRate + result.tieRate;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,7 +202,7 @@ class _RightItem extends StatelessWidget {
               textBaseline: TextBaseline.alphabetic,
               children: [
                 Text(
-                  "${formatOnlyWholeNumberPartWithPrefix(result.drawRate)}",
+                  "${formatOnlyWholeNumberPartWithPrefix(result.tieRate)}",
                   style: theme.digitTextStyle.copyWith(
                     color: theme.dimForegroundColor,
                     fontSize: 18,
@@ -224,9 +221,8 @@ class _RightItem extends StatelessWidget {
         ),
         SizedBox(height: 8),
         Column(
-          children: (result.entries
-                  .map((entry) =>
-                      MapEntry(entry.key, entry.value.win + entry.value.draw))
+          children: (result.winsByHandType.entries
+                  .map((entry) => MapEntry(entry.key, entry.value))
                   .toList()
                     ..sort((a, b) => b.value - a.value))
               .take(3)
@@ -235,7 +231,7 @@ class _RightItem extends StatelessWidget {
                       SizedBox(
                         width: 40,
                         child: Text(
-                          "${formatOnlyWholeNumberPartWithPrefix(entry.value / result.totalGames)}",
+                          "${formatOnlyWholeNumberPartWithPrefix(entry.value / result.games)}",
                           style: theme.digitTextStyle.copyWith(
                             color: theme.dimForegroundColor,
                             fontSize: 18,
@@ -245,7 +241,7 @@ class _RightItem extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          "% win at ${_handTypeStrings[entry.key].toUpperCase()}",
+                          "% win at ${handTypeStrings[entry.key].toUpperCase()}",
                           style: theme.textStyle.copyWith(
                             color: theme.dimForegroundColor,
                             fontSize: 14,
@@ -289,15 +285,3 @@ class _RightEmptyItem extends StatelessWidget {
     );
   }
 }
-
-const _handTypeStrings = {
-  HandType.straightFlush: "Str. Flush",
-  HandType.fourOfAKind: "Four of a Kind",
-  HandType.fullHouse: "Fullhouse",
-  HandType.flush: "Flush",
-  HandType.straight: "Straight",
-  HandType.threeOfAKind: "Three of a Kind",
-  HandType.twoPairs: "TWo Pairs",
-  HandType.pair: "Pair",
-  HandType.high: "High",
-};

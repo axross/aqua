@@ -1,10 +1,9 @@
 import 'package:aqua/bundled_presets.dart';
 import 'package:aqua/common_widgets/aqua_theme.dart';
 import 'package:aqua/common_widgets/readonly_range_grid.dart';
-import 'package:aqua/models/card_pair.dart';
-import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/player_hand_setting_preset.dart';
 import 'package:aqua/utilities/number_format.dart';
+import 'package:aqua/view_models/player_hand_setting.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -110,9 +109,7 @@ class _PresetListItem extends StatelessWidget {
           SizedBox(
             width: 64,
             height: 64,
-            child: ReadonlyRangeGrid(
-              handRange: playerHandSetting.onlyHandRange,
-            ),
+            child: ReadonlyRangeGrid(handRange: playerHandSetting.handRange),
           ),
           SizedBox(width: 8),
           Column(
@@ -125,7 +122,7 @@ class _PresetListItem extends StatelessWidget {
               ),
               SizedBox(height: 4),
               Text(
-                "${formatOnlyWholeNumberPart(playerHandSetting.cardPairCombinations.length / numberOfAllHoleCardCombinations)}% combs",
+                "${formatOnlyWholeNumberPart(playerHandSetting.cardPairCombinations.length / 1326)}% combs",
                 style: theme.textStyle.copyWith(
                   color: theme.dimForegroundColor,
                   fontSize: 14,

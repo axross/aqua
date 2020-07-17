@@ -1,11 +1,12 @@
-import 'package:aqua/models/player_hand_setting.dart';
 import 'package:aqua/models/player_hand_setting_preset.dart';
-import 'package:aqua/models/rank.dart';
+import 'package:aqua/view_models/player_hand_setting.dart';
+import 'package:poker/poker.dart';
 
 final bundledPresets = [
   PlayerHandSettingPreset(
     name: "Open at UTG",
-    parts: {
+    type: PlayerHandSettingType.handRange,
+    handRange: {
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.queen, kicker: Rank.queen),
@@ -25,7 +26,7 @@ final bundledPresets = [
       HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
-      HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.deuce, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.ten, isSuited: true),
@@ -45,7 +46,8 @@ final bundledPresets = [
   ),
   PlayerHandSettingPreset(
     name: "Open at MP",
-    parts: {
+    type: PlayerHandSettingType.handRange,
+    handRange: {
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.queen, kicker: Rank.queen),
@@ -68,7 +70,7 @@ final bundledPresets = [
       HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
-      HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.deuce, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.ten, isSuited: true),
@@ -91,7 +93,8 @@ final bundledPresets = [
   ),
   PlayerHandSettingPreset(
     name: "Open at BTN",
-    parts: {
+    type: PlayerHandSettingType.handRange,
+    handRange: {
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.queen, kicker: Rank.queen),
@@ -113,7 +116,7 @@ final bundledPresets = [
       HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
-      HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.deuce, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.ten, isSuited: true),
@@ -124,7 +127,7 @@ final bundledPresets = [
       HandRangePart(high: Rank.king, kicker: Rank.five, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.four, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.three, isSuited: true),
-      HandRangePart(high: Rank.king, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.king, kicker: Rank.deuce, isSuited: true),
       HandRangePart(high: Rank.queen, kicker: Rank.jack, isSuited: true),
       HandRangePart(high: Rank.queen, kicker: Rank.ten, isSuited: true),
       HandRangePart(high: Rank.queen, kicker: Rank.nine, isSuited: true),
@@ -174,7 +177,8 @@ final bundledPresets = [
   ),
   PlayerHandSettingPreset(
     name: "Open at SB",
-    parts: {
+    type: PlayerHandSettingType.handRange,
+    handRange: {
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.queen, kicker: Rank.queen),
@@ -226,7 +230,7 @@ final bundledPresets = [
       HandRangePart(high: Rank.ace, kicker: Rank.five),
       HandRangePart(high: Rank.ace, kicker: Rank.four),
       HandRangePart(high: Rank.ace, kicker: Rank.three),
-      HandRangePart(high: Rank.ace, kicker: Rank.two),
+      HandRangePart(high: Rank.ace, kicker: Rank.deuce),
       HandRangePart(high: Rank.king, kicker: Rank.queen),
       HandRangePart(high: Rank.king, kicker: Rank.jack),
       HandRangePart(high: Rank.king, kicker: Rank.ten),
@@ -244,7 +248,8 @@ final bundledPresets = [
   ),
   PlayerHandSettingPreset(
     name: "Call/3-bet to UTG",
-    parts: {
+    type: PlayerHandSettingType.handRange,
+    handRange: {
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.queen, kicker: Rank.queen),
@@ -259,7 +264,7 @@ final bundledPresets = [
       HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
-      HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.deuce, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: true),
       HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: true),
@@ -270,7 +275,8 @@ final bundledPresets = [
   ),
   PlayerHandSettingPreset(
     name: "Call/3-bet to BTN",
-    parts: {
+    type: PlayerHandSettingType.handRange,
+    handRange: {
       HandRangePart(high: Rank.ace, kicker: Rank.ace),
       HandRangePart(high: Rank.king, kicker: Rank.king),
       HandRangePart(high: Rank.queen, kicker: Rank.queen),
@@ -292,7 +298,7 @@ final bundledPresets = [
       HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
       HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
-      HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
+      HandRangePart(high: Rank.ace, kicker: Rank.deuce, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: true),
       HandRangePart(high: Rank.king, kicker: Rank.ten, isSuited: true),

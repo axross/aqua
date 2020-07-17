@@ -1,6 +1,6 @@
 import 'dart:ui' show Brightness;
-import 'package:aqua/models/suit.dart';
 import 'package:flutter/widgets.dart';
+import 'package:poker/poker.dart';
 
 class AquaTheme extends InheritedWidget {
   AquaTheme({

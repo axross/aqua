@@ -1,358 +1,234 @@
-import 'package:aqua/models/card.dart';
-import 'package:aqua/models/card_pair.dart';
-import 'package:aqua/models/rank.dart';
-import 'package:aqua/models/suit.dart';
+import "package:poker/poker.dart";
 import 'package:meta/meta.dart';
 
-@immutable
-class PlayerHandSetting {
-  const PlayerHandSetting({@required this.parts}) : assert(parts != null);
+// class PlayerHandSetting {
 
-  PlayerHandSetting.fromHoleCards({
-    @required Card left,
-    @required Card right,
-  }) : parts = {HoleCards(left: left, right: right)};
+//   final List<CardPair> holeCards = [];
 
-  PlayerHandSetting.emptyHoleCards() : parts = {HoleCards()};
+//   final Set<HandRangePart> handRange = {};
 
-  PlayerHandSetting.emptyHandRange() : parts = {};
+//   Set<CardPairCombinationsGeneratable> get components {
+//     final components = <CardPairCombinationsGeneratable>{};
 
-  final Set<PlayerHandSettingRangePart> parts;
+//     for (final holeCards in holeCards) {
+//       if (holeCards[0] && holeCards[1]) {
 
-  PlayerHandSettingType get type {
-    if (parts.length == 1 && parts.first is HoleCards) {
-      return PlayerHandSettingType.holeCards;
-    }
+//       }
+//     }
+//   }
 
-    if (parts.every((part) => part is HandRangePart)) {
-      return PlayerHandSettingType.handRange;
-    }
+//   Set<CardPair> get cardPairCombinations => components.fold(<CardPair>{},
+//       (combs, component) => combs..addAll(component.cardPairCombinations));
 
-    throw AssertionError("unreachable here.");
-  }
+//   double get cardPairCombinationRatio => cardPairCombinations.length / 1326;
+// }
 
-  HoleCards get onlyHoleCards {
-    assert(type == PlayerHandSettingType.holeCards);
+// class HoleCardPlayerHandSetting extends PlayerHandSetting {
+//   HoleCardPlayerHandSetting(Card a, Card b);
 
-    return parts.first;
-  }
+//   HoleCardPlayerHandSetting.empty()
+//       : a = null,
+//         b = null;
 
-  Set<HandRangePart> get onlyHandRange {
-    assert(type == PlayerHandSettingType.handRange);
+//   Card a;
 
-    return Set<HandRangePart>.from(parts);
-  }
+//   Card b;
 
-  Set<CardPair> get cardPairCombinations => parts.fold<List<CardPair>>(
-        <CardPair>[],
-        (list, part) => list..addAll(part.cardPairCombinations),
-      ).toSet();
-}
+//   get components {
+//     if (a != null && b != null) {
+//       return {HoleCards(cardPair: CardPair(a, b))};
+//     }
 
-enum PlayerHandSettingType {
-  holeCards,
-  handRange,
-}
+//     return {};
+//   }
+// }
 
-abstract class PlayerHandSettingRangePart {
-  Set<CardPair> get cardPairCombinations;
-}
+// class HandRangePlayerHandSetting extends PlayerHandSetting {
+//   HandRangePlayerHandSetting(this.components) : assert(components != null);
 
-@immutable
-class HoleCards implements PlayerHandSettingRangePart {
-  HoleCards({this.left, this.right});
+//   HandRangePlayerHandSetting.empty() : components = {};
 
-  final Card left;
-  final Card right;
+//   var components;
+// }
 
-  @override
-  Set<CardPair> get cardPairCombinations =>
-      left != null && right != null ? {CardPair(left, right)} : {};
+// // class MixedHandRangePlayerHandSetting implements PlayerHandSetting {}
 
-  @override
-  int get hashCode => left.hashCode * 17 + right.hashCode;
+// // class PlayerHandSetting {
+// //   PlayerHandSetting({
+// //     @required this.components,
+// //     this.type = PlayerHandSettingType.mixed,
+// //   }) : assert(components != null);
 
-  @override
-  bool operator ==(Object other) =>
-      other is HoleCards && other.left == left && other.right == right;
-}
+// //   PlayerHandSetting.fromCardPair(CardPair cardPair)
+// //       : components = {HoleCards(cardPair: cardPair)},
+// //         type = PlayerHandSettingType.holeCards;
 
-@immutable
-class HandRangePart implements PlayerHandSettingRangePart {
-  const HandRangePart({
-    @required this.high,
-    @required this.kicker,
-    bool isSuited,
-  })  : assert(high != null),
-        assert(kicker != null),
-        isSuited = isSuited ?? false;
+// //   PlayerHandSetting.fromHandRange(this.components)
+// //       : type = PlayerHandSettingType.holeCards;
 
-  final Rank high;
-  final Rank kicker;
-  final bool isSuited;
+// //   PlayerHandSetting.emptyHoleCards()
+// //       : components = {},
+// //         type = PlayerHandSettingType.holeCards;
 
-  bool get isPocket => high == kicker;
+// //   PlayerHandSetting.emptyHandRange()
+// //       : components = {},
+// //         type = PlayerHandSettingType.handRange;
 
-  @override
-  Set<CardPair> get cardPairCombinations => isSuited
-      ? _getAllSuitedCardPairsByRank(high, kicker)
-      : _getAllOfsuitCardPairsByRank(high, kicker);
+// //   final Set<CardPairCombinationsGeneratable> components;
 
-  @override
-  String toString() => "HandRangePart<$high, $kicker, isSuited: $isSuited>";
+// //   PlayerHandSettingType type;
 
-  @override
-  int get hashCode =>
-      high.hashCode * 17 * 17 + kicker.hashCode * 17 + isSuited.hashCode;
+// //   HoleCards get asHoleCards {
+// //     assert(type == PlayerHandSettingType.holeCards);
 
-  @override
-  bool operator ==(Object other) =>
-      other is HandRangePart &&
-      other.high == high &&
-      other.kicker == kicker &&
-      other.isSuited == isSuited;
-}
+// //     return components.first;
+// //   }
 
-Set<CardPair> _getAllSuitedCardPairsByRank(Rank rankA, Rank rankB) => {
-      CardPair(
-        Card(rank: rankA, suit: Suit.spade),
-        Card(rank: rankB, suit: Suit.spade),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.heart),
-        Card(rank: rankB, suit: Suit.heart),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.diamond),
-        Card(rank: rankB, suit: Suit.diamond),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.club),
-        Card(rank: rankB, suit: Suit.club),
-      ),
-    };
+// //   Set<HandRangePart> get asHandRange {
+// //     assert(type == PlayerHandSettingType.handRange);
 
-Set<CardPair> _getAllOfsuitCardPairsByRank(Rank rankA, Rank rankB) => {
-      CardPair(
-        Card(rank: rankA, suit: Suit.spade),
-        Card(rank: rankB, suit: Suit.heart),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.spade),
-        Card(rank: rankB, suit: Suit.diamond),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.spade),
-        Card(rank: rankB, suit: Suit.club),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.heart),
-        Card(rank: rankB, suit: Suit.diamond),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.heart),
-        Card(rank: rankB, suit: Suit.club),
-      ),
-      CardPair(
-        Card(rank: rankA, suit: Suit.diamond),
-        Card(rank: rankB, suit: Suit.club),
-      ),
-      if (rankA != rankB) ...{
-        CardPair(
-          Card(rank: rankA, suit: Suit.heart),
-          Card(rank: rankB, suit: Suit.spade),
-        ),
-        CardPair(
-          Card(rank: rankA, suit: Suit.diamond),
-          Card(rank: rankB, suit: Suit.spade),
-        ),
-        CardPair(
-          Card(rank: rankA, suit: Suit.diamond),
-          Card(rank: rankB, suit: Suit.heart),
-        ),
-        CardPair(
-          Card(rank: rankA, suit: Suit.club),
-          Card(rank: rankB, suit: Suit.spade),
-        ),
-        CardPair(
-          Card(rank: rankA, suit: Suit.club),
-          Card(rank: rankB, suit: Suit.heart),
-        ),
-        CardPair(
-          Card(rank: rankA, suit: Suit.club),
-          Card(rank: rankB, suit: Suit.diamond),
-        ),
-      },
-    };
+// //     return Set<HandRangePart>.from(components);
+// //   }
 
-const handRangePartsInStrongnessOrder = [
-  HandRangePart(high: Rank.ace, kicker: Rank.ace),
-  HandRangePart(high: Rank.king, kicker: Rank.king),
-  HandRangePart(high: Rank.queen, kicker: Rank.queen),
-  HandRangePart(high: Rank.jack, kicker: Rank.jack),
-  HandRangePart(high: Rank.ten, kicker: Rank.ten),
-  HandRangePart(high: Rank.nine, kicker: Rank.nine),
-  HandRangePart(high: Rank.eight, kicker: Rank.eight),
-  HandRangePart(high: Rank.ace, kicker: Rank.king, isSuited: true),
-  HandRangePart(high: Rank.seven, kicker: Rank.seven),
-  HandRangePart(high: Rank.ace, kicker: Rank.queen, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.king),
-  HandRangePart(high: Rank.ace, kicker: Rank.jack, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.ten, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.queen),
-  HandRangePart(high: Rank.ace, kicker: Rank.jack),
-  HandRangePart(high: Rank.king, kicker: Rank.queen, isSuited: true),
-  HandRangePart(high: Rank.six, kicker: Rank.six),
-  HandRangePart(high: Rank.ace, kicker: Rank.nine, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.ten),
-  HandRangePart(high: Rank.king, kicker: Rank.jack, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.eight, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.ten, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.queen),
-  HandRangePart(high: Rank.ace, kicker: Rank.seven, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.nine),
-  HandRangePart(high: Rank.king, kicker: Rank.jack),
-  HandRangePart(high: Rank.queen, kicker: Rank.jack, isSuited: true),
-  HandRangePart(high: Rank.five, kicker: Rank.five),
-  HandRangePart(high: Rank.ace, kicker: Rank.eight),
-  HandRangePart(high: Rank.ace, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.nine, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.ten),
-  HandRangePart(high: Rank.queen, kicker: Rank.ten, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.seven),
-  HandRangePart(high: Rank.ace, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.eight, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.jack),
-  HandRangePart(high: Rank.ace, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.nine),
-  HandRangePart(high: Rank.queen, kicker: Rank.nine, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.six),
-  HandRangePart(high: Rank.king, kicker: Rank.seven, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.five),
-  HandRangePart(high: Rank.jack, kicker: Rank.ten, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.ten),
-  HandRangePart(high: Rank.ace, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.four, kicker: Rank.four),
-  HandRangePart(high: Rank.king, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.four),
-  HandRangePart(high: Rank.king, kicker: Rank.eight),
-  HandRangePart(high: Rank.queen, kicker: Rank.eight, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.jack, kicker: Rank.nine, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.three),
-  HandRangePart(high: Rank.queen, kicker: Rank.nine),
-  HandRangePart(high: Rank.king, kicker: Rank.seven),
-  HandRangePart(high: Rank.jack, kicker: Rank.ten),
-  HandRangePart(high: Rank.king, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.ace, kicker: Rank.two),
-  HandRangePart(high: Rank.queen, kicker: Rank.seven, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.six),
-  HandRangePart(high: Rank.ten, kicker: Rank.nine, isSuited: true),
-  HandRangePart(high: Rank.jack, kicker: Rank.eight, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.eight),
-  HandRangePart(high: Rank.queen, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.three, kicker: Rank.three),
-  HandRangePart(high: Rank.jack, kicker: Rank.nine),
-  HandRangePart(high: Rank.king, kicker: Rank.five),
-  HandRangePart(high: Rank.king, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.eight, isSuited: true),
-  HandRangePart(high: Rank.jack, kicker: Rank.seven, isSuited: true),
-  HandRangePart(high: Rank.king, kicker: Rank.four),
-  HandRangePart(high: Rank.queen, kicker: Rank.seven),
-  HandRangePart(high: Rank.queen, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.jack, kicker: Rank.eight),
-  HandRangePart(high: Rank.ten, kicker: Rank.nine),
-  HandRangePart(high: Rank.king, kicker: Rank.three),
-  HandRangePart(high: Rank.queen, kicker: Rank.six),
-  HandRangePart(high: Rank.nine, kicker: Rank.eight, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.seven, isSuited: true),
-  HandRangePart(high: Rank.jack, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.two, kicker: Rank.two),
-  HandRangePart(high: Rank.king, kicker: Rank.two),
-  HandRangePart(high: Rank.queen, kicker: Rank.five),
-  HandRangePart(high: Rank.jack, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.eight),
-  HandRangePart(high: Rank.queen, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.jack, kicker: Rank.seven),
-  HandRangePart(high: Rank.nine, kicker: Rank.seven, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.four),
-  HandRangePart(high: Rank.jack, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.nine, kicker: Rank.eight),
-  HandRangePart(high: Rank.ten, kicker: Rank.seven),
-  HandRangePart(high: Rank.eight, kicker: Rank.seven, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.three),
-  HandRangePart(high: Rank.jack, kicker: Rank.six),
-  HandRangePart(high: Rank.jack, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.nine, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.jack, kicker: Rank.five),
-  HandRangePart(high: Rank.jack, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.queen, kicker: Rank.two),
-  HandRangePart(high: Rank.nine, kicker: Rank.seven),
-  HandRangePart(high: Rank.eight, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.six),
-  HandRangePart(high: Rank.jack, kicker: Rank.four),
-  HandRangePart(high: Rank.nine, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.seven, kicker: Rank.six, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.eight, kicker: Rank.seven),
-  HandRangePart(high: Rank.jack, kicker: Rank.three),
-  HandRangePart(high: Rank.nine, kicker: Rank.six),
-  HandRangePart(high: Rank.eight, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.ten, kicker: Rank.five),
-  HandRangePart(high: Rank.jack, kicker: Rank.two),
-  HandRangePart(high: Rank.nine, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.seven, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.eight, kicker: Rank.six),
-  HandRangePart(high: Rank.ten, kicker: Rank.four),
-  HandRangePart(high: Rank.nine, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.six, kicker: Rank.five, isSuited: true),
-  HandRangePart(high: Rank.nine, kicker: Rank.five),
-  HandRangePart(high: Rank.eight, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.seven, kicker: Rank.six),
-  HandRangePart(high: Rank.ten, kicker: Rank.three),
-  HandRangePart(high: Rank.nine, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.seven, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.eight, kicker: Rank.five),
-  HandRangePart(high: Rank.ten, kicker: Rank.two),
-  HandRangePart(high: Rank.six, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.five, kicker: Rank.four, isSuited: true),
-  HandRangePart(high: Rank.eight, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.seven, kicker: Rank.five),
-  HandRangePart(high: Rank.nine, kicker: Rank.four),
-  HandRangePart(high: Rank.eight, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.six, kicker: Rank.five),
-  HandRangePart(high: Rank.seven, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.nine, kicker: Rank.three),
-  HandRangePart(high: Rank.eight, kicker: Rank.four),
-  HandRangePart(high: Rank.six, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.five, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.nine, kicker: Rank.two),
-  HandRangePart(high: Rank.seven, kicker: Rank.four),
-  HandRangePart(high: Rank.seven, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.six, kicker: Rank.four),
-  HandRangePart(high: Rank.four, kicker: Rank.three, isSuited: true),
-  HandRangePart(high: Rank.five, kicker: Rank.four),
-  HandRangePart(high: Rank.eight, kicker: Rank.three),
-  HandRangePart(high: Rank.six, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.five, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.eight, kicker: Rank.two),
-  HandRangePart(high: Rank.seven, kicker: Rank.three),
-  HandRangePart(high: Rank.four, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.six, kicker: Rank.three),
-  HandRangePart(high: Rank.five, kicker: Rank.three),
-  HandRangePart(high: Rank.three, kicker: Rank.two, isSuited: true),
-  HandRangePart(high: Rank.seven, kicker: Rank.two),
-  HandRangePart(high: Rank.four, kicker: Rank.three),
-  HandRangePart(high: Rank.six, kicker: Rank.two),
-  HandRangePart(high: Rank.five, kicker: Rank.two),
-  HandRangePart(high: Rank.four, kicker: Rank.two),
-  HandRangePart(high: Rank.three, kicker: Rank.two),
-];
+// //   int get cardPairCombinationLength => components.fold(
+// //       0, (length, component) => length + component.cardPairCombinations.length);
+
+// //   double get cardPairCombinationPercentage => cardPairCombinationLength / 1326;
+// // }
+
+// // enum PlayerHandSettingType {
+// //   holeCards,
+// //   handRange,
+// //   mixed,
+// // }
+
+// // abstract class PlayerHandSettingRangePart {
+// //   Set<CardPair> get cardPairCombinations;
+// // }
+
+// // @immutable
+// // class HoleCards implements PlayerHandSettingRangePart {
+// //   HoleCards({this.left, this.right});
+
+// //   final Card left;
+// //   final Card right;
+
+// //   @override
+// //   Set<CardPair> get cardPairCombinations =>
+// //       left != null && right != null ? {CardPair(left, right)} : {};
+
+// //   @override
+// //   int get hashCode => left.hashCode * 17 + right.hashCode;
+
+// //   @override
+// //   bool operator ==(Object other) =>
+// //       other is HoleCards && other.left == left && other.right == right;
+// // }
+
+// // @immutable
+// // class HandRangePart implements PlayerHandSettingRangePart {
+// //   const HandRangePart({
+// //     @required this.high,
+// //     @required this.kicker,
+// //     bool isSuited,
+// //   })  : assert(high != null),
+// //         assert(kicker != null),
+// //         isSuited = isSuited ?? false;
+
+// //   final Rank high;
+// //   final Rank kicker;
+// //   final bool isSuited;
+
+// //   bool get isPocket => high == kicker;
+
+// //   @override
+// //   Set<CardPair> get cardPairCombinations => isSuited
+// //       ? _getAllSuitedCardPairsByRank(high, kicker)
+// //       : _getAllOfsuitCardPairsByRank(high, kicker);
+
+// //   @override
+// //   String toString() => "HandRangePart<$high, $kicker, isSuited: $isSuited>";
+
+// //   @override
+// //   int get hashCode =>
+// //       high.hashCode * 17 * 17 + kicker.hashCode * 17 + isSuited.hashCode;
+
+// //   @override
+// //   bool operator ==(Object other) =>
+// //       other is HandRangePart &&
+// //       other.high == high &&
+// //       other.kicker == kicker &&
+// //       other.isSuited == isSuited;
+// // }
+
+// // Set<CardPair> _getAllSuitedCardPairsByRank(Rank rankA, Rank rankB) => {
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.spade),
+// //         Card(rank: rankB, suit: Suit.spade),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.heart),
+// //         Card(rank: rankB, suit: Suit.heart),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.diamond),
+// //         Card(rank: rankB, suit: Suit.diamond),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.club),
+// //         Card(rank: rankB, suit: Suit.club),
+// //       ),
+// //     };
+
+// // Set<CardPair> _getAllOfsuitCardPairsByRank(Rank rankA, Rank rankB) => {
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.spade),
+// //         Card(rank: rankB, suit: Suit.heart),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.spade),
+// //         Card(rank: rankB, suit: Suit.diamond),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.spade),
+// //         Card(rank: rankB, suit: Suit.club),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.heart),
+// //         Card(rank: rankB, suit: Suit.diamond),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.heart),
+// //         Card(rank: rankB, suit: Suit.club),
+// //       ),
+// //       CardPair(
+// //         Card(rank: rankA, suit: Suit.diamond),
+// //         Card(rank: rankB, suit: Suit.club),
+// //       ),
+// //       if (rankA != rankB) ...{
+// //         CardPair(
+// //           Card(rank: rankA, suit: Suit.heart),
+// //           Card(rank: rankB, suit: Suit.spade),
+// //         ),
+// //         CardPair(
+// //           Card(rank: rankA, suit: Suit.diamond),
+// //           Card(rank: rankB, suit: Suit.spade),
+// //         ),
+// //         CardPair(
+// //           Card(rank: rankA, suit: Suit.diamond),
+// //           Card(rank: rankB, suit: Suit.heart),
+// //         ),
+// //         CardPair(
+// //           Card(rank: rankA, suit: Suit.club),
+// //           Card(rank: rankB, suit: Suit.spade),
+// //         ),
+// //         CardPair(
+// //           Card(rank: rankA, suit: Suit.club),
+// //           Card(rank: rankB, suit: Suit.heart),
+// //         ),
+// //         CardPair(
+// //           Card(rank: rankA, suit: Suit.club),
+// //           Card(rank: rankB, suit: Suit.diamond),
+// //         ),
+// //       },
+// //     };

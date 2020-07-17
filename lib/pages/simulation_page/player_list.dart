@@ -1,5 +1,5 @@
-import 'package:aqua/models/player_hand_setting.dart';
-import 'package:aqua/models/simulation_result.dart';
+import 'package:aqua/services/simulation_isolate_service.dart';
+import 'package:aqua/view_models/player_hand_setting.dart';
 import 'package:flutter/widgets.dart';
 import './player_list_item.dart';
 import './player_list_new_item.dart';
@@ -21,7 +21,7 @@ class PlayerList extends StatelessWidget {
 
   final List<PlayerHandSetting> playerHandSettings;
 
-  final List<SimulationResult> results;
+  final List<PlayerSimulationOverallResult> results;
 
   final void Function(int) onItemPressed;
 
