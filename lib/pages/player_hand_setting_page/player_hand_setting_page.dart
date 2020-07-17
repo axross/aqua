@@ -49,6 +49,8 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
         case PlayerHandSettingType.handRange:
           initialSelectedTabIndex = 1;
           break;
+        case PlayerHandSettingType.mixed:
+          throw UnimplementedError();
       }
 
       _controller = AquaTabController(
