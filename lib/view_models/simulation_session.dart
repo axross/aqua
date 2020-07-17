@@ -166,6 +166,8 @@ class SimulationSession extends ChangeNotifier {
               return "hole_cards";
             case PlayerHandSettingType.handRange:
               return "hand_range";
+            case PlayerHandSettingType.mixed:
+              throw UnimplementedError();
           }
 
           throw AssertionError("unreachable here.");
