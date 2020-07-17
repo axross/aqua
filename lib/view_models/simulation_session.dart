@@ -323,8 +323,7 @@ class SimulationSessionProvider extends InheritedWidget {
   bool updateShouldNotify(SimulationSessionProvider old) =>
       simulationSession != old.simulationSession;
 
-  static SimulationSession of(BuildContext context) =>
-      (context.inheritFromWidgetOfExactType(SimulationSessionProvider)
-              as SimulationSessionProvider)
-          .simulationSession;
+  static SimulationSession of(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<SimulationSessionProvider>()
+      .simulationSession;
 }

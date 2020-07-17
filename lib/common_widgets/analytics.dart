@@ -15,5 +15,5 @@ class Analytics extends InheritedWidget {
   bool updateShouldNotify(Analytics old) => analytics != old.analytics;
 
   static FirebaseAnalytics of(BuildContext context) =>
-      (context.inheritFromWidgetOfExactType(Analytics) as Analytics).analytics;
+      context.dependOnInheritedWidgetOfExactType<Analytics>().analytics;
 }

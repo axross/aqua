@@ -130,10 +130,9 @@ class _AquaTabControllerProvider extends InheritedWidget {
   bool updateShouldNotify(_AquaTabControllerProvider old) =>
       old.controller != controller;
 
-  static AquaTabController of(BuildContext context) =>
-      (context.inheritFromWidgetOfExactType(_AquaTabControllerProvider)
-              as _AquaTabControllerProvider)
-          .controller;
+  static AquaTabController of(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<_AquaTabControllerProvider>()
+      .controller;
 }
 
 class _AquaTabIndexProvider extends InheritedWidget {
@@ -147,9 +146,7 @@ class _AquaTabIndexProvider extends InheritedWidget {
   bool updateShouldNotify(_AquaTabIndexProvider old) => old.index != index;
 
   static int of(BuildContext context) =>
-      (context.inheritFromWidgetOfExactType(_AquaTabIndexProvider)
-              as _AquaTabIndexProvider)
-          .index;
+      context.dependOnInheritedWidgetOfExactType<_AquaTabIndexProvider>().index;
 }
 
 class AquaTabItem extends StatefulWidget {

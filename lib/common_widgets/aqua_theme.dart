@@ -23,7 +23,7 @@ class AquaTheme extends InheritedWidget {
       darkThemeData != old.darkThemeData;
 
   static AquaThemeData of(BuildContext context) {
-    final theme = context.inheritFromWidgetOfExactType(AquaTheme) as AquaTheme;
+    final theme = context.dependOnInheritedWidgetOfExactType<AquaTheme>();
 
     return MediaQuery.of(context).platformBrightness == Brightness.dark
         ? theme.darkThemeData
