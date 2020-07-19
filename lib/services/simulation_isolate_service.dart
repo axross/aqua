@@ -83,11 +83,21 @@ class PlayerSimulationOverallResult {
 
   int ties = 0;
 
+  final tiesWith = {2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0};
+
   int get games => wins + defeats + ties;
 
   double get winRate => wins == 0 ? 0.0 : wins / games;
 
   double get tieRate => ties == 0 ? 0.0 : ties / games;
+
+  double get equity =>
+      winRate +
+      tiesWith.entries.fold(
+          0.0,
+          (eq, entry) =>
+              eq +
+              ((entry.value == 0 ? 0.0 : (entry.value / entry.key)) / games));
 
   Map<HandType, int> winsByHandType =
       Map.fromEntries(HandType.values.map((type) => MapEntry(type, 0)));
@@ -128,6 +138,7 @@ void _isolateFunction(SendPort toMain) {
             results[playerIndex].wins += 1;
           } else {
             results[playerIndex].ties += 1;
+            results[playerIndex].tiesWith[matchup.bestHandIndexes.length] += 1;
           }
 
           results[playerIndex]
