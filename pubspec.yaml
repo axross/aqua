@@ -23,6 +23,7 @@ dependencies:
   flutter_icons: ^0.3.1
   flutter_launcher_icons: ^0.7.4
   poker: 0.0.12
+  shared_preferences: ^0.5.8
 
 dev_dependencies:
   flutter_test:
