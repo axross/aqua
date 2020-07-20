@@ -1,5 +1,5 @@
-import 'package:aqua/services/simulation_isolate_service.dart';
-import 'package:flutter_test/flutter_test.dart';
+import "package:aqua/src/services/simulation_isolate_service.dart";
+import "package:flutter_test/flutter_test.dart";
 
 void main() {
   test("PlayerSimulationOverallResult#equity is valid", () {
