@@ -1,3 +1,4 @@
+import "package:aqua/src/common_widgets/aqua_preferences.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/common_widgets/playing_card.dart";
 import "package:aqua/src/common_widgets/readonly_range_grid.dart";
@@ -152,73 +153,11 @@ class _RightItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final winOrDrawRate = result.winRate + result.tieRate;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  "${formatOnlyWholeNumberPart(winOrDrawRate)}",
-                  style: theme.digitTextStyle.copyWith(
-                    color: theme.foregroundColor,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                Text(
-                  ".",
-                  style: theme.textStyle.copyWith(
-                    color: theme.foregroundColor,
-                    fontSize: 24,
-                  ),
-                ),
-                Text(
-                  "${formatOnlyFractionalPart(winOrDrawRate)}",
-                  style: theme.digitTextStyle.copyWith(
-                    color: theme.foregroundColor,
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  "% win",
-                  style: theme.textStyle.copyWith(
-                    color: theme.foregroundColor,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  "${formatOnlyWholeNumberPartWithPrefix(result.tieRate)}",
-                  style: theme.digitTextStyle.copyWith(
-                    color: theme.dimForegroundColor,
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  "% chop",
-                  style: theme.textStyle.copyWith(
-                    color: theme.dimForegroundColor,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+        _MainValuePart(result: result),
         SizedBox(height: 8),
         Column(
           children: (result.winsByHandType.entries
@@ -252,6 +191,151 @@ class _RightItem extends StatelessWidget {
                     ],
                   ))
               .toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class _MainValuePart extends StatelessWidget {
+  _MainValuePart({@required this.result, Key key})
+      : assert(result != null),
+        super(key: key);
+
+  final PlayerSimulationOverallResult result;
+
+  @override
+  Widget build(BuildContext context) {
+    final preference = AquaPreferences.of(context);
+
+    return AnimatedBuilder(
+      animation: preference,
+      builder: (context, child) => preference.preferEquity
+          ? _EquityMainValuePart(result: result)
+          : _WinRateMainValuePart(result: result),
+    );
+  }
+}
+
+class _EquityMainValuePart extends StatelessWidget {
+  _EquityMainValuePart({@required this.result, Key key})
+      : assert(result != null),
+        super(key: key);
+
+  final PlayerSimulationOverallResult result;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        Text(
+          "${formatOnlyWholeNumberPart(result.equity)}",
+          style: theme.digitTextStyle.copyWith(
+            color: theme.foregroundColor,
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        Text(
+          ".",
+          style: theme.textStyle.copyWith(
+            color: theme.foregroundColor,
+            fontSize: 24,
+          ),
+        ),
+        Text(
+          "${formatOnlyFractionalPart(result.equity)}",
+          style: theme.digitTextStyle.copyWith(
+            color: theme.foregroundColor,
+            fontSize: 18,
+          ),
+        ),
+        Text(
+          "% equity",
+          style: theme.textStyle.copyWith(
+            color: theme.foregroundColor,
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _WinRateMainValuePart extends StatelessWidget {
+  _WinRateMainValuePart({@required this.result, Key key})
+      : assert(result != null),
+        super(key: key);
+
+  final PlayerSimulationOverallResult result;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              "${formatOnlyWholeNumberPart(result.winRate + result.tieRate)}",
+              style: theme.digitTextStyle.copyWith(
+                color: theme.foregroundColor,
+                fontSize: 32,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            Text(
+              ".",
+              style: theme.textStyle.copyWith(
+                color: theme.foregroundColor,
+                fontSize: 24,
+              ),
+            ),
+            Text(
+              "${formatOnlyFractionalPart(result.winRate + result.tieRate)}",
+              style: theme.digitTextStyle.copyWith(
+                color: theme.foregroundColor,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              "% win",
+              style: theme.textStyle.copyWith(
+                color: theme.foregroundColor,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              "${formatOnlyWholeNumberPartWithPrefix(result.tieRate)}",
+              style: theme.digitTextStyle.copyWith(
+                color: theme.dimForegroundColor,
+                fontSize: 18,
+              ),
+            ),
+            Text(
+              "% chop",
+              style: theme.textStyle.copyWith(
+                color: theme.dimForegroundColor,
+                fontSize: 14,
+              ),
+            ),
+          ],
         ),
       ],
     );
