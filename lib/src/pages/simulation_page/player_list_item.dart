@@ -1,12 +1,12 @@
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/common_widgets/playing_card.dart';
-import 'package:aqua/src/common_widgets/readonly_range_grid.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/common_widgets/playing_card.dart";
+import "package:aqua/src/common_widgets/readonly_range_grid.dart";
 import "package:aqua/src/constants/hand.dart";
-import 'package:aqua/src/services/simulation_isolate_service.dart';
-import 'package:aqua/src/utilities/number_format.dart';
-import 'package:aqua/src/view_models/player_hand_setting.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/services/simulation_isolate_service.dart";
+import "package:aqua/src/utilities/number_format.dart";
+import "package:aqua/src/view_models/player_hand_setting.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
 
 class PlayerListItem extends StatelessWidget {
   PlayerListItem({

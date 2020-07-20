@@ -1,4 +1,4 @@
-import 'package:poker/poker.dart';
+import "package:poker/poker.dart";
 
 const ranksInStrongnessOrder = [
   Rank.ace,

@@ -1,7 +1,7 @@
-import 'package:aqua/src/common_widgets/playing_card.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:poker/poker.dart';
+import "package:aqua/src/common_widgets/playing_card.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
+import "package:poker/poker.dart";
 
 class Board extends StatelessWidget {
   Board({@required this.board, @required this.onPressed, Key key})

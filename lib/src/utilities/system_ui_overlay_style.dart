@@ -1,6 +1,6 @@
-import 'package:flutter/painting.dart';
-import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
+import "package:flutter/painting.dart";
+import "package:flutter/services.dart";
+import "package:meta/meta.dart";
 
 void setSystemUIOverlayStyle({
   @required Color topColor,

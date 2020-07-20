@@ -1,5 +1,5 @@
-import 'package:aqua/common_widgets/aqua_theme.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:flutter/widgets.dart";
 
 class TinyStadiumButton extends StatelessWidget {
   TinyStadiumButton({

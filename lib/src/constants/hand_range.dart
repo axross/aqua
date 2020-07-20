@@ -1,4 +1,4 @@
-import 'package:poker/poker.dart';
+import "package:poker/poker.dart";
 
 final handRangeComponentsInStrongnessOrder = [
   HandRangePart(high: Rank.ace, kicker: Rank.ace),

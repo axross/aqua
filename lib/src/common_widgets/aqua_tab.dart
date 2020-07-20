@@ -1,6 +1,6 @@
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
 
 class AquaTabController extends ChangeNotifier {
   AquaTabController({

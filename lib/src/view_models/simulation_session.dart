@@ -1,10 +1,10 @@
 import 'dart:async' show Timer;
 import "package:poker/poker.dart";
-import 'package:aqua/src/models/player_hand_setting_preset.dart';
+import "package:aqua/src/models/player_hand_setting_preset.dart";
 import "package:aqua/src/view_models/player_hand_setting.dart";
-import 'package:aqua/src/services/simulation_isolate_service.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/services/simulation_isolate_service.dart";
+import "package:firebase_analytics/firebase_analytics.dart";
+import "package:flutter/widgets.dart";
 
 class SimulationSession extends ChangeNotifier {
   SimulationSession.initial({@required FirebaseAnalytics analytics})

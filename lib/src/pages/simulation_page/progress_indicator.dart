@@ -1,5 +1,5 @@
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:flutter/material.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:flutter/material.dart";
 
 class ProgressIndicator extends StatelessWidget {
   ProgressIndicator({@required this.progress, Key key})

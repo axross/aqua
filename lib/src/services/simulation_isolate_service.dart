@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:isolate';
 import "package:poker/poker.dart";
-import 'package:flutter/widgets.dart';
+import "package:flutter/widgets.dart";
 
 class SimulationIsolateService {
   Isolate _isolate;

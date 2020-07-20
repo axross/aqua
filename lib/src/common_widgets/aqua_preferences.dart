@@ -1,5 +1,5 @@
-import 'package:aqua/src/view_models/aqua_preference_data.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/view_models/aqua_preference_data.dart";
+import "package:flutter/widgets.dart";
 
 class AquaPreferences extends InheritedWidget {
   AquaPreferences({

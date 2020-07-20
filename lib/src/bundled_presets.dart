@@ -1,6 +1,6 @@
-import 'package:aqua/src/models/player_hand_setting_preset.dart';
-import 'package:aqua/src/view_models/player_hand_setting.dart';
-import 'package:poker/poker.dart';
+import "package:aqua/src/models/player_hand_setting_preset.dart";
+import "package:aqua/src/view_models/player_hand_setting.dart";
+import "package:poker/poker.dart";
 
 final bundledPresets = [
   PlayerHandSettingPreset(

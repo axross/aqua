@@ -1,12 +1,12 @@
-import 'package:aqua/src/common_widgets/analytics.dart';
-import 'package:aqua/src/common_widgets/aqua_preferences.dart';
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/pages/simulation_page/simulation_page.dart';
-import 'package:aqua/src/theme_data.dart';
-import 'package:aqua/src/view_models/aqua_preference_data.dart';
-import 'package:aqua/src/view_models/simulation_session.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/material.dart';
+import "package:aqua/src/common_widgets/analytics.dart";
+import "package:aqua/src/common_widgets/aqua_preferences.dart";
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/pages/simulation_page/simulation_page.dart";
+import "package:aqua/src/theme_data.dart";
+import "package:aqua/src/view_models/aqua_preference_data.dart";
+import "package:aqua/src/view_models/simulation_session.dart";
+import "package:firebase_analytics/firebase_analytics.dart";
+import "package:flutter/material.dart";
 
 class AquaAppBootstrap extends StatefulWidget {
   @override

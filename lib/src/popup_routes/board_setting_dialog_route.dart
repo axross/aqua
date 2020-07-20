@@ -1,6 +1,6 @@
-import 'package:aqua/src/common_widgets/bottom_card_dialog_route.dart';
-import 'package:aqua/src/pages/board_setting_page/board_select_page.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/common_widgets/bottom_card_dialog_route.dart";
+import "package:aqua/src/pages/board_setting_page/board_select_page.dart";
+import "package:flutter/widgets.dart";
 
 class BoardSettingDialogRoute extends BottomCardDialogRoute {
   BoardSettingDialogRoute({

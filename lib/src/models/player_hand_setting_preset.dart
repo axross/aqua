@@ -1,6 +1,6 @@
-import 'package:aqua/src/view_models/player_hand_setting.dart';
-import 'package:meta/meta.dart';
-import 'package:poker/poker.dart';
+import "package:aqua/src/view_models/player_hand_setting.dart";
+import "package:meta/meta.dart";
+import "package:poker/poker.dart";
 
 @immutable
 class PlayerHandSettingPreset {

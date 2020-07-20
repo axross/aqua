@@ -1,10 +1,10 @@
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/common_widgets/card_picker.dart';
-import 'package:aqua/src/common_widgets/playing_card.dart';
-import 'package:aqua/src/view_models/simulation_session.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:poker/poker.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/common_widgets/card_picker.dart";
+import "package:aqua/src/common_widgets/playing_card.dart";
+import "package:aqua/src/view_models/simulation_session.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
+import "package:poker/poker.dart";
 import './top_buttons.dart';
 
 class BoardSettingPage extends StatefulWidget {

@@ -1,8 +1,8 @@
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/common_widgets/playing_card.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/common_widgets/playing_card.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
+import "package:flutter_icons/flutter_icons.dart";
 
 class PlayerListNewItem extends StatelessWidget {
   PlayerListNewItem({@required this.onPressed, Key key})

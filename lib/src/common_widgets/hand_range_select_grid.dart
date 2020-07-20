@@ -1,8 +1,8 @@
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/constants/card.dart';
-import 'package:flutter/services.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/constants/card.dart";
+import "package:flutter/services.dart";
 import "package:flutter/widgets.dart";
-import 'package:poker/poker.dart';
+import "package:poker/poker.dart";
 
 typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
 

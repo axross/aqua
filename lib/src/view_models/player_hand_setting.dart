@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
 class PlayerHandSetting extends ChangeNotifier {

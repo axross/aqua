@@ -1,13 +1,13 @@
 import 'dart:io' show Platform;
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/common_widgets/hand_range_select_grid.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/common_widgets/hand_range_select_grid.dart";
 import "package:aqua/src/constants/hand_range.dart";
-import 'package:aqua/src/utilities/number_format.dart';
-import 'package:aqua/src/view_models/player_hand_setting.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:poker/poker.dart';
+import "package:aqua/src/utilities/number_format.dart";
+import "package:aqua/src/view_models/player_hand_setting.dart";
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
+import "package:poker/poker.dart";
 
 class HandRangeTabContent extends StatelessWidget {
   HandRangeTabContent({

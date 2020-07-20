@@ -1,4 +1,4 @@
-import 'package:poker/poker.dart';
+import "package:poker/poker.dart";
 
 const handTypeStrings = {
   HandType.straightFlush: "Str. Flush",

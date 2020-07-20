@@ -1,6 +1,6 @@
-import 'package:aqua/src/services/simulation_isolate_service.dart';
-import 'package:aqua/src/view_models/player_hand_setting.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/services/simulation_isolate_service.dart";
+import "package:aqua/src/view_models/player_hand_setting.dart";
+import "package:flutter/widgets.dart";
 import './player_list_item.dart';
 import './player_list_new_item.dart';
 

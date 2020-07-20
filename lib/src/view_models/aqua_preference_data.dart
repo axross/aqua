@@ -1,5 +1,5 @@
-import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import "package:flutter/widgets.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 class AquaPreferenceData extends ChangeNotifier {
   AquaPreferenceData();

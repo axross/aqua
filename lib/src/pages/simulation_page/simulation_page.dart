@@ -1,10 +1,10 @@
-import 'package:aqua/src/common_widgets/analytics.dart';
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/popup_routes/board_setting_dialog_route.dart';
-import 'package:aqua/src/popup_routes/player_hand_setting_dialog_route.dart';
-import 'package:aqua/src/utilities/system_ui_overlay_style.dart';
-import 'package:aqua/src/view_models/simulation_session.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/common_widgets/analytics.dart";
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/popup_routes/board_setting_dialog_route.dart";
+import "package:aqua/src/popup_routes/player_hand_setting_dialog_route.dart";
+import "package:aqua/src/utilities/system_ui_overlay_style.dart";
+import "package:aqua/src/view_models/simulation_session.dart";
+import "package:flutter/widgets.dart";
 import './app_bar_ish_bar.dart';
 import './board.dart';
 import './error_message.dart';

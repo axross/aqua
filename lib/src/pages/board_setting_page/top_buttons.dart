@@ -1,7 +1,7 @@
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/common_widgets/tiny_stadium_button.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/common_widgets/tiny_stadium_button.dart";
+import "package:flutter/services.dart";
+import "package:flutter/widgets.dart";
 
 class TopButtons extends StatelessWidget {
   TopButtons(
