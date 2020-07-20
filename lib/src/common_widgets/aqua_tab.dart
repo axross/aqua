@@ -220,44 +220,48 @@ class _AquaTabItemState extends State<AquaTabItem>
         HapticFeedback.lightImpact();
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        height: 36,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AnimatedBuilder(
               animation: _animationController,
               builder: (context, _) => Icon(
                 widget.icon,
-                color: ColorTween(
-                  begin: theme.foregroundColor,
-                  end: theme.foregroundColor,
-                ).animate(_animationController).value,
+                color: theme.foregroundColor,
                 size: 20,
               ),
             ),
-            SizeTransition(
-              axis: Axis.horizontal,
-              sizeFactor: Tween<double>(
-                begin: 0,
-                end: 1,
-              ).animate(_animationController),
-              child: Row(
-                children: [
-                  SizedBox(width: 4),
-                  SlideTransition(
-                    position: Tween<Offset>(
-                      begin: Offset(0, 1),
-                      end: Offset(0, 0),
-                    ).animate(_animationController),
-                    child: Text(
-                      widget.label,
-                      style: theme.textStyle
-                          .copyWith(color: theme.foregroundColor),
+            SizedBox(
+              height: 20,
+              child: SizeTransition(
+                axis: Axis.horizontal,
+                sizeFactor: Tween<double>(
+                  begin: 0,
+                  end: 1,
+                ).animate(_animationController),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: 4),
+                    SlideTransition(
+                      position: Tween<Offset>(
+                        begin: Offset(0, 1),
+                        end: Offset(0, 0),
+                      ).animate(_animationController),
+                      child: Text(
+                        widget.label,
+                        style: theme.textStyle
+                            .copyWith(color: theme.foregroundColor),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),

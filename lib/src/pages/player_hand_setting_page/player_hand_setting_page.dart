@@ -5,7 +5,6 @@ import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/view_models/player_hand_setting.dart";
 import "package:aqua/src/view_models/simulation_session.dart";
 import "package:flutter/widgets.dart";
-import "package:flutter_icons/flutter_icons.dart";
 import './hand_range_tab_content.dart';
 import './hole_cards_tab_content.dart';
 import './preset_tab_content.dart';
@@ -179,15 +178,15 @@ class _PlayerHandSettingPageState extends State<PlayerHandSettingPage> {
               tabs: [
                 AquaTabItem(
                   label: "Cards",
-                  icon: AquaIcons.holeCards,
+                  icon: AquaIcons.cardPair,
                 ),
                 AquaTabItem(
                   label: "Range",
-                  icon: AquaIcons.handRange,
+                  icon: AquaIcons.grid,
                 ),
                 AquaTabItem(
                   label: "Presets",
-                  icon: Feather.getIconData("save"),
+                  icon: AquaIcons.save,
                 ),
               ],
             ),
