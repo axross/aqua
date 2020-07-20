@@ -5,91 +5,108 @@ import 'package:aqua/pages/simulation_page/simulation_page.dart';
 import 'package:aqua/theme_data.dart';
 import 'package:aqua/view_models/aqua_preference_data.dart';
 import 'package:aqua/view_models/simulation_session.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
-class AquaApp extends StatefulWidget {
+class AquaAppBootstrap extends StatefulWidget {
   @override
-  State<AquaApp> createState() => _AquaAppState();
+  State<AquaAppBootstrap> createState() => _AquaAppBootstrapState();
 }
 
-class _AquaAppState extends State<AquaApp> {
-  ValueNotifier<SimulationSession> _simulationSession;
+class _AquaAppBootstrapState extends State<AquaAppBootstrap> {
+  /// A singleton FirebaseAnalytics object that is used in entire aqua app.
+  final FirebaseAnalytics _analytics = FirebaseAnalytics();
 
-  AquaPreferenceData applicationPreferenceData;
+  /// A singleton AquaPreferenceData object that is used in entire aqua app.
+  final AquaPreferenceData _applicationPreferenceData = AquaPreferenceData();
 
   @override
   void initState() {
     super.initState();
 
-    applicationPreferenceData = AquaPreferenceData();
-
-    applicationPreferenceData.initialize();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (_simulationSession == null) {
-      _simulationSession = ValueNotifier(
-        SimulationSession.initial(
-          analytics: Analytics.of(context),
-        ),
-      );
-    }
+    _applicationPreferenceData.initialize();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AquaTheme(
-      lightThemeData: lightThemeData,
-      darkThemeData: darkThemeData,
-      child: AquaPreferences(
-        data: applicationPreferenceData,
-        child: AnimatedBuilder(
-          animation: applicationPreferenceData,
-          builder: (context, child) => applicationPreferenceData.isLoaded
-              ? ValueListenableBuilder<SimulationSession>(
-                  valueListenable: _simulationSession,
-                  builder: (context, simulationSession, child) =>
-                      SimulationSessionProvider(
-                    simulationSession: simulationSession,
-                    child: child,
-                  ),
-                  child: WidgetsApp(
-                    title: 'Odds Calculator',
-                    color: Color(0xff19232e),
-                    initialRoute: "/",
-                    routes: {
-                      "/": (_) => SimulationPage(),
-                    },
-                    pageRouteBuilder: <T>(settings, builder) =>
-                        MaterialPageRoute<T>(
-                      builder: (context) => builder(context),
-                      settings: settings,
-                    ),
-                  ),
-                )
-              : WidgetsApp(
-                  title: 'Odds Calculator',
-                  color: Color(0xff19232e),
-                  builder: (context, child) => _AquaAppLoading(),
-                ),
+    return Analytics(
+      analytics: _analytics,
+      child: AquaTheme(
+        lightThemeData: lightThemeData,
+        darkThemeData: darkThemeData,
+        child: AquaPreferences(
+          data: _applicationPreferenceData,
+          child: AnimatedBuilder(
+            animation: _applicationPreferenceData,
+            builder: (context, child) => _applicationPreferenceData.isLoaded
+                ? _AquaApp()
+                : _AquaAppWhileLoading(),
+          ),
         ),
       ),
     );
   }
 }
 
-class _AquaAppLoading extends StatelessWidget {
+class _AquaApp extends StatefulWidget {
+  @override
+  _AquaAppState createState() => _AquaAppState();
+}
+
+class _AquaAppState extends State<_AquaApp> {
+  /// A ValueNotifier that holds a SimulationSession inside.
+  /// Replace the held SimulationSession to start a new session
+  ValueNotifier<SimulationSession> _simulationSession;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_simulationSession == null) {
+      final analytics = Analytics.of(context);
+
+      _simulationSession =
+          ValueNotifier(SimulationSession.initial(analytics: analytics));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AquaTheme.of(context).backgroundColor,
-      child: Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation(
-            AquaTheme.of(context).primaryForegroundColor,
+    return ValueListenableBuilder<SimulationSession>(
+      valueListenable: _simulationSession,
+      builder: (context, simulationSession, child) => SimulationSessionProvider(
+        simulationSession: simulationSession,
+        child: child,
+      ),
+      child: WidgetsApp(
+        title: 'Odds Calculator',
+        color: Color(0xff19232e),
+        initialRoute: "/",
+        routes: {
+          "/": (_) => SimulationPage(),
+        },
+        pageRouteBuilder: <T>(settings, builder) => MaterialPageRoute<T>(
+          builder: (context) => builder(context),
+          settings: settings,
+        ),
+      ),
+    );
+  }
+}
+
+class _AquaAppWhileLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return WidgetsApp(
+      title: 'Odds Calculator',
+      color: Color(0xff19232e),
+      builder: (context, child) => Container(
+        color: AquaTheme.of(context).backgroundColor,
+        child: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation(
+              AquaTheme.of(context).primaryForegroundColor,
+            ),
           ),
         ),
       ),
