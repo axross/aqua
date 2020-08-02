@@ -112,7 +112,8 @@ class _SimulationPageState extends State<SimulationPage> {
                     animation: _simulationSession,
                     builder: (context, _) => EditableCommunityCards(
                       initialCards: _simulationSession.communityCards,
-                      unavailableCards: _simulationSession.usedCards,
+                      unavailableCards:
+                          _simulationSession.playerHandSettings.usedCards,
                       isPopupOpen: _isCommunityCardPopupOpen,
                       prepareForPopup: (overlayPosition) async {
                         await _scrollController.animateTo(
@@ -305,7 +306,8 @@ class _SimulationPageState extends State<SimulationPage> {
                               playerHandSetting.type),
                       initialCardPair: playerHandSetting.firstHoleCardPair,
                       initialHandRange: playerHandSetting.handRange,
-                      unavailableCards: _simulationSession.usedCards,
+                      unavailableCards:
+                          _simulationSession.communityCards.toSet(),
                       isPopupOpen: index == _openPlayerHandSettingIndex,
                       prepareForPopup: (overlayPosition) async {
                         final nextScrollOffset = math.max(
