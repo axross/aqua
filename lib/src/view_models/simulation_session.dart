@@ -10,7 +10,6 @@ class SimulationSession extends ChangeNotifier {
     this.onFinishSimulation,
   }) : _playerHandSettings = PlayerHandSettingList.empty() {
     _playerHandSettings.addListener(() {
-      _refreshUsedCards();
       _clearResults();
       _enqueueSimulation();
       notifyListeners();
@@ -25,8 +24,6 @@ class SimulationSession extends ChangeNotifier {
 
   List<Card> _communityCards = [null, null, null, null, null];
 
-  Set<Card> _usedCards = {};
-
   List<Card> get communityCards => _communityCards;
 
   set communityCards(List<Card> cards) {
@@ -34,7 +31,6 @@ class SimulationSession extends ChangeNotifier {
 
     _communityCards = cards;
 
-    _refreshUsedCards();
     _clearResults();
     _enqueueSimulation();
     notifyListeners();
@@ -55,12 +51,6 @@ class SimulationSession extends ChangeNotifier {
   get progress => _progress;
 
   SimulationIsolateService _simulationIsolateService;
-
-  Set<Card> get usedCards => _usedCards;
-
-  void _refreshUsedCards() {
-    _usedCards = {..._communityCards, ..._playerHandSettings.usedCards};
-  }
 
   void _clearResults() {
     _results = [];
