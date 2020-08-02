@@ -111,7 +111,7 @@ class _SimulationPageState extends State<SimulationPage> {
                   child: AnimatedBuilder(
                     animation: _simulationSession,
                     builder: (context, _) => EditableCommunityCards(
-                      initialCards: _simulationSession.communityCards,
+                      initialCommunityCards: _simulationSession.communityCards,
                       unavailableCards:
                           _simulationSession.playerHandSettings.usedCards,
                       isPopupOpen: _isCommunityCardPopupOpen,
@@ -529,12 +529,8 @@ class _PlayerListItem extends StatelessWidget {
                       children: [
                         AnimatedBuilder(
                           animation: preferences,
-                          builder: (context, child) => preferences.preferEquity
-                              ? DigitsText(
-                                  result.equity,
-                                  suffix: "% equity",
-                                )
-                              : Row(
+                          builder: (context, child) => preferences.preferWinRate
+                              ? Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment:
@@ -554,6 +550,10 @@ class _PlayerListItem extends StatelessWidget {
                                       suffix: "% tie",
                                     ),
                                   ],
+                                )
+                              : DigitsText(
+                                  result.equity,
+                                  suffix: "% equity",
                                 ),
                         ),
                         SizedBox(height: 8),
@@ -575,8 +575,9 @@ class _PlayerListItem extends StatelessWidget {
                         AnimatedBuilder(
                           animation: preferences,
                           builder: (context, child) => DigitsPlaceholderText(
-                            suffix:
-                                preferences.preferEquity ? "% equity" : "% win",
+                            suffix: preferences.preferWinRate
+                                ? "% win"
+                                : "% equity",
                           ),
                         ),
                         SizedBox(height: 8),

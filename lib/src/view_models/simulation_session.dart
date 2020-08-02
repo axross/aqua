@@ -1,4 +1,5 @@
 import "dart:math" as math;
+import "package:aqua/src/models/community_cards.dart";
 import "package:poker/poker.dart";
 import "package:aqua/src/view_models/player_hand_setting.dart";
 import "package:aqua/src/services/simulation_isolate_service.dart";
@@ -22,14 +23,17 @@ class SimulationSession extends ChangeNotifier {
 
   final PlayerHandSettingList _playerHandSettings;
 
-  List<Card> _communityCards = [null, null, null, null, null];
+  CommunityCards _communityCards = CommunityCards.empty();
 
-  List<Card> get communityCards => _communityCards;
+  CommunityCards get communityCards => _communityCards;
 
-  set communityCards(List<Card> cards) {
-    assert(cards.length == 5);
 
-    _communityCards = cards;
+  set communityCards(CommunityCards communityCards) {
+    if (communityCards == _communityCards) {
+      return;
+    }
+
+    _communityCards = communityCards;
 
     _clearResults();
     _enqueueSimulation();
@@ -123,7 +127,7 @@ class SimulationSession extends ChangeNotifier {
             .toList()
             .map((setting) => setting.components)
             .toList(),
-        communityCards: _communityCards.where((card) => card != null).toSet(),
+        communityCards: _communityCards.toSet(),
       );
   }
 }
