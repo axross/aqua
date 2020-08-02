@@ -4,10 +4,10 @@ import "package:poker/poker.dart";
 
 @immutable
 class PlayerHandSettingPreset {
-  PlayerHandSettingPreset({
+  const PlayerHandSettingPreset({
     @required this.name,
     @required this.type,
-    this.holeCardPairs = const [NullableCardPair(null, null)],
+    this.holeCardPairs = const [NullableCardPair.empty()],
     this.handRange = const {},
   })  : assert(name != null),
         assert(type != null);

@@ -1,17 +1,26 @@
 import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/common_widgets/fill.dart";
 import "package:aqua/src/constants/card.dart";
+import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
-typedef OnRangeSelectorUpdate = void Function(Set<HandRangePart>);
-
 class HandRangeSelectGrid extends StatefulWidget {
-  HandRangeSelectGrid({@required this.onUpdate, this.value, Key key})
-      : assert(onUpdate != null),
+  HandRangeSelectGrid({
+    Key key,
+    @required this.onChanged,
+    this.onChangeStart,
+    this.onChangeEnd,
+    this.value = const {},
+  })  : assert(onChanged != null),
         super(key: key);
 
-  final OnRangeSelectorUpdate onUpdate;
+  final void Function(Set<HandRangePart> handRange) onChanged;
+
+  final void Function(HandRangePart part, bool isToMark) onChangeStart;
+
+  final void Function(HandRangePart part, bool wasToMark) onChangeEnd;
 
   final Set<HandRangePart> value;
 
@@ -21,13 +30,16 @@ class HandRangeSelectGrid extends StatefulWidget {
 
 class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
   Set<HandRangePart> selectedRange;
-  bool isToCheck;
+
+  bool isToMark;
+
+  HandRangePart lastChangedPart;
 
   @override
   void initState() {
     super.initState();
 
-    selectedRange = widget.value == null ? {} : widget.value;
+    selectedRange = widget.value == null ? {} : {...widget.value};
   }
 
   @override
@@ -42,123 +54,145 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
   }
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => GestureDetector(
-          onPanStart: (details) {
-            final x = details.localPosition.dx *
-                Rank.values.length ~/
-                constraints.maxWidth;
-            final y = details.localPosition.dy *
-                Rank.values.length ~/
-                constraints.maxHeight;
-            final handRangePart = x > y
-                ? HandRangePart(
-                    high: ranksInStrongnessOrder[y],
-                    kicker: ranksInStrongnessOrder[x],
-                    isSuited: true)
-                : HandRangePart(
-                    high: ranksInStrongnessOrder[x],
-                    kicker: ranksInStrongnessOrder[y],
-                    isSuited: false);
+  Widget build(BuildContext context) => Fill(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: LayoutBuilder(
+            builder: (context, constraints) => GestureDetector(
+              onPanStart: (details) {
+                final x = details.localPosition.dx *
+                    Rank.values.length ~/
+                    constraints.maxWidth;
+                final y = details.localPosition.dy *
+                    Rank.values.length ~/
+                    constraints.maxHeight;
+                final handRangePart = x > y
+                    ? HandRangePart(
+                        high: ranksInStrongnessOrder[y],
+                        kicker: ranksInStrongnessOrder[x],
+                        isSuited: true)
+                    : HandRangePart(
+                        high: ranksInStrongnessOrder[x],
+                        kicker: ranksInStrongnessOrder[y],
+                        isSuited: false);
 
-            isToCheck = !selectedRange.contains(handRangePart);
+                isToMark = !selectedRange.contains(handRangePart);
 
-            if (isToCheck) {
-              HapticFeedback.lightImpact();
+                if (isToMark) {
+                  HapticFeedback.lightImpact();
 
-              setState(() {
-                selectedRange.add(handRangePart);
-              });
+                  setState(() {
+                    selectedRange.add(handRangePart);
+                    lastChangedPart = handRangePart;
+                  });
 
-              widget.onUpdate(selectedRange);
-            } else {
-              HapticFeedback.lightImpact();
+                  if (widget.onChangeStart != null) {
+                    widget.onChangeStart(handRangePart, true);
+                  }
 
-              setState(() {
-                selectedRange.remove(handRangePart);
-              });
+                  widget.onChanged(selectedRange);
+                } else {
+                  HapticFeedback.lightImpact();
 
-              widget.onUpdate(selectedRange);
-            }
-          },
-          onPanUpdate: (details) {
-            final x = details.localPosition.dx *
-                Rank.values.length ~/
-                constraints.maxWidth;
-            final y = details.localPosition.dy *
-                Rank.values.length ~/
-                constraints.maxHeight;
+                  setState(() {
+                    selectedRange.remove(handRangePart);
+                    lastChangedPart = handRangePart;
+                  });
 
-            if (x < 0 || x >= Rank.values.length) return;
-            if (y < 0 || y >= Rank.values.length) return;
+                  if (widget.onChangeStart != null) {
+                    widget.onChangeStart(handRangePart, false);
+                  }
 
-            final handRangePart = x > y
-                ? HandRangePart(
-                    high: ranksInStrongnessOrder[y],
-                    kicker: ranksInStrongnessOrder[x],
-                    isSuited: true)
-                : HandRangePart(
-                    high: ranksInStrongnessOrder[x],
-                    kicker: ranksInStrongnessOrder[y],
-                    isSuited: false);
+                  widget.onChanged(selectedRange);
+                }
+              },
+              onPanUpdate: (details) {
+                final x = details.localPosition.dx *
+                    Rank.values.length ~/
+                    constraints.maxWidth;
+                final y = details.localPosition.dy *
+                    Rank.values.length ~/
+                    constraints.maxHeight;
 
-            if (isToCheck) {
-              if (selectedRange.contains(handRangePart)) return;
+                if (x < 0 || x >= Rank.values.length) return;
+                if (y < 0 || y >= Rank.values.length) return;
 
-              HapticFeedback.selectionClick();
+                final handRangePart = x > y
+                    ? HandRangePart(
+                        high: ranksInStrongnessOrder[y],
+                        kicker: ranksInStrongnessOrder[x],
+                        isSuited: true)
+                    : HandRangePart(
+                        high: ranksInStrongnessOrder[x],
+                        kicker: ranksInStrongnessOrder[y],
+                        isSuited: false);
 
-              setState(() {
-                selectedRange.add(handRangePart);
-              });
+                if (isToMark) {
+                  if (selectedRange.contains(handRangePart)) return;
 
-              widget.onUpdate(selectedRange);
-            } else {
-              if (!selectedRange.contains(handRangePart)) return;
+                  HapticFeedback.selectionClick();
 
-              HapticFeedback.selectionClick();
+                  setState(() {
+                    selectedRange.add(handRangePart);
+                    lastChangedPart = handRangePart;
+                  });
 
-              setState(() {
-                selectedRange.remove(handRangePart);
-              });
+                  widget.onChanged(selectedRange);
+                } else {
+                  if (!selectedRange.contains(handRangePart)) return;
 
-              widget.onUpdate(selectedRange);
-            }
-          },
-          behavior: HitTestBehavior.opaque,
-          child: Column(
-            children: List.generate(Rank.values.length * 2 - 1, (i) {
-              if (i % 2 == 1) return SizedBox(height: 2);
+                  HapticFeedback.selectionClick();
 
-              final y = i ~/ 2;
+                  setState(() {
+                    selectedRange.remove(handRangePart);
+                    lastChangedPart = handRangePart;
+                  });
 
-              return Expanded(
-                child: Row(
-                  children: List.generate(Rank.values.length * 2 - 1, (j) {
-                    if (j % 2 == 1) return SizedBox(width: 2);
+                  widget.onChanged(selectedRange);
+                }
+              },
+              onPanEnd: (details) {
+                if (widget.onChangeEnd != null) {
+                  widget.onChangeEnd(lastChangedPart, isToMark);
+                }
+              },
+              behavior: HitTestBehavior.opaque,
+              child: Column(
+                children: List.generate(Rank.values.length * 2 - 1, (i) {
+                  if (i % 2 == 1) return SizedBox(height: 2);
 
-                    final x = j ~/ 2;
-                    final handRangePart = x > y
-                        ? HandRangePart(
-                            high: ranksInStrongnessOrder[y],
-                            kicker: ranksInStrongnessOrder[x],
-                            isSuited: true,
-                          )
-                        : HandRangePart(
-                            high: ranksInStrongnessOrder[x],
-                            kicker: ranksInStrongnessOrder[y],
-                            isSuited: false,
-                          );
+                  final y = i ~/ 2;
 
-                    return Expanded(
-                      child: HandRangeSelectGridItem(
-                        handRangePart: handRangePart,
-                        isSelected: selectedRange.contains(handRangePart),
-                      ),
-                    );
-                  }),
-                ),
-              );
-            }),
+                  return Expanded(
+                    child: Row(
+                      children: List.generate(Rank.values.length * 2 - 1, (j) {
+                        if (j % 2 == 1) return SizedBox(width: 2);
+
+                        final x = j ~/ 2;
+                        final handRangePart = x > y
+                            ? HandRangePart(
+                                high: ranksInStrongnessOrder[y],
+                                kicker: ranksInStrongnessOrder[x],
+                                isSuited: true,
+                              )
+                            : HandRangePart(
+                                high: ranksInStrongnessOrder[x],
+                                kicker: ranksInStrongnessOrder[y],
+                                isSuited: false,
+                              );
+
+                        return Expanded(
+                          child: HandRangeSelectGridItem(
+                            handRangePart: handRangePart,
+                            isSelected: selectedRange.contains(handRangePart),
+                          ),
+                        );
+                      }),
+                    ),
+                  );
+                }),
+              ),
+            ),
           ),
         ),
       );
@@ -178,29 +212,23 @@ class HandRangeSelectGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = AquaTheme.of(context);
-    final backgroundColor = isSelected
-        ? theme.highlightBackgroundColor
-        : handRangePart.isPocket
-            ? theme.secondaryBackgroundColor
-            : theme.dimBackgroundColor;
-    final textColor = isSelected
-        ? theme.whiteForegroundColor
-        : handRangePart.isPocket
-            ? theme.secondaryForegroundColor
-            : theme.dimForegroundColor;
+    final style = AquaTheme.of(context).handRangeGridStyle;
 
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: isSelected
+              ? style.selectedBackgroundColor
+              : style.backgroundColor,
           borderRadius: BorderRadius.circular(3),
         ),
         child: Center(
           child: Text(
             '${rankChars[handRangePart.high]}${rankChars[handRangePart.kicker]}',
-            style: theme.textStyle.copyWith(
-              color: textColor,
+            style: style.textStyle.copyWith(
+              color: isSelected
+                  ? style.selectedForegroundColor
+                  : style.textStyle.color,
               fontSize: constraints.maxWidth / 2,
             ),
           ),

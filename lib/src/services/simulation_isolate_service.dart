@@ -1,5 +1,5 @@
-import 'dart:async';
-import 'dart:isolate';
+import "dart:async";
+import "dart:isolate";
 import "package:poker/poker.dart";
 import "package:flutter/widgets.dart";
 
@@ -18,6 +18,7 @@ class SimulationIsolateService {
     @required Set<Card> communityCards,
   }) {
     assert(_isolate != null);
+    assert(_toIsolate != null);
 
     _toIsolate.send([
       cardPairCombinationsList,
