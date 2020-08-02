@@ -1,7 +1,7 @@
 import "package:aqua/src/common_widgets/analytics.dart";
 import "package:aqua/src/common_widgets/aqua_scaffold.dart";
-import 'package:aqua/src/common_widgets/aqua_theme.dart';
-import 'package:aqua/src/utilities/system_ui_overlay_style.dart';
+import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/utilities/system_ui_overlay_style.dart";
 import "package:flutter/widgets.dart";
 
 class PreferencesPage extends StatefulWidget {
