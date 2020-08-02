@@ -1,7 +1,7 @@
 import "package:amplitude_flutter/amplitude.dart";
 import "package:aqua/src/view_models/player_hand_setting.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
-import "package:flutter/widgets.dart" show debugPrint, immutable, required;
+import "package:flutter/widgets.dart" show immutable, required;
 
 @immutable
 class AnalyticsService {
