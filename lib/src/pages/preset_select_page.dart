@@ -3,7 +3,7 @@ import "package:aqua/src/common_widgets/aqua_scaffold.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/common_widgets/readonly_range_grid.dart";
 import "package:aqua/src/constants/player_hand_setting_preset.dart";
-import 'package:aqua/src/utilities/system_ui_overlay_style.dart';
+import "package:aqua/src/utilities/system_ui_overlay_style.dart";
 import "package:flutter/widgets.dart";
 
 class PresetSelectPage extends StatefulWidget {

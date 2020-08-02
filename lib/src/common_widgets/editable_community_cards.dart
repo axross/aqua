@@ -6,12 +6,13 @@ import "package:aqua/src/common_widgets/aqua_popup_transition.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/common_widgets/card_picker.dart";
 import "package:aqua/src/common_widgets/playing_card.dart";
+import "package:aqua/src/models/community_cards.dart";
 import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
 class EditableCommunityCards extends StatefulWidget {
   EditableCommunityCards({
-    this.initialCards = const [null, null, null, null, null],
+    this.initialCommunityCards,
     this.unavailableCards = const {},
     this.isPopupOpen = false,
     this.prepareForPopup,
@@ -24,7 +25,7 @@ class EditableCommunityCards extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
-  final List<Card> initialCards;
+  final CommunityCards initialCommunityCards;
 
   final Set<Card> unavailableCards;
 
@@ -40,7 +41,7 @@ class EditableCommunityCards extends StatefulWidget {
 
   final VoidCallback onOpenPopup;
 
-  final Function(List<Card> cards) onClosedPopup;
+  final Function(CommunityCards communityCards) onClosedPopup;
 
   final VoidCallback onRequestClose;
 
@@ -71,7 +72,8 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     super.initState();
 
     _stateBus = _EditableCommunityCardsStateBus(
-      initialCards: widget.initialCards,
+      initialCommunityCards:
+          widget.initialCommunityCards ?? CommunityCards.empty(),
       initialUnavailableCards: widget.unavailableCards,
     );
 
@@ -182,7 +184,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     _overlayEntries = [];
 
     if (widget.onClosedPopup != null) {
-      widget.onClosedPopup(_stateBus.cards);
+      widget.onClosedPopup(_stateBus.communityCards);
     }
   }
 
@@ -402,9 +404,9 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                         child: AnimatedBuilder(
                           animation: _stateBus,
                           builder: (context, _) =>
-                              _stateBus.cards[index] != null
+                              _stateBus.communityCards[index] != null
                                   ? PlayingCard(
-                                      card: _stateBus.cards[index],
+                                      card: _stateBus.communityCards[index],
                                     )
                                   : PlayingCardBack(),
                         ),
@@ -448,7 +450,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                 builder: (context, _) => CardPicker(
                   unavailableCards: {
                     ..._stateBus.unavailableCards,
-                    ..._stateBus.cards,
+                    ..._stateBus.communityCards,
                   },
                   onCardTap: (card) {
                     if (widget.onTapCardPicker != null) {
@@ -476,36 +478,36 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
             children: [
               SizedBox(
                 width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.cards[0] != null
-                    ? PlayingCard(card: _stateBus.cards[0])
+                child: _stateBus.communityCards[0] != null
+                    ? PlayingCard(card: _stateBus.communityCards[0])
                     : PlayingCardBack(),
               ),
               SizedBox(width: 8),
               SizedBox(
                 width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.cards[1] != null
-                    ? PlayingCard(card: _stateBus.cards[1])
+                child: _stateBus.communityCards[1] != null
+                    ? PlayingCard(card: _stateBus.communityCards[1])
                     : PlayingCardBack(),
               ),
               SizedBox(width: 8),
               SizedBox(
                 width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.cards[2] != null
-                    ? PlayingCard(card: _stateBus.cards[2])
+                child: _stateBus.communityCards[2] != null
+                    ? PlayingCard(card: _stateBus.communityCards[2])
                     : PlayingCardBack(),
               ),
               SizedBox(width: 8),
               SizedBox(
                 width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.cards[3] != null
-                    ? PlayingCard(card: _stateBus.cards[3])
+                child: _stateBus.communityCards[3] != null
+                    ? PlayingCard(card: _stateBus.communityCards[3])
                     : PlayingCardBack(),
               ),
               SizedBox(width: 8),
               SizedBox(
                 width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.cards[4] != null
-                    ? PlayingCard(card: _stateBus.cards[4])
+                child: _stateBus.communityCards[4] != null
+                    ? PlayingCard(card: _stateBus.communityCards[4])
                     : PlayingCardBack(),
               ),
             ],
@@ -518,29 +520,27 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
 
 class _EditableCommunityCardsStateBus extends ChangeNotifier {
   _EditableCommunityCardsStateBus({
-    @required List<Card> initialCards,
+    @required CommunityCards initialCommunityCards,
     @required Set<Card> initialUnavailableCards,
-  })  : assert(initialCards != null),
+  })  : assert(initialCommunityCards != null),
         assert(initialUnavailableCards != null),
-        _cards = initialCards,
+        _communityCards = initialCommunityCards,
         _unavailableCards = initialUnavailableCards,
         _selectedCardIndex = 0;
 
-  List<Card> _cards;
+  CommunityCards _communityCards;
 
   int _selectedCardIndex;
 
   Set<Card> _unavailableCards;
 
-  List<Card> get cards => _cards;
+  CommunityCards get communityCards => _communityCards;
 
   int get selectedCardIndex => _selectedCardIndex;
 
   set selectedCardIndex(int index) {
-    final firstNullIndex = _cards.indexWhere((card) => card == null);
-
-    if (firstNullIndex != -1 && firstNullIndex < index) {
-      _selectedCardIndex = firstNullIndex;
+    if (_communityCards.length - 1 < index) {
+      _selectedCardIndex = _communityCards.length - 1;
     } else {
       _selectedCardIndex = index;
     }
@@ -557,15 +557,15 @@ class _EditableCommunityCardsStateBus extends ChangeNotifier {
   }
 
   setCard(Card card) {
-    _cards = [..._cards];
-    _cards[_selectedCardIndex] = card;
+    _communityCards = CommunityCards([..._communityCards]);
+    _communityCards[_selectedCardIndex] = card;
     _selectedCardIndex = (_selectedCardIndex + 1) % 5;
 
     notifyListeners();
   }
 
   clearCards() {
-    _cards = [null, null, null, null, null];
+    _communityCards = CommunityCards.empty();
     _selectedCardIndex = 0;
 
     notifyListeners();

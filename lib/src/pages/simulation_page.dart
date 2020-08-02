@@ -111,7 +111,7 @@ class _SimulationPageState extends State<SimulationPage> {
                   child: AnimatedBuilder(
                     animation: _simulationSession,
                     builder: (context, _) => EditableCommunityCards(
-                      initialCards: _simulationSession.communityCards,
+                      initialCommunityCards: _simulationSession.communityCards,
                       unavailableCards: _simulationSession.usedCards,
                       isPopupOpen: _isCommunityCardPopupOpen,
                       prepareForPopup: (overlayPosition) async {
