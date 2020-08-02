@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.5.0 <3.0.0"
 
 dependencies:
+  amplitude_flutter: ^2.2.0
   flutter:
     sdk: flutter
   firebase_analytics: ^5.0.2
@@ -78,19 +79,86 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   fonts:
+    - family: AquaIcons
+      fonts:
+        - asset: assets/fonts/AquaIcons.ttf
     - family: Icons
       fonts:
-        - asset: assets/fonts/icons.ttf
+        - asset: assets/fonts/Icons.ttf
     - family: Work Sans
       fonts:
         - asset: assets/fonts/work-sans-600-subset.ttf
           weight: 600
     - family: Source Code Pro
       fonts:
+        - asset: assets/fonts/SourceCodePro-BlackItalic.ttf	
+          weight: 900	
+          style: italic
         - asset: assets/fonts/SourceCodePro-Black.ttf
           weight: 900
         - asset: assets/fonts/SourceCodePro-Bold.ttf
           weight: 700
+        - asset: assets/fonts/SourceCodePro-BoldItalic.ttf	
+          weight: 700	
+          style: italic	
+        - asset: assets/fonts/SourceCodePro-ExtraLight.ttf	
+          weight: 100	
+        - asset: assets/fonts/SourceCodePro-ExtraLightItalic.ttf	
+          weight: 100	
+          style: italic	
+        - asset: assets/fonts/SourceCodePro-Italic.ttf	
+          weight: 400	
+          style: italic	
+        - asset: assets/fonts/SourceCodePro-Light.ttf	
+          weight: 300	
+        - asset: assets/fonts/SourceCodePro-LightItalic.ttf	
+          weight: 300	
+          style: italic	
+        - asset: assets/fonts/SourceCodePro-Medium.ttf	
+          weight: 500	
+        - asset: assets/fonts/SourceCodePro-MediumItalic.ttf	
+          weight: 500	
+          style: italic	
+        - asset: assets/fonts/SourceCodePro-Regular.ttf	
+          weight: 400	
+        - asset: assets/fonts/SourceCodePro-SemiBold.ttf	
+          weight: 600	
+        - asset: assets/fonts/SourceCodePro-SemiBoldItalic.ttf	
+          weight: 600	
+          style: italic
+    - family: Source Sans Pro
+      fonts:
+        - asset: assets/fonts/SourceSansPro-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/SourceSansPro-Black.ttf
+          weight: 900
+        - asset: assets/fonts/SourceSansPro-BlackItalic.ttf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/SourceSansPro-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/SourceSansPro-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/SourceSansPro-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/SourceSansPro-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/SourceSansPro-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/SourceSansPro-Light.ttf
+          weight: 300
+        - asset: assets/fonts/SourceSansPro-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/SourceSansPro-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/SourceSansPro-SemiBold.ttf
+          weight: 600
+
     - family: Montserrat
       fonts:
         - asset: assets/fonts/Montserrat-Black.ttf
@@ -101,6 +169,80 @@ flutter:
           weight: 800
         - asset: assets/fonts/Montserrat-SemiBold.ttf
           weight: 600
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/Rubik-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Rubik-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/Rubik-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Rubik-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Rubik-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Rubik-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Rubik-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Rubik-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Rubik-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Rubik-BlackItalic.ttf
+          weight: 900
+          style: italic
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Poppins-BlackItalic.ttf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Poppins-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Poppins-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/Poppins-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Poppins-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/Poppins-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Poppins-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/Poppins-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Poppins-ThinItalic.ttf
+          weight: 100
+          style: italic
 
 flutter_icons:
   android: true 

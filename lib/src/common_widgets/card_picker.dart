@@ -4,9 +4,11 @@ import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
 class CardPicker extends StatelessWidget {
-  CardPicker(
-      {Set<Card> unavailableCards, void Function(Card) onCardTap, Key key})
-      : unavailableCards = unavailableCards ?? Set(),
+  CardPicker({
+    Set<Card> unavailableCards,
+    void Function(Card) onCardTap,
+    Key key,
+  })  : unavailableCards = unavailableCards ?? Set(),
         onCardTap = onCardTap ?? ((_) {}),
         super(key: key);
 
@@ -17,6 +19,7 @@ class CardPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: List.generate(
         _cards.length * 2 - 1,
         (i) => i % 2 == 0

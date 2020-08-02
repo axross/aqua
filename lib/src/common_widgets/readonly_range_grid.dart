@@ -12,12 +12,12 @@ class ReadonlyRangeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = AquaTheme.of(context);
+    final style = AquaTheme.of(context).handRangeGridStyle;
 
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.dimBackgroundColor,
+          color: style.backgroundColor,
           borderRadius: BorderRadius.circular(constraints.maxWidth * 0.05),
         ),
         child: Table(
@@ -60,7 +60,7 @@ class ReadonlyRangeGrid extends StatelessWidget {
                     height: constraints.maxWidth / 13,
                     decoration: BoxDecoration(
                       color: handRange.contains(handRangePart)
-                          ? theme.highlightBackgroundColor
+                          ? style.selectedForegroundColor
                           : null,
                       borderRadius: borderRadius,
                     ),

@@ -1,129 +1,139 @@
-import 'dart:ui' show Brightness;
+import "package:aqua/src/common_widgets/aqua_button.dart";
+import "package:aqua/src/common_widgets/aqua_scaffold.dart";
+import "package:aqua/src/common_widgets/digits_text.dart";
 import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
 class AquaTheme extends InheritedWidget {
   AquaTheme({
-    @required this.lightThemeData,
-    @required this.darkThemeData,
-    @required this.child,
-  })  : assert(lightThemeData != null),
-        assert(darkThemeData != null),
-        assert(child != null);
+    @required this.data,
+    Widget child,
+    Key key,
+  })  : assert(data != null),
+        super(
+          key: key,
+          child: DefaultAquaButtonStyle(
+            style: data.buttonStyleSet.normal,
+            child: child,
+          ),
+        );
 
-  final AquaThemeData lightThemeData;
-
-  final AquaThemeData darkThemeData;
-
-  final Widget child;
-
-  @override
-  bool updateShouldNotify(AquaTheme old) =>
-      lightThemeData != old.lightThemeData ||
-      darkThemeData != old.darkThemeData;
-
-  static AquaThemeData of(BuildContext context) {
-    final theme = context.dependOnInheritedWidgetOfExactType<AquaTheme>();
-
-    return MediaQuery.of(context).platformBrightness == Brightness.dark
-        ? theme.darkThemeData
-        : theme.lightThemeData;
-  }
-}
-
-class AquaThemeData {
-  const AquaThemeData({
-    @required this.textStyle,
-    @required this.digitTextStyle,
-    @required this.rankTextStyle,
-    @required this.appBarTextStyle,
-    @required this.foregroundColor,
-    @required this.whiteForegroundColor,
-    @required this.secondaryForegroundColor,
-    @required this.dimForegroundColor,
-    @required this.highlightForegroundColor,
-    @required this.primaryForegroundColor,
-    @required this.errorForegroundColor,
-    @required this.backgroundColor,
-    @required this.secondaryBackgroundColor,
-    @required this.dimBackgroundColor,
-    @required this.highlightBackgroundColor,
-    @required this.primaryBackgroundColor,
-    @required this.errorBackgroundColor,
-    @required this.spadeForegroundColor,
-    @required this.heartForegroundColor,
-    @required this.diamondForegroundColor,
-    @required this.clubForegroundColor,
-    @required this.assets,
-  });
-
-  final TextStyle textStyle;
-  final TextStyle digitTextStyle;
-  final TextStyle rankTextStyle;
-  final TextStyle appBarTextStyle;
-
-  final Color foregroundColor;
-  final Color whiteForegroundColor;
-  final Color secondaryForegroundColor;
-  final Color dimForegroundColor;
-  final Color highlightForegroundColor;
-  final Color primaryForegroundColor;
-  final Color errorForegroundColor;
-
-  final Color backgroundColor;
-  final Color secondaryBackgroundColor;
-  final Color dimBackgroundColor;
-  final Color highlightBackgroundColor;
-  final Color primaryBackgroundColor;
-  final Color errorBackgroundColor;
-
-  final Color spadeForegroundColor;
-  final Color heartForegroundColor;
-  final Color diamondForegroundColor;
-  final Color clubForegroundColor;
-
-  final AquaThemedAssets assets;
+  final AquaThemeData data;
 
   @override
-  int get hashCode {
-    int result = 17;
+  bool updateShouldNotify(AquaTheme old) => data != old.data;
 
-    result = 37 * result + textStyle.hashCode;
-    result = 37 * result + digitTextStyle.hashCode;
-    result = 37 * result + rankTextStyle.hashCode;
-    result = 37 * result + appBarTextStyle.hashCode;
-    result = 37 * result + foregroundColor.hashCode;
-    result = 37 * result + whiteForegroundColor.hashCode;
-    result = 37 * result + secondaryForegroundColor.hashCode;
-    result = 37 * result + dimForegroundColor.hashCode;
-    result = 37 * result + highlightForegroundColor.hashCode;
-    result = 37 * result + primaryForegroundColor.hashCode;
-    result = 37 * result + errorForegroundColor.hashCode;
-    result = 37 * result + backgroundColor.hashCode;
-    result = 37 * result + secondaryBackgroundColor.hashCode;
-    result = 37 * result + dimBackgroundColor.hashCode;
-    result = 37 * result + highlightBackgroundColor.hashCode;
-    result = 37 * result + primaryBackgroundColor.hashCode;
-    result = 37 * result + errorForegroundColor.hashCode;
-    result = 37 * result + spadeForegroundColor.hashCode;
-    result = 37 * result + heartForegroundColor.hashCode;
-    result = 37 * result + diamondForegroundColor.hashCode;
-    result = 37 * result + clubForegroundColor.hashCode;
-    result = 37 * result + assets.hashCode;
-
-    return result;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      other is AquaThemeData && other.hashCode == hashCode;
+  static AquaThemeData of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AquaTheme>().data;
 }
 
 @immutable
-class AquaThemedAssets {
-  const AquaThemedAssets({
-    @required this.suits,
-  }) : assert(suits != null);
+class AquaThemeData {
+  const AquaThemeData({
+    @required this.textStyleSet,
+    @required this.buttonStyleSet,
+    @required this.scaffoldStyle,
+    @required this.playingCardStyle,
+    @required this.handRangeGridStyle,
+    @required this.digitTextStyle,
+    @required this.sliderStyle,
+    @required this.cursorColor,
+  });
 
-  final Map<Suit, AssetImage> suits;
+  final AquaTextStyleSet textStyleSet;
+
+  final AquaButtonStyleSet buttonStyleSet;
+
+  final AquaScaffoldStyle scaffoldStyle;
+
+  final AquaPlayingCardStyle playingCardStyle;
+
+  final AquaHandRangeGridStyle handRangeGridStyle;
+
+  final AquaDigitTextStyle digitTextStyle;
+
+  final AquaSliderStyle sliderStyle;
+
+  final Color cursorColor;
+}
+
+@immutable
+class AquaTextStyleSet {
+  const AquaTextStyleSet({
+    @required this.headline,
+    @required this.body,
+    @required this.caption,
+    @required this.errorCaption,
+  })  : assert(headline != null),
+        assert(body != null),
+        assert(caption != null),
+        assert(errorCaption != null);
+
+  final TextStyle headline;
+
+  final TextStyle body;
+
+  final TextStyle caption;
+
+  final TextStyle errorCaption;
+}
+
+class AquaPlayingCardStyle {
+  const AquaPlayingCardStyle({
+    @required this.textStyle,
+    @required this.backgroundColor,
+    @required this.suitColors,
+  })  : assert(textStyle != null),
+        assert(backgroundColor != null),
+        assert(suitColors != null);
+
+  final TextStyle textStyle;
+
+  final Color backgroundColor;
+
+  final Map<Suit, Color> suitColors;
+}
+
+class AquaHandRangeGridStyle {
+  AquaHandRangeGridStyle({
+    @required this.backgroundColor,
+    @required this.textStyle,
+    @required this.selectedBackgroundColor,
+    @required this.selectedForegroundColor,
+  })  : assert(backgroundColor != null),
+        assert(textStyle != null),
+        assert(selectedBackgroundColor != null),
+        assert(selectedForegroundColor != null);
+
+  final Color backgroundColor;
+
+  final TextStyle textStyle;
+
+  final Color selectedBackgroundColor;
+
+  final Color selectedForegroundColor;
+}
+
+class AquaSliderStyle {
+  AquaSliderStyle({
+    @required this.thumbColor,
+    @required this.activeTrackColor,
+    @required this.inactiveTrackColor,
+    @required this.valueIndicatorColor,
+    @required this.valueIndicatorTextStyle,
+  })  : assert(thumbColor != null),
+        assert(activeTrackColor != null),
+        assert(inactiveTrackColor != null),
+        assert(valueIndicatorColor != null),
+        assert(valueIndicatorTextStyle != null);
+
+  final Color thumbColor;
+
+  final Color activeTrackColor;
+
+  final Color inactiveTrackColor;
+
+  final Color valueIndicatorColor;
+
+  final TextStyle valueIndicatorTextStyle;
 }

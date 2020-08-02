@@ -25,10 +25,6 @@ class PlayerHandSetting extends ChangeNotifier {
   set type(PlayerHandSettingType type) {
     _type = type;
 
-    if (type == PlayerHandSettingType.handRange) {
-      _holeCardPairs = [NullableCardPair(null, null)];
-    }
-
     notifyListeners();
   }
 
@@ -43,6 +39,14 @@ class PlayerHandSetting extends ChangeNotifier {
     assert(holeCardPairs.isNotEmpty);
 
     _holeCardPairs = holeCardPairs;
+
+    notifyListeners();
+  }
+
+  NullableCardPair get firstHoleCardPair => _holeCardPairs[0];
+
+  set firstHoleCardPair(NullableCardPair holeCardPair) {
+    _holeCardPairs.first = holeCardPair;
 
     notifyListeners();
   }
@@ -91,9 +95,6 @@ class PlayerHandSetting extends ChangeNotifier {
           combinations..addAll(component.cardPairCombinations));
 
   bool get isEmpty => components.isEmpty;
-
-  // Set<CardPair> get cardPairCombinations => components.fold(<CardPair>{},
-  // (combs, component) => combs..addAll(component.cardPairCombinations));
 }
 
 enum PlayerHandSettingType {
@@ -102,16 +103,13 @@ enum PlayerHandSettingType {
   mixed,
 }
 
-// @immutable
-// class PlayerHandSettingSnapshot {
-//   PlayerHandSettingSnapshot._(this.components);
-
-//   final Set<CardPairCombinationsGeneratable> components;
-// }
-
 @immutable
 class NullableCardPair {
   const NullableCardPair(this._a, this._b);
+
+  const NullableCardPair.empty()
+      : _a = null,
+        _b = null;
 
   final Card _a;
 

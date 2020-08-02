@@ -1,24 +1,38 @@
+import "package:amplitude_flutter/amplitude.dart";
 import "package:aqua/src/common_widgets/analytics.dart";
+import "package:aqua/src/common_widgets/aqua_environment.dart";
 import "package:aqua/src/common_widgets/aqua_preferences.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
-import "package:aqua/src/pages/simulation_page/simulation_page.dart";
-import "package:aqua/src/theme_data.dart";
+import "package:aqua/src/constants/theme.dart";
+import "package:aqua/src/pages/preferences_page.dart";
+import "package:aqua/src/pages/preset_select_page.dart";
+import "package:aqua/src/pages/simulation_page.dart";
+import "package:aqua/src/services/analytics_service.dart";
 import "package:aqua/src/view_models/aqua_preference_data.dart";
 import "package:aqua/src/view_models/simulation_session.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
 import "package:flutter/material.dart";
 
-class AquaAppBootstrap extends StatefulWidget {
+class AquaApp extends StatefulWidget {
   @override
-  State<AquaAppBootstrap> createState() => _AquaAppBootstrapState();
+  State<AquaApp> createState() => _AquaAppState();
 }
 
-class _AquaAppBootstrapState extends State<AquaAppBootstrap> {
-  /// A singleton FirebaseAnalytics object that is used in entire aqua app.
-  final FirebaseAnalytics _analytics = FirebaseAnalytics();
+class _AquaAppState extends State<AquaApp> {
+  /// A ValueNotifier that holds a SimulationSession inside.
+  /// Replace the held SimulationSession to start a new session
+  ValueNotifier<SimulationSession> _simulationSession;
 
   /// A singleton AquaPreferenceData object that is used in entire aqua app.
   final AquaPreferenceData _applicationPreferenceData = AquaPreferenceData();
+
+  /// A singleton FirebaseAnalytics object that is used in entire aqua app.
+  final AnalyticsService _analytics = AnalyticsService(
+    amplitudeAnalytics: Amplitude.getInstance()
+      ..init("94ba98446847f79253029f7f8e6d9cf3")
+      ..trackingSessionEvents(true),
+    firebaseAnalytics: FirebaseAnalytics(),
+  );
 
   @override
   void initState() {
@@ -28,84 +42,104 @@ class _AquaAppBootstrapState extends State<AquaAppBootstrap> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Analytics(
-      analytics: _analytics,
-      child: AquaTheme(
-        lightThemeData: lightThemeData,
-        darkThemeData: darkThemeData,
-        child: AquaPreferences(
-          data: _applicationPreferenceData,
-          child: AnimatedBuilder(
-            animation: _applicationPreferenceData,
-            builder: (context, child) => _applicationPreferenceData.isLoaded
-                ? _AquaApp()
-                : _AquaAppWhileLoading(),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AquaApp extends StatefulWidget {
-  @override
-  _AquaAppState createState() => _AquaAppState();
-}
-
-class _AquaAppState extends State<_AquaApp> {
-  /// A ValueNotifier that holds a SimulationSession inside.
-  /// Replace the held SimulationSession to start a new session
-  ValueNotifier<SimulationSession> _simulationSession;
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     if (_simulationSession == null) {
-      final analytics = Analytics.of(context);
+      SimulationSession simulationSession;
 
-      _simulationSession =
-          ValueNotifier(SimulationSession.initial(analytics: analytics));
+      simulationSession = SimulationSession.initial(
+        onStartSimulation: () => _analytics.logEvent(
+          name: "Start Simulation",
+          parameters: {
+            "Number of Community Cards": simulationSession.communityCards
+                .where((card) => card != null)
+                .length,
+            "Number of Player Hand Settings":
+                simulationSession.playerHandSettings.toList().length,
+          },
+        ),
+        onFinishSimulation: (_) => _analytics.logEvent(
+          name: "Finish Simulation",
+          parameters: {
+            "Number of Community Cards": simulationSession.communityCards
+                .where((card) => card != null)
+                .length,
+            "Number of Player Hand Settings":
+                simulationSession.playerHandSettings.toList().length,
+          },
+        ),
+      );
+
+      _simulationSession = ValueNotifier(simulationSession);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<SimulationSession>(
-      valueListenable: _simulationSession,
-      builder: (context, simulationSession, child) => SimulationSessionProvider(
-        simulationSession: simulationSession,
-        child: child,
-      ),
-      child: WidgetsApp(
-        title: 'Odds Calculator',
-        color: Color(0xff19232e),
-        initialRoute: "/",
-        routes: {
-          "/": (_) => SimulationPage(),
-        },
-        pageRouteBuilder: <T>(settings, builder) => MaterialPageRoute<T>(
-          builder: (context) => builder(context),
-          settings: settings,
-        ),
-      ),
-    );
-  }
-}
-
-class _AquaAppWhileLoading extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return WidgetsApp(
-      title: 'Odds Calculator',
-      color: Color(0xff19232e),
-      builder: (context, child) => Container(
-        color: AquaTheme.of(context).backgroundColor,
-        child: Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(
-              AquaTheme.of(context).primaryForegroundColor,
+    return AquaEnvironment(
+      child: AquaPreferences(
+        data: _applicationPreferenceData,
+        child: ValueListenableBuilder<SimulationSession>(
+          valueListenable: _simulationSession,
+          builder: (context, simulationSession, child) =>
+              SimulationSessionProvider(
+            simulationSession: simulationSession,
+            child: child,
+          ),
+          child: Analytics(
+            analytics: _analytics,
+            child: AnimatedBuilder(
+              animation: _applicationPreferenceData,
+              builder: (context, child) => _applicationPreferenceData.isLoaded
+                  ? WidgetsApp(
+                      title: "Odds Calculator",
+                      color: Color(0xff19232e),
+                      textStyle: const TextStyle(
+                        color: Color(0xff3B424B),
+                        fontFamily: "Poppins",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        decoration: TextDecoration.none,
+                      ),
+                      builder: (context, child) => AquaTheme(
+                        data: MediaQuery.of(context).platformBrightness ==
+                                Brightness.dark
+                            ? darkTheme
+                            : lightTheme,
+                        child: child,
+                      ),
+                      initialRoute: "/",
+                      routes: {
+                        "/": (_) => SimulationPage(),
+                        "/preset_select": (_) => PresetSelectPage(),
+                        "/preferences": (_) => PreferencesPage(),
+                      },
+                      pageRouteBuilder: <T>(settings, builder) =>
+                          MaterialPageRoute<T>(
+                        builder: (context) => builder(context),
+                        settings: settings,
+                      ),
+                    )
+                  : WidgetsApp(
+                      title: "Odds Calculator",
+                      color: Color(0xff19232e),
+                      builder: (context, child) => AquaTheme(
+                        data: MediaQuery.of(context).platformBrightness ==
+                                Brightness.dark
+                            ? darkTheme
+                            : lightTheme,
+                        child: Container(
+                          color: Color(0xffffffff),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation(Color(0xff54a0ff)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
             ),
           ),
         ),

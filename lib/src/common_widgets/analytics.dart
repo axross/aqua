@@ -1,4 +1,4 @@
-import "package:firebase_analytics/firebase_analytics.dart";
+import "package:aqua/src/services/analytics_service.dart";
 import "package:flutter/widgets.dart";
 
 class Analytics extends InheritedWidget {
@@ -9,11 +9,11 @@ class Analytics extends InheritedWidget {
   })  : assert(analytics != null),
         super(key: key, child: child);
 
-  final FirebaseAnalytics analytics;
+  final AnalyticsService analytics;
 
   @override
   bool updateShouldNotify(Analytics old) => analytics != old.analytics;
 
-  static FirebaseAnalytics of(BuildContext context) =>
+  static AnalyticsService of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<Analytics>().analytics;
 }

@@ -7,7 +7,7 @@ const handTypeStrings = {
   HandType.flush: "Flush",
   HandType.straight: "Straight",
   HandType.threeOfAKind: "Three of a Kind",
-  HandType.twoPairs: "TWo Pairs",
+  HandType.twoPairs: "Two Pairs",
   HandType.pair: "Pair",
   HandType.highCard: "High Card",
 };
