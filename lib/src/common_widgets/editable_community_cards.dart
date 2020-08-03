@@ -74,7 +74,6 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     _stateBus = _EditableCommunityCardsStateBus(
       initialCommunityCards:
           widget.initialCommunityCards ?? CommunityCards.empty(),
-      initialUnavailableCards: widget.unavailableCards,
     );
 
     _animationController = AnimationController(
@@ -113,12 +112,6 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
         } else {
           _closePopup();
         }
-      });
-    }
-
-    if (widget.unavailableCards != oldWidget.unavailableCards) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _stateBus.unavailableCards = widget.unavailableCards;
       });
     }
   }
@@ -449,7 +442,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                 animation: _stateBus,
                 builder: (context, _) => CardPicker(
                   unavailableCards: {
-                    ..._stateBus.unavailableCards,
+                    ...widget.unavailableCards,
                     ..._stateBus.communityCards,
                   },
                   onCardTap: (card) {
@@ -521,18 +514,13 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
 class _EditableCommunityCardsStateBus extends ChangeNotifier {
   _EditableCommunityCardsStateBus({
     @required CommunityCards initialCommunityCards,
-    @required Set<Card> initialUnavailableCards,
   })  : assert(initialCommunityCards != null),
-        assert(initialUnavailableCards != null),
         _communityCards = initialCommunityCards,
-        _unavailableCards = initialUnavailableCards,
         _selectedCardIndex = 0;
 
   CommunityCards _communityCards;
 
   int _selectedCardIndex;
-
-  Set<Card> _unavailableCards;
 
   CommunityCards get communityCards => _communityCards;
 
@@ -544,14 +532,6 @@ class _EditableCommunityCardsStateBus extends ChangeNotifier {
     } else {
       _selectedCardIndex = index;
     }
-
-    notifyListeners();
-  }
-
-  Set<Card> get unavailableCards => _unavailableCards;
-
-  set unavailableCards(Set<Card> cards) {
-    _unavailableCards = cards;
 
     notifyListeners();
   }

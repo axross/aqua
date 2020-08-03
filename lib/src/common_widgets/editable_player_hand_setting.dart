@@ -107,7 +107,6 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
       initialInputMode: widget.initialInputMode,
       initialCardPair: widget.initialCardPair,
       initialHandRange: widget.initialHandRange,
-      initialUnavailableCards: widget.unavailableCards,
     );
 
     _animationController = AnimationController(
@@ -148,12 +147,6 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
             _stateBus.isButtonsDisabled = false;
           });
         }
-      });
-    }
-
-    if (widget.unavailableCards != oldWidget.unavailableCards) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _stateBus.unavailableCards = widget.unavailableCards;
       });
     }
   }
@@ -807,7 +800,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
               animation: _stateBus,
               builder: (context, _) => CardPicker(
                 unavailableCards: {
-                  ..._stateBus.unavailableCards,
+                  ...widget.unavailableCards,
                   _stateBus.cardPair[0],
                   _stateBus.cardPair[1],
                 },
@@ -952,15 +945,12 @@ class _EditablePlayerHandSettingStateBus extends ChangeNotifier {
     @required PlayerHandSettingInputMode initialInputMode,
     @required NullableCardPair initialCardPair,
     @required Set<HandRangePart> initialHandRange,
-    @required Set<Card> initialUnavailableCards,
   })  : assert(initialInputMode != null),
         assert(initialCardPair != null),
         assert(initialHandRange != null),
-        assert(initialUnavailableCards != null),
         _inputMode = initialInputMode,
         _cardPair = initialCardPair,
         _handRange = initialHandRange,
-        _unavailableCards = initialUnavailableCards,
         _selectedCardIndex = 0,
         _isButtonsDisabled = false;
 
@@ -971,8 +961,6 @@ class _EditablePlayerHandSettingStateBus extends ChangeNotifier {
   Set<HandRangePart> _handRange;
 
   int _selectedCardIndex;
-
-  Set<Card> _unavailableCards;
 
   bool _isButtonsDisabled;
 
@@ -1010,14 +998,6 @@ class _EditablePlayerHandSettingStateBus extends ChangeNotifier {
     }
 
     _selectedCardIndex = index;
-
-    notifyListeners();
-  }
-
-  Set<Card> get unavailableCards => _unavailableCards;
-
-  set unavailableCards(Set<Card> cards) {
-    _unavailableCards = cards;
 
     notifyListeners();
   }
