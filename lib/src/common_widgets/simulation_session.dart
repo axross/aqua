@@ -235,10 +235,12 @@ class PlayerHandSettingList extends ChangeNotifier
 class PlayerHandSetting extends ChangeNotifier {
   PlayerHandSetting({
     @required PlayerHandSettingType type,
-    List<NullableCardPair> holeCardPairs,
-    Set<HandRangePart> handRange,
-  })  : assert(holeCardPairs != null),
+    @required List<NullableCardPair> holeCardPairs,
+    @required Set<HandRangePart> handRange,
+  })  : assert(type != null),
+        assert(holeCardPairs != null),
         assert(handRange != null),
+        _type = type,
         _holeCardPairs = holeCardPairs,
         _handRange = handRange;
 
@@ -298,7 +300,7 @@ class PlayerHandSetting extends ChangeNotifier {
   bool get isEmpty => components.isEmpty;
 
   Set<CardPairCombinationsGeneratable> get components {
-    switch (type) {
+    switch (_type) {
       case PlayerHandSettingType.holeCards:
         return _holeCardPairs
             .where((pair) => pair.isComplete)

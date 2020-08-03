@@ -11,7 +11,9 @@ class PlayerHandSettingPreset {
     this.holeCardPairs = const [NullableCardPair.empty()],
     this.handRange = const {},
   })  : assert(name != null),
-        assert(type != null);
+        assert(type != null),
+        assert(holeCardPairs != null),
+        assert(handRange != null);
 
   final String name;
 
