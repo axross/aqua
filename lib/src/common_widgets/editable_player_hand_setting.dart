@@ -691,14 +691,11 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                 animation: _popupElementsCurvedAnimation,
                 builder: (context, child) => Text(
                   "${(_stateBus.handRange.fold(0, (len, part) => len + part.cardPairCombinations.length) / 1326 * 100).floor()}% combs",
-                  style: TextStyle(
+                  style: theme.textStyleSet.caption.copyWith(
                     color: ColorTween(
-                      begin: Color(0xffB0B4B7),
-                      end: Color(0xff3B424B),
+                      begin: theme.textStyleSet.caption.color,
+                      end: theme.textStyleSet.body.color,
                     ).animate(_popupElementsCurvedAnimation).value,
-                    fontFamily: "Poppins",
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -835,12 +832,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                 SizedBox(height: 8),
                 Text(
                   "${(_stateBus.handRange.fold(0, (len, part) => len + part.cardPairCombinations.length) / 1326 * 100).floor()}% combs",
-                  style: TextStyle(
-                    color: Color(0xffB0B4B7),
-                    fontFamily: "Poppins",
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: AquaTheme.of(context).textStyleSet.caption,
                 ),
               ],
             );
