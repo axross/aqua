@@ -46,8 +46,12 @@ class SimulationSessionData extends ChangeNotifier {
 
   CommunityCards get communityCards => _communityCards;
 
-  set communityCards(CommunityCards cards) {
-    _communityCards = cards;
+  set communityCards(CommunityCards communityCards) {
+    if (communityCards == _communityCards) {
+      return;
+    }
+
+    _communityCards = communityCards;
 
     _clearResults();
     _enqueueSimulation();
@@ -268,6 +272,10 @@ class PlayerHandSetting extends ChangeNotifier {
   PlayerHandSettingType get type => _type;
 
   set type(PlayerHandSettingType type) {
+    if (type == _type) {
+      return;
+    }
+
     _type = type;
 
     if (type == PlayerHandSettingType.holeCards) {
@@ -284,6 +292,10 @@ class PlayerHandSetting extends ChangeNotifier {
   NullableCardPair get firstHoleCardPair => _holeCardPairs[0];
 
   set firstHoleCardPair(NullableCardPair cardPair) {
+    if (cardPair == _holeCardPairs[0]) {
+      return;
+    }
+
     _holeCardPairs[0] = cardPair;
 
     notifyListeners();
@@ -292,6 +304,10 @@ class PlayerHandSetting extends ChangeNotifier {
   Set<HandRangePart> get handRange => _handRange;
 
   set handRange(Set<HandRangePart> handRange) {
+    if (handRange == _handRange) {
+      return;
+    }
+
     _handRange = handRange;
 
     notifyListeners();
