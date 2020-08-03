@@ -2,7 +2,6 @@ import "dart:math" as math;
 import "package:aqua/src/common_widgets/analytics.dart";
 import "package:aqua/src/common_widgets/aqua_appear_animation.dart";
 import "package:aqua/src/common_widgets/aqua_button.dart";
-import "package:aqua/src/common_widgets/aqua_environment.dart";
 import "package:aqua/src/common_widgets/aqua_icons.dart";
 import "package:aqua/src/common_widgets/aqua_preferences.dart";
 import "package:aqua/src/common_widgets/aqua_scaffold.dart";
@@ -72,12 +71,11 @@ class _SimulationPageState extends State<SimulationPage> {
       scrollController: _scrollController,
       title: "Calculation",
       actions: [
-        if (AquaEnvironment.of(context).isDebugBuild)
-          AquaButton(
-            variant: AquaButtonVariant.secondary,
-            icon: AquaIcons.settings,
-            onTap: () => Navigator.of(context).pushNamed("/preferences"),
-          ),
+        AquaButton(
+          variant: AquaButtonVariant.secondary,
+          icon: AquaIcons.settings,
+          onTap: () => Navigator.of(context).pushNamed("/preferences"),
+        ),
       ],
       slivers: [
         AnimatedBuilder(
