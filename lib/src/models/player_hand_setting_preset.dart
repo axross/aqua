@@ -1,4 +1,5 @@
-import "package:aqua/src/view_models/player_hand_setting.dart";
+import "package:aqua/src/common_widgets/simulation_session.dart";
+import "package:aqua/src/models/nullable_card_pair.dart";
 import "package:meta/meta.dart";
 import "package:poker/poker.dart";
 
