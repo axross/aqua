@@ -46,8 +46,12 @@ class SimulationSessionData extends ChangeNotifier {
 
   CommunityCards get communityCards => _communityCards;
 
-  set communityCards(CommunityCards cards) {
-    _communityCards = cards;
+  set communityCards(CommunityCards communityCards) {
+    if (communityCards == _communityCards) {
+      return;
+    }
+
+    _communityCards = communityCards;
 
     _clearResults();
     _enqueueSimulation();
