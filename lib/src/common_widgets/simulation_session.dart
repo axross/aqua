@@ -101,15 +101,17 @@ class SimulationSessionData extends ChangeNotifier {
 
     notifyListeners();
 
-    _simulationIsolateService = SimulationIsolateService();
+    final simulationIsolateService = SimulationIsolateService();
 
-    await _simulationIsolateService.initialize();
+    _simulationIsolateService = simulationIsolateService;
+
+    await simulationIsolateService.initialize();
 
     if (onStartSimulation != null) {
       onStartSimulation();
     }
 
-    _simulationIsolateService
+    simulationIsolateService
       ..onProgress.listen(
         (details) {
           _hasPossibleMatchup = true;
@@ -119,7 +121,7 @@ class SimulationSessionData extends ChangeNotifier {
           notifyListeners();
 
           if (details.timesSimulated == details.timesWillBeSimulated) {
-            _simulationIsolateService.dispose();
+            simulationIsolateService.dispose();
             _simulationIsolateService = null;
 
             if (onFinishSimulation != null) {
@@ -128,7 +130,7 @@ class SimulationSessionData extends ChangeNotifier {
           }
         },
         onError: (error) {
-          _simulationIsolateService.dispose();
+          simulationIsolateService.dispose();
           _simulationIsolateService = null;
 
           if (error is NoPossibleMatchupException) {
