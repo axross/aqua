@@ -224,7 +224,7 @@ class HandRangeSelectGridItem extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            '${rankChars[handRangePart.high]}${rankChars[handRangePart.kicker]}',
+            "${rankChars[handRangePart.high]}${rankChars[handRangePart.kicker]}",
             style: style.textStyle.copyWith(
               color: isSelected
                   ? style.selectedForegroundColor
