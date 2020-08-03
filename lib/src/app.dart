@@ -9,7 +9,6 @@ import "package:aqua/src/pages/preferences_page.dart";
 import "package:aqua/src/pages/preset_select_page.dart";
 import "package:aqua/src/pages/simulation_page.dart";
 import "package:aqua/src/services/analytics_service.dart";
-import "package:aqua/src/view_models/aqua_preference_data.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
 import "package:flutter/material.dart";
 
