@@ -420,6 +420,8 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
             ).animate(_curvedAnimation).value,
           ),
           child: DecoratedBoxTransition(
+            // TODO:
+            // make it themed
             decoration: DecorationTween(
               begin: BoxDecoration(color: Color(0x1f000000)),
               end: BoxDecoration(color: Color(0x1f000000)),
