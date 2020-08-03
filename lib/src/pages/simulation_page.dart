@@ -10,12 +10,11 @@ import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/common_widgets/digits_text.dart";
 import "package:aqua/src/common_widgets/editable_community_cards.dart";
 import "package:aqua/src/common_widgets/editable_player_hand_setting.dart";
+import "package:aqua/src/common_widgets/simulation_session.dart";
 import "package:aqua/src/constants/hand.dart";
 import "package:aqua/src/models/player_hand_setting_preset.dart";
 import "package:aqua/src/services/simulation_isolate_service.dart";
 import "package:aqua/src/utilities/system_ui_overlay_style.dart";
-import "package:aqua/src/view_models/player_hand_setting.dart";
-import "package:aqua/src/view_models/simulation_session.dart";
 import "package:flutter/widgets.dart";
 
 class SimulationPage extends StatefulWidget {
@@ -24,7 +23,7 @@ class SimulationPage extends StatefulWidget {
 }
 
 class _SimulationPageState extends State<SimulationPage> {
-  SimulationSession _simulationSession;
+  SimulationSessionData _simulationSession;
 
   ScrollController _scrollController;
 
@@ -54,7 +53,7 @@ class _SimulationPageState extends State<SimulationPage> {
     super.didChangeDependencies();
 
     if (_simulationSession == null) {
-      _simulationSession = SimulationSessionProvider.of(context);
+      _simulationSession = SimulationSession.of(context);
     }
 
     final theme = AquaTheme.of(context);
@@ -452,17 +451,12 @@ class _SimulationPageState extends State<SimulationPage> {
                         //   },
                         // );
 
-                        playerHandSetting.type =
+                        _simulationSession.playerHandSettings[index]
+                            .firstHoleCardPair = cardPair;
+                        _simulationSession.playerHandSettings[index].handRange =
+                            handRange;
+                        _simulationSession.playerHandSettings[index].type =
                             inputMode.toPlayerHandSettingType();
-
-                        switch (inputMode) {
-                          case PlayerHandSettingInputMode.cardPair:
-                            playerHandSetting.firstHoleCardPair = cardPair;
-                            break;
-                          case PlayerHandSettingInputMode.handRange:
-                            playerHandSetting.handRange = handRange;
-                            break;
-                        }
 
                         setState(() {
                           _needsBottomPaddingForOverscroll = false;

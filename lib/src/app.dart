@@ -3,13 +3,13 @@ import "package:aqua/src/common_widgets/analytics.dart";
 import "package:aqua/src/common_widgets/aqua_environment.dart";
 import "package:aqua/src/common_widgets/aqua_preferences.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
+import "package:aqua/src/common_widgets/simulation_session.dart";
 import "package:aqua/src/constants/theme.dart";
 import "package:aqua/src/pages/preferences_page.dart";
 import "package:aqua/src/pages/preset_select_page.dart";
 import "package:aqua/src/pages/simulation_page.dart";
 import "package:aqua/src/services/analytics_service.dart";
 import "package:aqua/src/view_models/aqua_preference_data.dart";
-import "package:aqua/src/view_models/simulation_session.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
 import "package:flutter/material.dart";
 
@@ -21,7 +21,7 @@ class AquaApp extends StatefulWidget {
 class _AquaAppState extends State<AquaApp> {
   /// A ValueNotifier that holds a SimulationSession inside.
   /// Replace the held SimulationSession to start a new session
-  ValueNotifier<SimulationSession> _simulationSession;
+  ValueNotifier<SimulationSessionData> _simulationSession;
 
   /// A singleton AquaPreferenceData object that is used in entire aqua app.
   final AquaPreferenceData _applicationPreferenceData = AquaPreferenceData();
@@ -46,9 +46,9 @@ class _AquaAppState extends State<AquaApp> {
     super.didChangeDependencies();
 
     if (_simulationSession == null) {
-      SimulationSession simulationSession;
+      SimulationSessionData simulationSession;
 
-      simulationSession = SimulationSession.initial(
+      simulationSession = SimulationSessionData.initial(
         onStartSimulation: () => _analytics.logEvent(
           name: "Start Simulation",
           parameters: {
@@ -80,10 +80,9 @@ class _AquaAppState extends State<AquaApp> {
     return AquaEnvironment(
       child: AquaPreferences(
         data: _applicationPreferenceData,
-        child: ValueListenableBuilder<SimulationSession>(
+        child: ValueListenableBuilder<SimulationSessionData>(
           valueListenable: _simulationSession,
-          builder: (context, simulationSession, child) =>
-              SimulationSessionProvider(
+          builder: (context, simulationSession, child) => SimulationSession(
             simulationSession: simulationSession,
             child: child,
           ),

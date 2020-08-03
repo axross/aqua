@@ -9,8 +9,9 @@ import "package:aqua/src/common_widgets/card_picker.dart";
 import "package:aqua/src/common_widgets/hand_range_select_grid.dart";
 import "package:aqua/src/common_widgets/playing_card.dart";
 import "package:aqua/src/common_widgets/readonly_range_grid.dart";
+import "package:aqua/src/common_widgets/simulation_session.dart";
 import "package:aqua/src/constants/hand_range.dart";
-import "package:aqua/src/view_models/player_hand_setting.dart";
+import "package:aqua/src/models/nullable_card_pair.dart";
 import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
