@@ -14,7 +14,10 @@ class AquaTheme extends InheritedWidget {
           key: key,
           child: DefaultAquaButtonStyle(
             style: data.buttonStyleSet.normal,
-            child: child,
+            child: DefaultTextStyle(
+              style: data.textStyleSet.body,
+              child: child,
+            ),
           ),
         );
 
@@ -38,6 +41,7 @@ class AquaThemeData {
     @required this.digitTextStyle,
     @required this.sliderStyle,
     @required this.cursorColor,
+    @required this.elevationBoxShadows,
   });
 
   final AquaTextStyleSet textStyleSet;
@@ -55,6 +59,8 @@ class AquaThemeData {
   final AquaSliderStyle sliderStyle;
 
   final Color cursorColor;
+
+  final List<BoxShadow> elevationBoxShadows;
 }
 
 @immutable

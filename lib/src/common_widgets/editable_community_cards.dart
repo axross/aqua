@@ -267,6 +267,8 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
             ).animate(_curvedAnimation).value,
           ),
           child: DecoratedBoxTransition(
+            // TODO:
+            // make it themed
             decoration: DecorationTween(
               begin: BoxDecoration(color: Color(0x1f000000)),
               end: BoxDecoration(color: Color(0x1f000000)),
@@ -299,17 +301,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                       begin:
                           BoxDecoration(borderRadius: BorderRadius.circular(8)),
                       end: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x1f000000),
-                            blurRadius: 12,
-                          ),
-                          BoxShadow(
-                            color: Color(0x0f000000),
-                            offset: Offset(0, 12),
-                            blurRadius: 24,
-                          ),
-                        ],
+                        boxShadow: AquaTheme.of(context).elevationBoxShadows,
                       ),
                     ).animate(_popupElementsCurvedAnimation),
                     child: AquaButton(
@@ -378,18 +370,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                           ),
                           end: BoxDecoration(
                             shape: BoxShape.rectangle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0x1f000000),
-                                offset: Offset(0, 0),
-                                blurRadius: 12,
-                              ),
-                              BoxShadow(
-                                color: const Color(0x0f000000),
-                                offset: Offset(0, 12),
-                                blurRadius: 24,
-                              ),
-                            ],
+                            boxShadow: theme.elevationBoxShadows,
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ).animate(_popupElementsCurvedAnimation),
@@ -423,18 +404,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
             child: DecoratedBox(
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0x1f000000),
-                    offset: Offset(0, 0),
-                    blurRadius: 12,
-                  ),
-                  BoxShadow(
-                    color: const Color(0x0f000000),
-                    offset: Offset(0, 12),
-                    blurRadius: 24,
-                  ),
-                ],
+                boxShadow: AquaTheme.of(context).elevationBoxShadows,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: AnimatedBuilder(
