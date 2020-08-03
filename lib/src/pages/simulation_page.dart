@@ -305,8 +305,15 @@ class _SimulationPageState extends State<SimulationPage> {
                               playerHandSetting.type),
                       initialCardPair: playerHandSetting.firstHoleCardPair,
                       initialHandRange: playerHandSetting.handRange,
-                      unavailableCards:
-                          _simulationSession.communityCards.toSet(),
+                      unavailableCards: {
+                        ..._simulationSession.communityCards,
+                        ..._simulationSession.playerHandSettings.usedCards
+                            .where(
+                          (card) =>
+                              card != playerHandSetting.firstHoleCardPair[0] &&
+                              card != playerHandSetting.firstHoleCardPair[1],
+                        ),
+                      },
                       isPopupOpen: index == _openPlayerHandSettingIndex,
                       prepareForPopup: (overlayPosition) async {
                         final nextScrollOffset = math.max(
