@@ -22,7 +22,9 @@ dependencies:
     sdk: flutter
   firebase_analytics: ^5.0.2
   flutter_launcher_icons: ^0.7.4
+  package_info: ^0.4.1
   poker: 0.0.13
+  sentry: ^3.0.1
   shared_preferences: ^0.5.8
 
 dev_dependencies:
