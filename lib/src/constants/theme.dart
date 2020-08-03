@@ -126,6 +126,18 @@ final lightTheme = AquaThemeData(
     valueIndicatorTextStyle: baseButtonTextStyle.copyWith(color: _white),
   ),
   cursorColor: _lemonPeel,
+  elevationBoxShadows: [
+    BoxShadow(
+      color: Color(0x1f000000),
+      offset: Offset(0, 0),
+      blurRadius: 12,
+    ),
+    BoxShadow(
+      color: Color(0x0f000000),
+      offset: Offset(0, 12.0),
+      blurRadius: 24,
+    ),
+  ],
 );
 
 final darkTheme = AquaThemeData(
@@ -209,4 +221,16 @@ final darkTheme = AquaThemeData(
     valueIndicatorTextStyle: baseButtonTextStyle.copyWith(color: _black),
   ),
   cursorColor: _chineseYellow,
+  elevationBoxShadows: [
+    BoxShadow(
+      color: Color(0x1f000000),
+      offset: Offset(0, 0),
+      blurRadius: 12,
+    ),
+    BoxShadow(
+      color: Color(0x0f000000),
+      offset: Offset(0, 12.0),
+      blurRadius: 24,
+    ),
+  ],
 );

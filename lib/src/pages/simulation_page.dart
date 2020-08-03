@@ -187,18 +187,7 @@ class _SimulationPageState extends State<SimulationPage> {
                   DecoratedBox(
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x1f000000),
-                          offset: Offset(0, 0),
-                          blurRadius: 12,
-                        ),
-                        BoxShadow(
-                          color: Color(0x0f000000),
-                          offset: Offset(0, 12),
-                          blurRadius: 24,
-                        ),
-                      ],
+                      boxShadow: theme.elevationBoxShadows,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: AnimatedBuilder(

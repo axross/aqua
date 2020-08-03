@@ -437,6 +437,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
   }
 
   _buildActions(BuildContext context) {
+    final theme = AquaTheme.of(context);
     final actionsPosition = _getActionsPosition();
 
     return Positioned.fromRect(
@@ -455,17 +456,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                     begin:
                         BoxDecoration(borderRadius: BorderRadius.circular(8)),
                     end: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x1f000000),
-                          blurRadius: 12,
-                        ),
-                        BoxShadow(
-                          color: Color(0x0f000000),
-                          offset: Offset(0, 12),
-                          blurRadius: 24,
-                        ),
-                      ],
+                      boxShadow: theme.elevationBoxShadows,
                     ),
                   ).animate(_popupElementsCurvedAnimation),
                   child: AnimatedBuilder(
@@ -497,18 +488,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                     begin:
                         BoxDecoration(borderRadius: BorderRadius.circular(8)),
                     end: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x1f000000),
-                          offset: Offset(0, 0),
-                          blurRadius: 12,
-                        ),
-                        BoxShadow(
-                          color: Color(0x0f000000),
-                          offset: Offset(0, 12),
-                          blurRadius: 24,
-                        ),
-                      ],
+                      boxShadow: theme.elevationBoxShadows,
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ).animate(_popupElementsCurvedAnimation),
@@ -543,18 +523,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                     begin:
                         BoxDecoration(borderRadius: BorderRadius.circular(8)),
                     end: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x1f000000),
-                          offset: Offset(0, 0),
-                          blurRadius: 12,
-                        ),
-                        BoxShadow(
-                          color: Color(0x0f000000),
-                          offset: Offset(0, 12),
-                          blurRadius: 24,
-                        ),
-                      ],
+                      boxShadow: theme.elevationBoxShadows,
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ).animate(_popupElementsCurvedAnimation),
@@ -633,18 +602,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                           ),
                           end: BoxDecoration(
                             shape: BoxShape.rectangle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0x1f000000),
-                                offset: Offset(0, 0),
-                                blurRadius: 12,
-                              ),
-                              BoxShadow(
-                                color: const Color(0x0f000000),
-                                offset: Offset(0, 12),
-                                blurRadius: 24,
-                              ),
-                            ],
+                            boxShadow: theme.elevationBoxShadows,
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ).animate(_popupElementsCurvedAnimation),
@@ -684,18 +642,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                           ),
                           end: BoxDecoration(
                             shape: BoxShape.rectangle,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x1f000000),
-                                offset: Offset(0, 0),
-                                blurRadius: 12,
-                              ),
-                              BoxShadow(
-                                color: Color(0x0f000000),
-                                offset: Offset(0, 12),
-                                blurRadius: 24,
-                              ),
-                            ],
+                            boxShadow: theme.elevationBoxShadows,
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ).animate(_popupElementsCurvedAnimation),
@@ -715,6 +662,8 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
   }
 
   _buildHandRangeIndicatorGrid(BuildContext context) {
+    final theme = AquaTheme.of(context);
+
     return Positioned.fromRect(
       rect: _getHandRangeIndicatorGridRect(),
       child: AnimatedBuilder(
@@ -731,18 +680,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                   ),
                   end: BoxDecoration(
                     shape: BoxShape.rectangle,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x1f000000),
-                        offset: Offset(0, 0),
-                        blurRadius: 12,
-                      ),
-                      BoxShadow(
-                        color: Color(0x0f000000),
-                        offset: Offset(0, 12),
-                        blurRadius: 24,
-                      ),
-                    ],
+                    boxShadow: theme.elevationBoxShadows,
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ).animate(_popupElementsCurvedAnimation),
@@ -781,18 +719,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
           child: DecoratedBox(
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0x1f000000),
-                  offset: Offset(0, 0),
-                  blurRadius: 12,
-                ),
-                BoxShadow(
-                  color: const Color(0x0f000000),
-                  offset: Offset(0, 12),
-                  blurRadius: 24,
-                ),
-              ],
+              boxShadow: AquaTheme.of(context).elevationBoxShadows,
               borderRadius: BorderRadius.circular(8),
             ),
             child: AnimatedBuilder(
@@ -830,18 +757,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
           child: DecoratedBox(
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0x1f000000),
-                  offset: Offset(0, 0),
-                  blurRadius: 12,
-                ),
-                BoxShadow(
-                  color: const Color(0x0f000000),
-                  offset: Offset(0, 12),
-                  blurRadius: 24,
-                ),
-              ],
+              boxShadow: AquaTheme.of(context).elevationBoxShadows,
               borderRadius: BorderRadius.circular(8),
             ),
             child: AnimatedBuilder(
