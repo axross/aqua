@@ -2,7 +2,6 @@ import "dart:math" as math;
 import "package:aqua/src/common_widgets/analytics.dart";
 import "package:aqua/src/common_widgets/aqua_appear_animation.dart";
 import "package:aqua/src/common_widgets/aqua_button.dart";
-import "package:aqua/src/common_widgets/aqua_environment.dart";
 import "package:aqua/src/common_widgets/aqua_icons.dart";
 import "package:aqua/src/common_widgets/aqua_preferences.dart";
 import "package:aqua/src/common_widgets/aqua_scaffold.dart";
