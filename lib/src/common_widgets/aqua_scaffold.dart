@@ -43,7 +43,7 @@ class AquaScadffold extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        if (Navigator.of(context).canPop()) ...[
+                        if (ModalRoute.of(context)?.canPop ?? false) ...[
                           AquaButton(
                             variant: AquaButtonVariant.secondary,
                             icon: AquaIcons.chevronLeft,
