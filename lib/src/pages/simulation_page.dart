@@ -425,39 +425,11 @@ class _SimulationPageState extends State<SimulationPage> {
                         });
                       },
                       onOpenPopup: () {
-                        // Analytics.of(context).logEvent(
-                        //   name: "open_player_hand_setting_eidtor_popup",
-                        //   parameters: {
-                        //     "index": index,
-                        //     "player_hand_setting_type": _simulationSession
-                        //         .playerHandSettings[index].type
-                        //         .toString(),
-                        //     "player_hand_setting_components_length":
-                        //         _simulationSession.playerHandSettings[index]
-                        //             .components.length,
-                        //     "player_hand_setting_card_pair": _simulationSession
-                        //         .playerHandSettings[index].firstHoleCardPair
-                        //         .toString(),
-                        //   },
-                        // );
-
                         setState(() {
                           _needsBottomPaddingForOverscroll = true;
                         });
                       },
                       onClosedPopup: (inputMode, cardPair, handRange) {
-                        // Analytics.of(context).logEvent(
-                        //   name: "close_player_hand_setting_eidtor_popup",
-                        //   parameters: {
-                        //     "index": index,
-                        //     "input_mode": inputMode.toString(),
-                        //     "player_hand_setting_card_pair":
-                        //         cardPair.toString(),
-                        //     "player_hand_setting_hand_range_length":
-                        //         handRange.length,
-                        //   },
-                        // );
-
                         _simulationSession.playerHandSettings[index]
                             .firstHoleCardPair = cardPair;
                         _simulationSession.playerHandSettings[index].handRange =

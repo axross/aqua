@@ -93,7 +93,6 @@ class DigitsText extends StatelessWidget {
                 .copyWith(
                   color: this.textStyle?.color ?? style.color,
                   fontFamily: this.textStyle?.fontFamily ?? style.fontFamily,
-                  // fontWeight: this.textStyle?.fontWeight ?? style.fontWeight,
                 )
                 .apply(fontSizeFactor: style.fontSizeFactor),
           ),
@@ -187,7 +186,6 @@ class DigitsPlaceholderText extends StatelessWidget {
                 .copyWith(
                   color: this.textStyle?.color ?? style.placeholderColor,
                   fontFamily: this.textStyle?.fontFamily ?? style.fontFamily,
-                  // fontWeight: this.textStyle?.fontWeight ?? style.fontWeight,
                 )
                 .apply(fontSizeFactor: style.fontSizeFactor),
           ),

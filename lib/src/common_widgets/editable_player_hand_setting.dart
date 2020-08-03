@@ -656,7 +656,6 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                   ),
                 ),
               ),
-              // SizedBox(width: 8),
               Expanded(
                 child: DecoratedBoxTransition(
                   decoration: DecorationTween(
