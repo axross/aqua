@@ -68,7 +68,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               ),
                               SizedBox(height: 8.0),
                               Text(
-                                preferences.preferWinRate
+                                preferences.prefersWinRate
                                     ? "Shows both win rate and tie rate.\nWin rate means the ratio you got a pot as the only winner."
                                     : "Shows probability to win a pot in equity.\nCalculates ties as shared with players who got a pot.",
                                 style: theme.textStyleSet.caption,
@@ -77,7 +77,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                           ),
                         ),
                         CupertinoSwitch(
-                          value: !preferences.preferWinRate,
+                          value: !preferences.prefersWinRate,
                           onChanged: (value) {
                             preferences.setPreferWinRate(!value);
                           },
