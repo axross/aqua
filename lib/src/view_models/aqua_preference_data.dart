@@ -14,18 +14,12 @@ class AquaPreferenceData extends ChangeNotifier {
 
   bool get preferWinRate => _preferWinRate;
 
-  bool _hasPreferEquitySet;
-
-  bool get hasPreferEquitySet => _hasPreferEquitySet;
-
-  Future<void> setPreferEquity(bool value) async {
+  Future<void> setPreferWinRate(bool value) async {
     _preferWinRate = value;
-    _hasPreferEquitySet = true;
 
     notifyListeners();
 
     await preferences.setBool("preferWinRate", value);
-    await preferences.setBool("hasPreferEquitySet", true);
   }
 
   Future<void> initialize() async {
@@ -35,12 +29,7 @@ class AquaPreferenceData extends ChangeNotifier {
       await preferences.setBool("preferWinRate", false);
     }
 
-    if (!preferences.containsKey("hasPreferEquitySet")) {
-      await preferences.setBool("hasPreferEquitySet", false);
-    }
-
     _preferWinRate = preferences.getBool("preferWinRate");
-    _hasPreferEquitySet = preferences.getBool("hasPreferEquitySet");
     _isLoaded = true;
 
     notifyListeners();
