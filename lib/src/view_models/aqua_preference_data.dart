@@ -10,37 +10,26 @@ class AquaPreferenceData extends ChangeNotifier {
 
   get isLoaded => _isLoaded;
 
-  bool _preferWinRate;
+  bool _prefersWinRate;
 
-  bool get preferWinRate => _preferWinRate;
+  bool get prefersWinRate => _prefersWinRate;
 
-  bool _hasPreferEquitySet;
-
-  bool get hasPreferEquitySet => _hasPreferEquitySet;
-
-  Future<void> setPreferEquity(bool value) async {
-    _preferWinRate = value;
-    _hasPreferEquitySet = true;
+  Future<void> setPreferWinRate(bool value) async {
+    _prefersWinRate = value;
 
     notifyListeners();
 
-    await preferences.setBool("preferWinRate", value);
-    await preferences.setBool("hasPreferEquitySet", true);
+    await preferences.setBool("prefersWinRate", value);
   }
 
   Future<void> initialize() async {
     preferences = await SharedPreferences.getInstance();
 
-    if (!preferences.containsKey("preferWinRate")) {
-      await preferences.setBool("preferWinRate", false);
+    if (!preferences.containsKey("prefersWinRate")) {
+      await preferences.setBool("prefersWinRate", false);
     }
 
-    if (!preferences.containsKey("hasPreferEquitySet")) {
-      await preferences.setBool("hasPreferEquitySet", false);
-    }
-
-    _preferWinRate = preferences.getBool("preferWinRate");
-    _hasPreferEquitySet = preferences.getBool("hasPreferEquitySet");
+    _prefersWinRate = preferences.getBool("prefersWinRate");
     _isLoaded = true;
 
     notifyListeners();

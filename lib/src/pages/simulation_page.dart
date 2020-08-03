@@ -530,32 +530,33 @@ class _PlayerListItem extends StatelessWidget {
                       children: [
                         AnimatedBuilder(
                           animation: preferences,
-                          builder: (context, child) => preferences.preferWinRate
-                              ? Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
-                                  children: [
-                                    DigitsText(
-                                      result.winRate + result.tieRate,
-                                      suffix: "% win",
+                          builder: (context, child) =>
+                              preferences.prefersWinRate
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        DigitsText(
+                                          result.winRate + result.tieRate,
+                                          suffix: "% win",
+                                        ),
+                                        DigitsText(
+                                          result.tieRate,
+                                          textStyle: theme.textStyleSet.caption,
+                                          useLargeWholeNumberPart: false,
+                                          fractionDigits: 0,
+                                          showAlmostEqualPrefix: true,
+                                          suffix: "% tie",
+                                        ),
+                                      ],
+                                    )
+                                  : DigitsText(
+                                      result.equity,
+                                      suffix: "% equity",
                                     ),
-                                    DigitsText(
-                                      result.tieRate,
-                                      textStyle: theme.textStyleSet.caption,
-                                      useLargeWholeNumberPart: false,
-                                      fractionDigits: 0,
-                                      showAlmostEqualPrefix: true,
-                                      suffix: "% tie",
-                                    ),
-                                  ],
-                                )
-                              : DigitsText(
-                                  result.equity,
-                                  suffix: "% equity",
-                                ),
                         ),
                         SizedBox(height: 8),
                         SizedBox(
@@ -576,7 +577,7 @@ class _PlayerListItem extends StatelessWidget {
                         AnimatedBuilder(
                           animation: preferences,
                           builder: (context, child) => DigitsPlaceholderText(
-                            suffix: preferences.preferWinRate
+                            suffix: preferences.prefersWinRate
                                 ? "% win"
                                 : "% equity",
                           ),
