@@ -48,12 +48,7 @@ flutter:
   # assets:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
-  assets:
-    - assets/images/club-4c.png
-    - assets/images/diamond-4c.png
-    - assets/images/heart.png
-    - assets/images/spade.png
-    - assets/images/spade-inversed.png
+  # assets:
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -89,162 +84,135 @@ flutter:
         - asset: assets/fonts/Icons.ttf
     - family: Work Sans
       fonts:
-        - asset: assets/fonts/work-sans-600-subset.ttf
-          weight: 600
-    - family: Source Code Pro
-      fonts:
-        - asset: assets/fonts/SourceCodePro-BlackItalic.ttf	
-          weight: 900	
-          style: italic
-        - asset: assets/fonts/SourceCodePro-Black.ttf
-          weight: 900
-        - asset: assets/fonts/SourceCodePro-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/SourceCodePro-BoldItalic.ttf	
-          weight: 700	
-          style: italic	
-        - asset: assets/fonts/SourceCodePro-ExtraLight.ttf	
-          weight: 100	
-        - asset: assets/fonts/SourceCodePro-ExtraLightItalic.ttf	
-          weight: 100	
-          style: italic	
-        - asset: assets/fonts/SourceCodePro-Italic.ttf	
-          weight: 400	
-          style: italic	
-        - asset: assets/fonts/SourceCodePro-Light.ttf	
-          weight: 300	
-        - asset: assets/fonts/SourceCodePro-LightItalic.ttf	
-          weight: 300	
-          style: italic	
-        - asset: assets/fonts/SourceCodePro-Medium.ttf	
-          weight: 500	
-        - asset: assets/fonts/SourceCodePro-MediumItalic.ttf	
-          weight: 500	
-          style: italic	
-        - asset: assets/fonts/SourceCodePro-Regular.ttf	
-          weight: 400	
-        - asset: assets/fonts/SourceCodePro-SemiBold.ttf	
-          weight: 600	
-        - asset: assets/fonts/SourceCodePro-SemiBoldItalic.ttf	
-          weight: 600	
-          style: italic
-    - family: Source Sans Pro
-      fonts:
-        - asset: assets/fonts/SourceSansPro-SemiBoldItalic.ttf
-          weight: 600
-          style: italic
-        - asset: assets/fonts/SourceSansPro-Black.ttf
-          weight: 900
-        - asset: assets/fonts/SourceSansPro-BlackItalic.ttf
-          weight: 900
-          style: italic
-        - asset: assets/fonts/SourceSansPro-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/SourceSansPro-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: assets/fonts/SourceSansPro-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/SourceSansPro-ExtraLightItalic.ttf
-          weight: 200
-          style: italic
-        - asset: assets/fonts/SourceSansPro-Italic.ttf
+        # - asset: assets/fonts/WorkSans-Thin.ttf
+        #   weight: 100
+        # - asset: assets/fonts/WorkSans-ThinItalic.ttf
+        #   weight: 100
+        #   style: italic
+        # - asset: assets/fonts/WorkSans-ExtraLight.ttf
+        #   weight: 200
+        # - asset: assets/fonts/WorkSans-ExtraLightItalic.ttf
+        #   weight: 200
+        #   style: italic
+        # - asset: assets/fonts/WorkSans-Light.ttf
+        #   weight: 300
+        # - asset: assets/fonts/WorkSans-LightItalic.ttf
+        #   weight: 300
+        #   style: italic
+        - asset: assets/fonts/WorkSans-Regular.ttf
           weight: 400
-          style: italic
-        - asset: assets/fonts/SourceSansPro-Light.ttf
-          weight: 300
-        - asset: assets/fonts/SourceSansPro-LightItalic.ttf
-          weight: 300
-          style: italic
-        - asset: assets/fonts/SourceSansPro-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/SourceSansPro-SemiBold.ttf
+        # - asset: assets/fonts/WorkSans-Italic.ttf
+        #   weight: 400
+        #   style: italic
+        # - asset: assets/fonts/WorkSans-Medium.ttf
+        #   weight: 500
+        # - asset: assets/fonts/WorkSans-MediumItalic.ttf
+        #   weight: 500
+        #   style: italic
+        - asset: assets/fonts/WorkSans-SemiBold.ttf
           weight: 600
-
-    - family: Montserrat
-      fonts:
-        - asset: assets/fonts/Montserrat-Black.ttf
-          weight: 900
-        - asset: assets/fonts/Montserrat-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Montserrat-ExtraBold.ttf
-          weight: 800
-        - asset: assets/fonts/Montserrat-SemiBold.ttf
-          weight: 600
-    - family: Rubik
-      fonts:
-        - asset: assets/fonts/Rubik-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Rubik-LightItalic.ttf
-          weight: 300
-          style: italic
-        - asset: assets/fonts/Rubik-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Rubik-Italic.ttf
-          weight: 400
-          style: italic
-        - asset: assets/fonts/Rubik-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Rubik-MediumItalic.ttf
-          weight: 500
-          style: italic
-        - asset: assets/fonts/Rubik-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Rubik-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: assets/fonts/Rubik-Black.ttf
-          weight: 900
-        - asset: assets/fonts/Rubik-BlackItalic.ttf
-          weight: 900
-          style: italic
+        # - asset: assets/fonts/WorkSans-SemiBoldItalic.ttf
+        #   weight: 600
+        #   style: italic
+        # - asset: assets/fonts/WorkSans-Bold.ttf
+        #   weight: 700
+        # - asset: assets/fonts/WorkSans-BoldItalic.ttf
+        #   weight: 700
+        #   style: italic
+        # - asset: assets/fonts/WorkSans-ExtraBold.ttf
+        #   weight: 800
+        # - asset: assets/fonts/WorkSans-ExtraBoldItalic.ttf
+        #   weight: 800
+        #   style: italic
+        # - asset: assets/fonts/WorkSans-Black.ttf
+        #   weight: 900
+        # - asset: assets/fonts/WorkSans-BlackItalic.ttf
+        #   weight: 900
+        #   style: italic
+    # - family: Source Code Pro
+    #   fonts:
+        # - asset: assets/fonts/SourceCodePro-ExtraLight.ttf
+        #   weight: 200
+        # - asset: assets/fonts/SourceCodePro-ExtraLightItalic.ttf
+        #   weight: 200
+        #   style: italic
+        # - asset: assets/fonts/SourceCodePro-Light.ttf
+        #   weight: 300
+        # - asset: assets/fonts/SourceCodePro-LightItalic.ttf
+        #   weight: 300
+        #   style: italic
+        # - asset: assets/fonts/SourceCodePro-Regular.ttf
+        #   weight: 400
+        # - asset: assets/fonts/SourceCodePro-Italic.ttf
+        #   weight: 400
+        #   style: italic
+        # - asset: assets/fonts/SourceCodePro-Medium.ttf
+        #   weight: 500
+        # - asset: assets/fonts/SourceCodePro-MediumItalic.ttf
+        #   weight: 500
+        #   style: italic
+        # - asset: assets/fonts/SourceCodePro-SemiBold.ttf
+        #   weight: 600
+        # - asset: assets/fonts/SourceCodePro-SemiBoldItalic.ttf
+        #   weight: 600
+        #   style: italic
+        # - asset: assets/fonts/SourceCodePro-Bold.ttf
+        #   weight: 700
+        # - asset: assets/fonts/SourceCodePro-BoldItalic.ttf
+        #   weight: 700
+        #   style: italic
+        # - asset: assets/fonts/SourceCodePro-BlackItalic.ttf
+        #   weight: 900
+        #   style: italic
+        # - asset: assets/fonts/SourceCodePro-Black.ttf
+        #   weight: 900
     - family: Poppins
       fonts:
-        - asset: assets/fonts/Poppins-Black.ttf
-          weight: 900
-        - asset: assets/fonts/Poppins-BlackItalic.ttf
-          weight: 900
-          style: italic
-        - asset: assets/fonts/Poppins-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Poppins-BoldItalic.ttf
-          weight: 700
-          style: italic
-        - asset: assets/fonts/Poppins-ExtraBold.ttf
-          weight: 800
-        - asset: assets/fonts/Poppins-ExtraBoldItalic.ttf
-          weight: 800
-          style: italic
-        - asset: assets/fonts/Poppins-ExtraLight.ttf
-          weight: 200
-        - asset: assets/fonts/Poppins-ExtraLightItalic.ttf
-          weight: 200
-          style: italic
-        - asset: assets/fonts/Poppins-Italic.ttf
-          weight: 400
-          style: italic
-        - asset: assets/fonts/Poppins-Light.ttf
-          weight: 300
-        - asset: assets/fonts/Poppins-LightItalic.ttf
-          weight: 300
-          style: italic
-        - asset: assets/fonts/Poppins-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Poppins-MediumItalic.ttf
-          weight: 500
-          style: italic
+        # - asset: assets/fonts/Poppins-Thin.ttf
+        #   weight: 100
+        # - asset: assets/fonts/Poppins-ThinItalic.ttf
+        #   weight: 100
+        #   style: italic
+        # - asset: assets/fonts/Poppins-ExtraLight.ttf
+        #   weight: 200
+        # - asset: assets/fonts/Poppins-ExtraLightItalic.ttf
+        #   weight: 200
+        #   style: italic
+        # - asset: assets/fonts/Poppins-Light.ttf
+        #   weight: 300
+        # - asset: assets/fonts/Poppins-LightItalic.ttf
+        #   weight: 300
+        #   style: italic
         - asset: assets/fonts/Poppins-Regular.ttf
           weight: 400
+        # - asset: assets/fonts/Poppins-Italic.ttf
+        #   weight: 400
+        #   style: italic
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        # - asset: assets/fonts/Poppins-MediumItalic.ttf
+        #   weight: 500
+        #   style: italic
         - asset: assets/fonts/Poppins-SemiBold.ttf
           weight: 600
-        - asset: assets/fonts/Poppins-SemiBoldItalic.ttf
-          weight: 600
-          style: italic
-        - asset: assets/fonts/Poppins-Thin.ttf
-          weight: 100
-        - asset: assets/fonts/Poppins-ThinItalic.ttf
-          weight: 100
-          style: italic
+        # - asset: assets/fonts/Poppins-SemiBoldItalic.ttf
+        #   weight: 600
+        #   style: italic
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        # - asset: assets/fonts/Poppins-BoldItalic.ttf
+        #   weight: 700
+        #   style: italic
+        # - asset: assets/fonts/Poppins-ExtraBold.ttf
+        #   weight: 800
+        # - asset: assets/fonts/Poppins-ExtraBoldItalic.ttf
+        #   weight: 800
+        #   style: italic
+        # - asset: assets/fonts/Poppins-Black.ttf
+        #   weight: 900
+        # - asset: assets/fonts/Poppins-BlackItalic.ttf
+        #   weight: 900
+        #   style: italic
 
 flutter_icons:
   android: true 
