@@ -93,13 +93,6 @@ class _AquaAppState extends State<AquaApp> {
                   ? WidgetsApp(
                       title: "Odds Calculator",
                       color: Color(0xff19232e),
-                      textStyle: const TextStyle(
-                        color: Color(0xff3B424B),
-                        fontFamily: "Poppins",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        decoration: TextDecoration.none,
-                      ),
                       builder: (context, child) => AquaTheme(
                         data: MediaQuery.of(context).platformBrightness ==
                                 Brightness.dark

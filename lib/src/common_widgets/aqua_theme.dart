@@ -14,7 +14,10 @@ class AquaTheme extends InheritedWidget {
           key: key,
           child: DefaultAquaButtonStyle(
             style: data.buttonStyleSet.normal,
-            child: child,
+            child: DefaultTextStyle(
+              style: data.textStyleSet.body,
+              child: child,
+            ),
           ),
         );
 
