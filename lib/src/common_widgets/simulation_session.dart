@@ -1,4 +1,5 @@
 import "dart:collection" show IterableMixin;
+import "package:aqua/src/models/community_cards.dart";
 import "package:aqua/src/models/nullable_card_pair.dart";
 import "package:aqua/src/services/simulation_isolate_service.dart";
 import "package:flutter/widgets.dart";
@@ -29,7 +30,6 @@ class SimulationSessionData extends ChangeNotifier {
     this.onFinishSimulation,
   }) : _playerHandSettings = PlayerHandSettingList.empty() {
     _playerHandSettings.addListener(() {
-      _refreshUsedCards();
       _clearResults();
       _enqueueSimulation();
       notifyListeners();
@@ -42,18 +42,13 @@ class SimulationSessionData extends ChangeNotifier {
 
   PlayerHandSettingList _playerHandSettings;
 
-  List<Card> _communityCards = [null, null, null, null, null];
+  CommunityCards _communityCards = CommunityCards.empty();
 
-  Set<Card> _usedCards = {};
+  CommunityCards get communityCards => _communityCards;
 
-  List<Card> get communityCards => _communityCards;
-
-  set communityCards(List<Card> cards) {
-    assert(cards.length == 5);
-
+  set communityCards(CommunityCards cards) {
     _communityCards = cards;
 
-    _refreshUsedCards();
     _clearResults();
     _enqueueSimulation();
     notifyListeners();
@@ -64,7 +59,6 @@ class SimulationSessionData extends ChangeNotifier {
   set playerHandSettings(PlayerHandSettingList playerHandSettings) {
     _playerHandSettings = playerHandSettings;
 
-    _refreshUsedCards();
     _clearResults();
     _enqueueSimulation();
     notifyListeners();
@@ -83,12 +77,6 @@ class SimulationSessionData extends ChangeNotifier {
   get progress => _progress;
 
   SimulationIsolateService _simulationIsolateService;
-
-  Set<Card> get usedCards => _usedCards;
-
-  void _refreshUsedCards() {
-    _usedCards = {..._communityCards, ..._playerHandSettings.usedCards};
-  }
 
   void _clearResults() {
     _results = [];

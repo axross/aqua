@@ -1,8 +1,9 @@
-import "dart:collection";
+import "dart:collection" show IterableMixin;
 import "package:meta/meta.dart";
 import "package:poker/poker.dart";
 
-class CommunityCards with ListMixin<Card> {
+@immutable
+class CommunityCards with IterableMixin<Card> {
   CommunityCards(Iterable<Card> cards)
       : assert(cards != null),
         assert(cards.length <= 5),
