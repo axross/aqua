@@ -124,7 +124,6 @@ class AquaButtonStyleSet {
 
   final AquaButtonStyle danger;
 
-  // ignore: missing_return
   AquaButtonStyle operator [](AquaButtonVariant variant) {
     switch (variant) {
       case AquaButtonVariant.normal:
@@ -136,6 +135,8 @@ class AquaButtonStyleSet {
       case AquaButtonVariant.danger:
         return danger;
     }
+
+    throw UnimplementedError();
   }
 }
 

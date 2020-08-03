@@ -145,7 +145,6 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
       ),
       OverlayEntry(
         builder: (context) => _buildTargetCardSelector(context),
-        // opaque: true,
         maintainState: true,
       ),
       OverlayEntry(builder: (context) => _buildCardPicker(context)),

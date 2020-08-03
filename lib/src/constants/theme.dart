@@ -37,7 +37,6 @@ const baseTextStyle = TextStyle(
   fontFamily: "Poppins",
   fontSize: 16,
   fontWeight: FontWeight.w400,
-  // decoration: TextDecoration.none,
 );
 
 final baseButtonTextStyle = baseTextStyle.copyWith(
