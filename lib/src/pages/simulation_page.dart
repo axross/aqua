@@ -72,12 +72,11 @@ class _SimulationPageState extends State<SimulationPage> {
       scrollController: _scrollController,
       title: "Calculation",
       actions: [
-        if (AquaEnvironment.of(context).isDebugBuild)
-          AquaButton(
-            variant: AquaButtonVariant.secondary,
-            icon: AquaIcons.settings,
-            onTap: () => Navigator.of(context).pushNamed("/preferences"),
-          ),
+        AquaButton(
+          variant: AquaButtonVariant.secondary,
+          icon: AquaIcons.settings,
+          onTap: () => Navigator.of(context).pushNamed("/preferences"),
+        ),
       ],
       slivers: [
         AnimatedBuilder(
