@@ -103,7 +103,7 @@ class DigitsText extends StatelessWidget {
 }
 
 int extractDecimalPartOf(double value, {@required int fractionDigits}) {
-  var onlyDecimalPart = value % 1;
+  var onlyDecimalPart = value * 100 % 1;
   int asWholeNumber = 0;
 
   for (int d = 0; d < fractionDigits; ++d) {
