@@ -1,45 +1,50 @@
 import "dart:async" show runZonedGuarded;
+import "package:amplitude_flutter/amplitude.dart";
 import "package:aqua/src/app.dart";
+import "package:aqua/src/services/analytics_service.dart";
+import "package:aqua/src/services/authentication_manager.dart";
+import "package:aqua/src/services/error_reporter_service.dart";
+import "package:firebase_analytics/firebase_analytics.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/widgets.dart";
-import "package:package_info/package_info.dart";
-import "package:sentry/sentry.dart";
 
-void main() async {
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final authenticationManager = AuthenticationManager()..initialize();
+  final analyticsService = AnalyticsService(
+    amplitudeAnalytics: Amplitude.getInstance()
+      ..init("94ba98446847f79253029f7f8e6d9cf3")
+      ..trackingSessionEvents(true),
+    firebaseAnalytics: FirebaseAnalytics(),
+  );
+
   if (!kDebugMode) {
-    final SentryClient sentryClient = SentryClient(
-        dsn:
+    final errorReporter = ErrorReporterService(
+        sentryDsn:
             "https://7f698d26a29e495881c4adf639830a1a@o30395.ingest.sentry.io/5375048");
 
-    FlutterError.onError = (details) async {
-      final packageInfo = await PackageInfo.fromPlatform();
-
-      sentryClient.capture(
-        event: Event(
-          exception: details.exception,
-          stackTrace: details.stack,
-          extra: {"details": details.toString()},
-          environment: "production",
-          release: packageInfo.version,
-        ),
-      );
+    FlutterError.onError = (details) {
+      errorReporter.captureFlutterException(details);
     };
 
     runZonedGuarded(() async {
-      runApp(AquaApp());
+      runApp(AquaApp(
+        analyticsService: analyticsService,
+        authenticationManager: authenticationManager,
+        errorReporter: errorReporter,
+      ));
     }, (exception, stackTrace) async {
-      final packageInfo = await PackageInfo.fromPlatform();
-
-      sentryClient.capture(
-        event: Event(
-          exception: exception,
-          stackTrace: stackTrace,
-          environment: "production",
-          release: packageInfo.version,
-        ),
+      errorReporter.captureException(
+        exception: exception,
+        stackTrace: stackTrace,
       );
     });
   } else {
-    runApp(AquaApp());
+    runApp(AquaApp(
+      analyticsService: analyticsService,
+      authenticationManager: authenticationManager,
+      errorReporter: ErrorReporterServiceStub(),
+    ));
   }
 }
