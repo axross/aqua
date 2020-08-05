@@ -48,7 +48,10 @@ class _PreferencesPageState extends State<PreferencesPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Display", style: theme.textStyleSet.headline),
+                Text(
+                  "Calculation",
+                  style: theme.textStyleSet.headline,
+                ),
                 SizedBox(height: 16.0),
                 AnimatedBuilder(
                   animation: preferences,
@@ -69,8 +72,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
                               SizedBox(height: 8.0),
                               Text(
                                 preferences.prefersWinRate
-                                    ? "Shows both win rate and tie rate.\nWin rate means the ratio you got a pot as the only winner."
-                                    : "Shows probability to win a pot in equity.\nCalculates ties as shared with players who got a pot.",
+                                    ? "Shows both win and tie rate.\n\"Win\" is you're the only player who got the pot. \"Tie\" is when you share the pot with others."
+                                    : "Shows how many probability of shares for the pot you have.",
                                 style: theme.textStyleSet.caption,
                               ),
                             ],
