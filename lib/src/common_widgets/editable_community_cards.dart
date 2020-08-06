@@ -265,7 +265,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
               // TODO:
               // make it themed
               decoration: DecorationTween(
-                begin: BoxDecoration(color: Color(0x1f000000)),
+                begin: BoxDecoration(color: Color(0x00000000)),
                 end: BoxDecoration(color: Color(0x1f000000)),
               ).animate(_curvedAnimation),
               child: child,
