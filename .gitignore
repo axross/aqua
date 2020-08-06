@@ -28,6 +28,7 @@
 .packages
 .pub-cache/
 .pub/
+ios/Flutter/.last_build_id
 /build/
 
 # Web related
