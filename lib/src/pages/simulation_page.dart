@@ -1,4 +1,3 @@
-import "dart:math" as math;
 import "package:aqua/src/common_widgets/analytics.dart";
 import "package:aqua/src/common_widgets/aqua_appear_animation.dart";
 import "package:aqua/src/common_widgets/aqua_button.dart";
@@ -113,11 +112,32 @@ class _SimulationPageState extends State<SimulationPage> {
                           _simulationSession.playerHandSettings.usedCards,
                       isPopupOpen: _isCommunityCardPopupOpen,
                       prepareForPopup: (overlayPosition) async {
-                        await _scrollController.animateTo(
-                          0.0,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOutCubic,
-                        );
+                        final mediaQuery = MediaQuery.of(context);
+                        final topOverflow =
+                            0 - (overlayPosition.top - mediaQuery.padding.top);
+                        final bottomOverflow = overlayPosition.bottom +
+                            mediaQuery.padding.bottom -
+                            mediaQuery.size.height;
+
+                        double nextScrollOffset = _scrollController.offset;
+
+                        if (topOverflow > 0) {
+                          nextScrollOffset =
+                              _scrollController.offset - topOverflow;
+                        }
+
+                        if (bottomOverflow > 0) {
+                          nextScrollOffset =
+                              _scrollController.offset + bottomOverflow;
+                        }
+
+                        if (nextScrollOffset != _scrollController.offset) {
+                          await _scrollController.animateTo(
+                            nextScrollOffset,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOutCubic,
+                          );
+                        }
                       },
                       onTapChangeTarget: (index) {
                         Analytics.of(context).logEvent(
@@ -303,16 +323,26 @@ class _SimulationPageState extends State<SimulationPage> {
                       },
                       isPopupOpen: index == _openPlayerHandSettingIndex,
                       prepareForPopup: (overlayPosition) async {
-                        final nextScrollOffset = math.max(
-                          _scrollController.offset +
-                              overlayPosition.top -
-                              MediaQuery.of(context).size.height +
-                              overlayPosition.height +
-                              MediaQuery.of(context).padding.bottom,
-                          0.0,
-                        );
+                        final mediaQuery = MediaQuery.of(context);
+                        final topOverflow =
+                            0 - (overlayPosition.top - mediaQuery.padding.top);
+                        final bottomOverflow = overlayPosition.bottom +
+                            mediaQuery.padding.bottom -
+                            mediaQuery.size.height;
 
-                        if (nextScrollOffset > _scrollController.offset) {
+                        double nextScrollOffset = _scrollController.offset;
+
+                        if (topOverflow > 0) {
+                          nextScrollOffset =
+                              _scrollController.offset - topOverflow;
+                        }
+
+                        if (bottomOverflow > 0) {
+                          nextScrollOffset =
+                              _scrollController.offset + bottomOverflow;
+                        }
+
+                        if (nextScrollOffset != _scrollController.offset) {
                           await _scrollController.animateTo(
                             nextScrollOffset,
                             duration: Duration(milliseconds: 300),
