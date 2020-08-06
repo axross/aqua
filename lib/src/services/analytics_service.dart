@@ -1,5 +1,6 @@
 import "package:amplitude_flutter/amplitude.dart";
 import "package:aqua/src/common_widgets/simulation_session.dart";
+import "package:aqua/src/models/anonymous_user.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
 import "package:flutter/widgets.dart" show immutable, required;
 
@@ -16,6 +17,11 @@ class AnalyticsService {
   final Amplitude _amplitudeAnalytics;
 
   final FirebaseAnalytics _firebaseAnalytics;
+
+  void setUser(AnonymousUser user) {
+    _amplitudeAnalytics.setUserId(user?.id);
+    _firebaseAnalytics.setUserId(user?.id);
+  }
 
   void logScreenChange({
     @required String screenName,

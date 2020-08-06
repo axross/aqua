@@ -20,7 +20,8 @@ dependencies:
   amplitude_flutter: ^2.2.0
   flutter:
     sdk: flutter
-  firebase_analytics: ^5.0.2
+  firebase_analytics: ^5.0.16
+  firebase_auth: ^0.16.1
   flutter_launcher_icons: ^0.7.4
   package_info: ^0.4.1
   poker: 0.0.13
