@@ -1,4 +1,3 @@
-import "dart:math" as math;
 import "package:aqua/src/common_widgets/analytics.dart";
 import "package:aqua/src/common_widgets/aqua_appear_animation.dart";
 import "package:aqua/src/common_widgets/aqua_button.dart";
