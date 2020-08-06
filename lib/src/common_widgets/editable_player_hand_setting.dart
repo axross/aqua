@@ -46,7 +46,7 @@ class EditablePlayerHandSetting extends StatefulWidget {
 
   final bool isPopupOpen;
 
-  final Future<void> Function(Rect overlayPosition) prepareForPopup;
+  final Future<void> Function(Rect overlayRect) prepareForPopup;
 
   final void Function(Card card) onTapCardPicker;
 
@@ -282,23 +282,25 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
       // calculate picker global offset before scroll/reposition
       // this global offset will change after prepareForPopup()
       Rect indicatorRect;
-      Size controlSize;
+      Rect controlRect;
 
       switch (_stateBus.inputMode) {
         case PlayerHandSettingInputMode.cardPair:
           indicatorRect = _getHoleCardSelectorRect();
-          controlSize = _getCardPickerSize();
+          controlRect = _getCardPickerRect();
           break;
         case PlayerHandSettingInputMode.handRange:
           indicatorRect = _getHandRangeIndicatorGridRect();
-          controlSize = _getHandRangeEditorSize();
+          controlRect = _getHandRangeEditorRect();
           break;
         default:
           throw UnimplementedError();
       }
 
       await widget.prepareForPopup(
-        indicatorRect.topLeft & controlSize + Offset(0.0, indicatorRect.height),
+        indicatorRect
+            .expandToInclude(controlRect)
+            .expandToInclude(_getActionsRect()),
       );
     }
   }
@@ -337,11 +339,8 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
         handRangeIndicatorGridSize;
   }
 
-  Rect _getCardPickerPosition() {
-    final holeCardSelectorPosition = _getHoleCardSelectorRect();
-
-    return Offset(0.0, holeCardSelectorPosition.bottom) & _getCardPickerSize();
-  }
+  Rect _getCardPickerRect() =>
+      Offset(0.0, _getHoleCardSelectorRect().bottom) & _getCardPickerSize();
 
   Size _getCardPickerSize() {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -359,17 +358,17 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
     );
   }
 
-  Rect _getHandRangeEditorPosition() {
-    final handRangeIndicatorPosition = _getHandRangeIndicatorGridRect();
+  Rect _getHandRangeEditorRect() {
+    final handRangeIndicatorRect = _getHandRangeIndicatorGridRect();
 
-    return Offset(0.0, handRangeIndicatorPosition.bottom) &
+    return Offset(0.0, handRangeIndicatorRect.bottom) &
         _getHandRangeEditorSize();
   }
 
   Size _getHandRangeEditorSize() => Size(MediaQuery.of(context).size.width,
       MediaQuery.of(context).size.width + 16 + 60);
 
-  Rect _getActionsPosition() {
+  Rect _getActionsRect() {
     final mediaQuery = MediaQuery.of(context);
     Rect indicatorRect;
 
@@ -440,10 +439,9 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
 
   _buildActions(BuildContext context) {
     final theme = AquaTheme.of(context);
-    final actionsPosition = _getActionsPosition();
 
     return Positioned.fromRect(
-      rect: actionsPosition,
+      rect: _getActionsRect(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -710,7 +708,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
 
   _buildCardPicker(BuildContext context) {
     return Positioned.fromRect(
-      rect: _getCardPickerPosition(),
+      rect: _getCardPickerRect(),
       child: AquaPopupTransition(
         animation: _popupElementsCurvedAnimation,
         child: Padding(
@@ -745,10 +743,8 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
   }
 
   _buildHandRangeEditor(BuildContext context) {
-    final handRangeEditorGridPosition = _getHandRangeEditorPosition();
-
     return Positioned.fromRect(
-      rect: handRangeEditorGridPosition,
+      rect: _getHandRangeEditorRect(),
       child: AquaPopupTransition(
         animation: _popupElementsCurvedAnimation,
         child: Padding(
@@ -967,7 +963,7 @@ class _PlayerHandSettingInputMode implements PlayerHandSettingInputMode {
 const _holeCardSelectorPadding = EdgeInsets.all(16.0);
 const _handRangeIndicatorGridPadding =
     EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
-const _controlPadding = EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 16.0);
+const _controlPadding = EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 2.0);
 const _holeCardBorderPadding = EdgeInsets.all(4.0);
 const _actionsPadding = EdgeInsets.all(16.0);
 const _actionsGap = 8.0;

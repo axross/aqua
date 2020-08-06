@@ -31,7 +31,7 @@ class EditableCommunityCards extends StatefulWidget {
 
   final bool isPopupOpen;
 
-  final Future<void> Function(Rect overlayPosition) prepareForPopup;
+  final Future<void> Function(Rect overlayRect) prepareForPopup;
 
   final void Function(int index) onTapChangeTarget;
 
@@ -184,12 +184,10 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     if (widget.prepareForPopup != null) {
       // calculate picker global offset before scroll/reposition
       // this global offset will change after prepareForPopup()
-      final targetCardSelectorRect = _getTargetCardSelectorRect();
-      final cardPickerSize = _getCardPickerSize();
-
       await widget.prepareForPopup(
-        targetCardSelectorRect.topLeft &
-            cardPickerSize + Offset(0.0, targetCardSelectorRect.height),
+        _getTargetCardSelectorRect()
+            .expandToInclude(_getCardPickerRect())
+            .expandToInclude(_getActionsRect()),
       );
     }
   }
@@ -231,59 +229,55 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
   }
 
   Rect _getActionsRect() {
-    final indicatorPosition = _getTargetCardSelectorRect();
+    final indicatorRect = _getTargetCardSelectorRect();
     final mediaQuery = MediaQuery.of(context);
 
     return Rect.fromLTRB(
       mediaQuery.padding.left + _actionsPadding.left,
-      indicatorPosition.top - _actionsPadding.top - aquaButtonHeight,
+      indicatorRect.top - _actionsPadding.top - aquaButtonHeight,
       mediaQuery.size.width - mediaQuery.padding.right - _actionsPadding.right,
-      indicatorPosition.top,
+      indicatorRect.top,
     );
   }
 
-  _buildTouchAbsorber(BuildContext context) {
-    return Positioned.fill(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        child: SizedBox.expand(),
-      ),
-    );
-  }
-
-  _buildCurtain(BuildContext context) {
-    return Positioned.fill(
-      child: AnimatedBuilder(
-        animation: _curvedAnimation,
-        builder: (context, child) => BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: Tween(
-              begin: 0.0,
-              end: 8.0,
-            ).animate(_curvedAnimation).value,
-            sigmaY: Tween(
-              begin: 0.0,
-              end: 8.0,
-            ).animate(_curvedAnimation).value,
-          ),
-          child: DecoratedBoxTransition(
-            // TODO:
-            // make it themed
-            decoration: DecorationTween(
-              begin: BoxDecoration(color: Color(0x1f000000)),
-              end: BoxDecoration(color: Color(0x1f000000)),
-            ).animate(_curvedAnimation),
-            child: child,
-          ),
-        ),
+  _buildTouchAbsorber(BuildContext context) => Positioned.fill(
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: widget.onRequestClose,
           child: SizedBox.expand(),
         ),
-      ),
-    );
-  }
+      );
+
+  _buildCurtain(BuildContext context) => Positioned.fill(
+        child: AnimatedBuilder(
+          animation: _curvedAnimation,
+          builder: (context, child) => BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: Tween(
+                begin: 0.0,
+                end: 8.0,
+              ).animate(_curvedAnimation).value,
+              sigmaY: Tween(
+                begin: 0.0,
+                end: 8.0,
+              ).animate(_curvedAnimation).value,
+            ),
+            child: DecoratedBoxTransition(
+              // TODO:
+              // make it themed
+              decoration: DecorationTween(
+                begin: BoxDecoration(color: Color(0x1f000000)),
+                end: BoxDecoration(color: Color(0x1f000000)),
+              ).animate(_curvedAnimation),
+              child: child,
+            ),
+          ),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: widget.onRequestClose,
+            child: SizedBox.expand(),
+          ),
+        ),
+      );
 
   _buildActions(BuildContext context) => Positioned.fromRect(
         rect: _getActionsRect(),
@@ -429,55 +423,53 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
       );
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      key: _key,
-      child: LayoutBuilder(
-        builder: (context, constraints) => AnimatedBuilder(
-          animation: _stateBus,
-          builder: (context, _) => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.communityCards[0] != null
-                    ? PlayingCard(card: _stateBus.communityCards[0])
-                    : PlayingCardBack(),
-              ),
-              SizedBox(width: 8),
-              SizedBox(
-                width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.communityCards[1] != null
-                    ? PlayingCard(card: _stateBus.communityCards[1])
-                    : PlayingCardBack(),
-              ),
-              SizedBox(width: 8),
-              SizedBox(
-                width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.communityCards[2] != null
-                    ? PlayingCard(card: _stateBus.communityCards[2])
-                    : PlayingCardBack(),
-              ),
-              SizedBox(width: 8),
-              SizedBox(
-                width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.communityCards[3] != null
-                    ? PlayingCard(card: _stateBus.communityCards[3])
-                    : PlayingCardBack(),
-              ),
-              SizedBox(width: 8),
-              SizedBox(
-                width: (constraints.maxWidth - 8 * 4) / 5,
-                child: _stateBus.communityCards[4] != null
-                    ? PlayingCard(card: _stateBus.communityCards[4])
-                    : PlayingCardBack(),
-              ),
-            ],
+  Widget build(BuildContext context) => SizedBox(
+        key: _key,
+        child: LayoutBuilder(
+          builder: (context, constraints) => AnimatedBuilder(
+            animation: _stateBus,
+            builder: (context, _) => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: (constraints.maxWidth - 8 * 4) / 5,
+                  child: _stateBus.communityCards[0] != null
+                      ? PlayingCard(card: _stateBus.communityCards[0])
+                      : PlayingCardBack(),
+                ),
+                SizedBox(width: 8),
+                SizedBox(
+                  width: (constraints.maxWidth - 8 * 4) / 5,
+                  child: _stateBus.communityCards[1] != null
+                      ? PlayingCard(card: _stateBus.communityCards[1])
+                      : PlayingCardBack(),
+                ),
+                SizedBox(width: 8),
+                SizedBox(
+                  width: (constraints.maxWidth - 8 * 4) / 5,
+                  child: _stateBus.communityCards[2] != null
+                      ? PlayingCard(card: _stateBus.communityCards[2])
+                      : PlayingCardBack(),
+                ),
+                SizedBox(width: 8),
+                SizedBox(
+                  width: (constraints.maxWidth - 8 * 4) / 5,
+                  child: _stateBus.communityCards[3] != null
+                      ? PlayingCard(card: _stateBus.communityCards[3])
+                      : PlayingCardBack(),
+                ),
+                SizedBox(width: 8),
+                SizedBox(
+                  width: (constraints.maxWidth - 8 * 4) / 5,
+                  child: _stateBus.communityCards[4] != null
+                      ? PlayingCard(card: _stateBus.communityCards[4])
+                      : PlayingCardBack(),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class _EditableCommunityCardsStateBus extends ChangeNotifier {
