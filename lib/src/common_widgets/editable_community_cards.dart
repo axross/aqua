@@ -488,8 +488,8 @@ class _EditableCommunityCardsStateBus extends ChangeNotifier {
   int get selectedCardIndex => _selectedCardIndex;
 
   set selectedCardIndex(int index) {
-    if (_communityCards.length - 1 < index) {
-      _selectedCardIndex = _communityCards.length - 1;
+    if (_communityCards.length < index) {
+      _selectedCardIndex = _communityCards.length;
     } else {
       _selectedCardIndex = index;
     }
