@@ -99,6 +99,7 @@ class _SimulationPageState extends State<SimulationPage> {
               child: ConstrainedBox(
                 constraints: BoxConstraints.loose(Size.fromWidth(320)),
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     setState(() {
                       _isCommunityCardPopupOpen = true;
@@ -290,6 +291,7 @@ class _SimulationPageState extends State<SimulationPage> {
                 return _PlayerListItem(
                   indicator: GestureDetector(
                     key: ObjectKey(playerHandSetting),
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
                       Analytics.of(context).logEvent(
                         name: "Tap a Player Hand Setting",
