@@ -6,8 +6,8 @@ import "package:flutter/services.dart";
 import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
-class HandRangeSelectGrid extends StatefulWidget {
-  HandRangeSelectGrid({
+class RankPairSelectGrid extends StatefulWidget {
+  RankPairSelectGrid({
     Key key,
     @required this.onChanged,
     this.onChangeStart,
@@ -16,24 +16,24 @@ class HandRangeSelectGrid extends StatefulWidget {
   })  : assert(onChanged != null),
         super(key: key);
 
-  final void Function(Set<HandRangePart> handRange) onChanged;
+  final void Function(Set<RankPair> rankPairs) onChanged;
 
-  final void Function(HandRangePart part, bool isToMark) onChangeStart;
+  final void Function(RankPair part, bool isToMark) onChangeStart;
 
-  final void Function(HandRangePart part, bool wasToMark) onChangeEnd;
+  final void Function(RankPair part, bool wasToMark) onChangeEnd;
 
-  final Set<HandRangePart> value;
+  final Set<RankPair> value;
 
   @override
-  State<HandRangeSelectGrid> createState() => _HandRangeSelectGridState();
+  State<RankPairSelectGrid> createState() => _RankPairSelectGridState();
 }
 
-class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
-  Set<HandRangePart> selectedRange;
+class _RankPairSelectGridState extends State<RankPairSelectGrid> {
+  Set<RankPair> selectedRange;
 
   bool isToMark;
 
-  HandRangePart lastChangedPart;
+  RankPair lastChangedPart;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
   }
 
   @override
-  void didUpdateWidget(HandRangeSelectGrid oldWidget) {
+  void didUpdateWidget(RankPairSelectGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.value != widget.value) {
@@ -66,28 +66,28 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 final y = details.localPosition.dy *
                     Rank.values.length ~/
                     constraints.maxHeight;
-                final handRangePart = x > y
-                    ? HandRangePart(
+                final rankPairsPart = x > y
+                    ? RankPair.suited(
                         high: ranksInStrongnessOrder[y],
                         kicker: ranksInStrongnessOrder[x],
-                        isSuited: true)
-                    : HandRangePart(
+                      )
+                    : RankPair.ofsuit(
                         high: ranksInStrongnessOrder[x],
                         kicker: ranksInStrongnessOrder[y],
-                        isSuited: false);
+                      );
 
-                isToMark = !selectedRange.contains(handRangePart);
+                isToMark = !selectedRange.contains(rankPairsPart);
 
                 if (isToMark) {
                   HapticFeedback.lightImpact();
 
                   setState(() {
-                    selectedRange.add(handRangePart);
-                    lastChangedPart = handRangePart;
+                    selectedRange.add(rankPairsPart);
+                    lastChangedPart = rankPairsPart;
                   });
 
                   if (widget.onChangeStart != null) {
-                    widget.onChangeStart(handRangePart, true);
+                    widget.onChangeStart(rankPairsPart, true);
                   }
 
                   widget.onChanged(selectedRange);
@@ -95,12 +95,12 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                   HapticFeedback.lightImpact();
 
                   setState(() {
-                    selectedRange.remove(handRangePart);
-                    lastChangedPart = handRangePart;
+                    selectedRange.remove(rankPairsPart);
+                    lastChangedPart = rankPairsPart;
                   });
 
                   if (widget.onChangeStart != null) {
-                    widget.onChangeStart(handRangePart, false);
+                    widget.onChangeStart(rankPairsPart, false);
                   }
 
                   widget.onChanged(selectedRange);
@@ -117,35 +117,35 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                 if (x < 0 || x >= Rank.values.length) return;
                 if (y < 0 || y >= Rank.values.length) return;
 
-                final handRangePart = x > y
-                    ? HandRangePart(
+                final rankPairsPart = x > y
+                    ? RankPair.suited(
                         high: ranksInStrongnessOrder[y],
                         kicker: ranksInStrongnessOrder[x],
-                        isSuited: true)
-                    : HandRangePart(
+                      )
+                    : RankPair.ofsuit(
                         high: ranksInStrongnessOrder[x],
                         kicker: ranksInStrongnessOrder[y],
-                        isSuited: false);
+                      );
 
                 if (isToMark) {
-                  if (selectedRange.contains(handRangePart)) return;
+                  if (selectedRange.contains(rankPairsPart)) return;
 
                   HapticFeedback.selectionClick();
 
                   setState(() {
-                    selectedRange.add(handRangePart);
-                    lastChangedPart = handRangePart;
+                    selectedRange.add(rankPairsPart);
+                    lastChangedPart = rankPairsPart;
                   });
 
                   widget.onChanged(selectedRange);
                 } else {
-                  if (!selectedRange.contains(handRangePart)) return;
+                  if (!selectedRange.contains(rankPairsPart)) return;
 
                   HapticFeedback.selectionClick();
 
                   setState(() {
-                    selectedRange.remove(handRangePart);
-                    lastChangedPart = handRangePart;
+                    selectedRange.remove(rankPairsPart);
+                    lastChangedPart = rankPairsPart;
                   });
 
                   widget.onChanged(selectedRange);
@@ -169,22 +169,20 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
                         if (j % 2 == 1) return SizedBox(width: 2);
 
                         final x = j ~/ 2;
-                        final handRangePart = x > y
-                            ? HandRangePart(
+                        final rankPairsPart = x > y
+                            ? RankPair.suited(
                                 high: ranksInStrongnessOrder[y],
                                 kicker: ranksInStrongnessOrder[x],
-                                isSuited: true,
                               )
-                            : HandRangePart(
+                            : RankPair.ofsuit(
                                 high: ranksInStrongnessOrder[x],
                                 kicker: ranksInStrongnessOrder[y],
-                                isSuited: false,
                               );
 
                         return Expanded(
-                          child: HandRangeSelectGridItem(
-                            handRangePart: handRangePart,
-                            isSelected: selectedRange.contains(handRangePart),
+                          child: RankPairSelectGridItem(
+                            rankPairsPart: rankPairsPart,
+                            isSelected: selectedRange.contains(rankPairsPart),
                           ),
                         );
                       }),
@@ -198,21 +196,21 @@ class _HandRangeSelectGridState extends State<HandRangeSelectGrid> {
       );
 }
 
-class HandRangeSelectGridItem extends StatelessWidget {
-  HandRangeSelectGridItem({
-    @required this.handRangePart,
+class RankPairSelectGridItem extends StatelessWidget {
+  RankPairSelectGridItem({
+    @required this.rankPairsPart,
     this.isSelected = false,
     Key key,
-  })  : assert(handRangePart != null),
+  })  : assert(rankPairsPart != null),
         super(key: key);
 
-  final HandRangePart handRangePart;
+  final RankPair rankPairsPart;
 
   final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
-    final style = AquaTheme.of(context).handRangeGridStyle;
+    final style = AquaTheme.of(context).rankPairGridStyle;
 
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
@@ -224,7 +222,7 @@ class HandRangeSelectGridItem extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "${rankChars[handRangePart.high]}${rankChars[handRangePart.kicker]}",
+            "${rankChars[rankPairsPart.high]}${rankChars[rankPairsPart.kicker]}",
             style: style.textStyle.copyWith(
               color: isSelected
                   ? style.selectedForegroundColor

@@ -1,5 +1,4 @@
 import "package:amplitude_flutter/amplitude.dart";
-import "package:aqua/src/common_widgets/simulation_session.dart";
 import "package:aqua/src/models/anonymous_user.dart";
 import "package:firebase_analytics/firebase_analytics.dart";
 import "package:flutter/widgets.dart" show immutable, required;
@@ -68,10 +67,6 @@ class AnalyticsService {
         processedValue = value;
       }
 
-      if (value is PlayerHandSettingType) {
-        processedValue = _PlayerHandSettingTypeString[value];
-      }
-
       return MapEntry(key, processedValue);
     });
   }
@@ -82,12 +77,6 @@ class AnalyticsService {
     return parameters.map((key, value) => MapEntry(_toSnakeCase(key), value));
   }
 }
-
-const _PlayerHandSettingTypeString = {
-  PlayerHandSettingType.holeCards: "Hole Cards",
-  PlayerHandSettingType.handRange: "Hand Range",
-  PlayerHandSettingType.mixed: "Mixed",
-};
 
 String _toSnakeCase(String value) {
   return value

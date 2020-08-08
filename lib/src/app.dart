@@ -4,7 +4,7 @@ import "package:aqua/src/common_widgets/aqua_preferences.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/common_widgets/authentication.dart";
 import "package:aqua/src/common_widgets/error_reporter.dart";
-import "package:aqua/src/common_widgets/simulation_session.dart";
+import "package:aqua/src/common_widgets/current_simulation_session.dart";
 import "package:aqua/src/constants/theme.dart";
 import "package:aqua/src/pages/preferences_page.dart";
 import "package:aqua/src/pages/preset_select_page.dart";
@@ -12,6 +12,7 @@ import "package:aqua/src/pages/simulation_page.dart";
 import "package:aqua/src/services/analytics_service.dart";
 import "package:aqua/src/services/authentication_manager.dart";
 import "package:aqua/src/services/error_reporter_service.dart";
+import "package:aqua/src/view_models/simulation_session.dart";
 import "package:flutter/material.dart";
 
 class AquaApp extends StatefulWidget {
@@ -36,7 +37,7 @@ class AquaApp extends StatefulWidget {
 class _AquaAppState extends State<AquaApp> {
   /// A ValueNotifier that holds a SimulationSession inside.
   /// Replace the held SimulationSession to start a new session
-  ValueNotifier<SimulationSessionData> _simulationSession;
+  ValueNotifier<SimulationSession> _simulationSession;
 
   /// A singleton AquaPreferenceData object that is used in entire aqua app.
   final AquaPreferenceData _applicationPreferenceData = AquaPreferenceData();
@@ -65,29 +66,27 @@ class _AquaAppState extends State<AquaApp> {
     super.didChangeDependencies();
 
     if (_simulationSession == null) {
-      SimulationSessionData simulationSession;
+      SimulationSession simulationSession;
 
-      simulationSession = SimulationSessionData.initial(
+      simulationSession = SimulationSession.initial(
         onStartSimulation: () => widget.analyticsService.logEvent(
           name: "Start Simulation",
           parameters: {
-            "Number of Community Cards": simulationSession.communityCards
-                .where((card) => card != null)
-                .length,
-            "Number of Player Hand Settings":
-                simulationSession.playerHandSettings.toList().length,
+            "Number of Community Cards":
+                simulationSession.communityCards.toSet().length,
+            "Number of Hand Ranges": simulationSession.handRanges.length,
           },
         ),
-        onFinishSimulation: (_) => widget.analyticsService.logEvent(
-          name: "Finish Simulation",
-          parameters: {
-            "Number of Community Cards": simulationSession.communityCards
-                .where((card) => card != null)
-                .length,
-            "Number of Player Hand Settings":
-                simulationSession.playerHandSettings.toList().length,
-          },
-        ),
+        onFinishSimulation: (snapshot) {
+          widget.analyticsService.logEvent(
+            name: "Finish Simulation",
+            parameters: {
+              "Number of Community Cards":
+                  simulationSession.communityCards.toSet().length,
+              "Number of Hand Ranges": simulationSession.handRanges.length,
+            },
+          );
+        },
       );
 
       _simulationSession = ValueNotifier(simulationSession);
@@ -105,10 +104,10 @@ class _AquaAppState extends State<AquaApp> {
             analytics: widget.analyticsService,
             child: AquaPreferences(
               data: _applicationPreferenceData,
-              child: ValueListenableBuilder<SimulationSessionData>(
+              child: ValueListenableBuilder<SimulationSession>(
                 valueListenable: _simulationSession,
                 builder: (context, simulationSession, child) =>
-                    SimulationSession(
+                    CurrentSimulationSession(
                   simulationSession: simulationSession,
                   child: child,
                 ),

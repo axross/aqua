@@ -37,7 +37,7 @@ class AquaThemeData {
     @required this.buttonStyleSet,
     @required this.scaffoldStyle,
     @required this.playingCardStyle,
-    @required this.handRangeGridStyle,
+    @required this.rankPairGridStyle,
     @required this.digitTextStyle,
     @required this.sliderStyle,
     @required this.cursorColor,
@@ -52,7 +52,7 @@ class AquaThemeData {
 
   final AquaPlayingCardStyle playingCardStyle;
 
-  final AquaHandRangeGridStyle handRangeGridStyle;
+  final AquaRankPairGridStyle rankPairGridStyle;
 
   final AquaDigitTextStyle digitTextStyle;
 
@@ -100,8 +100,8 @@ class AquaPlayingCardStyle {
   final Map<Suit, Color> suitColors;
 }
 
-class AquaHandRangeGridStyle {
-  AquaHandRangeGridStyle({
+class AquaRankPairGridStyle {
+  AquaRankPairGridStyle({
     @required this.backgroundColor,
     @required this.textStyle,
     @required this.selectedBackgroundColor,
