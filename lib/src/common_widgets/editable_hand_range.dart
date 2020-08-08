@@ -6,28 +6,28 @@ import "package:aqua/src/common_widgets/aqua_popup_transition.dart";
 import "package:aqua/src/common_widgets/aqua_slider.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/common_widgets/card_picker.dart";
-import "package:aqua/src/common_widgets/hand_range_select_grid.dart";
+import "package:aqua/src/common_widgets/rank_pair_select_grid.dart";
 import "package:aqua/src/common_widgets/playing_card.dart";
-import "package:aqua/src/common_widgets/readonly_range_grid.dart";
-import "package:aqua/src/common_widgets/simulation_session.dart";
+import "package:aqua/src/common_widgets/readonly_rank_pair_grid.dart";
 import "package:aqua/src/constants/hand_range.dart";
-import "package:aqua/src/models/nullable_card_pair.dart";
+import "package:aqua/src/view_models/card_pair_draft.dart";
+import "package:aqua/src/view_models/hand_range_draft.dart";
 import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
-class EditablePlayerHandSetting extends StatefulWidget {
-  EditablePlayerHandSetting({
-    this.initialInputMode = PlayerHandSettingInputMode.cardPair,
-    this.initialCardPair = const NullableCardPair.empty(),
-    this.initialHandRange = const {},
+class EditableHandRange extends StatefulWidget {
+  EditableHandRange({
+    this.initialInputType,
+    this.initialCardPair,
+    this.initialRankPairs,
     this.unavailableCards = const {},
     this.isPopupOpen = false,
     this.prepareForPopup,
     this.onTapCardPicker,
-    this.onChangeStartHandRangeSlider,
-    this.onChangeEndHandRangeSlider,
-    this.onChangeStartHandRangeGrid,
-    this.onChangeEndHandRangeGrid,
+    this.onChangeStartRankPairGridSlider,
+    this.onChangeEndRankPairGridSlider,
+    this.onChangeStartRankPairGrid,
+    this.onChangeEndRankPairGrid,
     this.onTapPresets,
     this.onTapDelete,
     this.onRequestClose,
@@ -36,11 +36,11 @@ class EditablePlayerHandSetting extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
-  final PlayerHandSettingInputMode initialInputMode;
+  final HandRangeDraftInputType initialInputType;
 
-  final NullableCardPair initialCardPair;
+  final CardPairDraft initialCardPair;
 
-  final Set<HandRangePart> initialHandRange;
+  final Set<RankPair> initialRankPairs;
 
   final Set<Card> unavailableCards;
 
@@ -50,15 +50,13 @@ class EditablePlayerHandSetting extends StatefulWidget {
 
   final void Function(Card card) onTapCardPicker;
 
-  final void Function(double value) onChangeStartHandRangeSlider;
+  final void Function(double value) onChangeStartRankPairGridSlider;
 
-  final void Function(double value) onChangeEndHandRangeSlider;
+  final void Function(double value) onChangeEndRankPairGridSlider;
 
-  final void Function(HandRangePart part, bool isToMark)
-      onChangeStartHandRangeGrid;
+  final void Function(RankPair part, bool isToMark) onChangeStartRankPairGrid;
 
-  final void Function(HandRangePart part, bool wasToMark)
-      onChangeEndHandRangeGrid;
+  final void Function(RankPair part, bool wasToMark) onChangeEndRankPairGrid;
 
   final VoidCallback onTapPresets;
 
@@ -69,21 +67,20 @@ class EditablePlayerHandSetting extends StatefulWidget {
   final VoidCallback onOpenPopup;
 
   final void Function(
-    PlayerHandSettingInputMode inputMode,
-    NullableCardPair cardPair,
-    Set<HandRangePart> handRange,
+    HandRangeDraftInputType inputType,
+    CardPairDraft cardPair,
+    Set<RankPair> handRange,
   ) onClosedPopup;
 
   @override
-  State<EditablePlayerHandSetting> createState() =>
-      _EditablePlayerHandSettingState();
+  State<EditableHandRange> createState() => _EditableHandRangeState();
 }
 
-class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
+class _EditableHandRangeState extends State<EditableHandRange>
     with TickerProviderStateMixin {
   final _key = GlobalKey();
 
-  _EditablePlayerHandSettingStateBus _stateBus;
+  _EditableHandRangeStateBus _stateBus;
 
   AnimationController _animationController;
 
@@ -103,10 +100,11 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
   void initState() {
     super.initState();
 
-    _stateBus = _EditablePlayerHandSettingStateBus(
-      initialInputMode: widget.initialInputMode,
-      initialCardPair: widget.initialCardPair,
-      initialHandRange: widget.initialHandRange,
+    _stateBus = _EditableHandRangeStateBus(
+      initialInputType:
+          widget.initialInputType ?? HandRangeDraftInputType.cardPair,
+      initialCardPair: widget.initialCardPair ?? CardPairDraft.empty(),
+      initialRankPairs: widget.initialRankPairs ?? {},
     );
 
     _animationController = AnimationController(
@@ -157,7 +155,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
     _removeTypeSpecificOverlayEntries();
 
     // TODO: refactor this if you have better idea
-    // HACK: we need to wait for build triggered by player hand setting type change
+    // HACK: we need to wait for build triggered by hand range type change
     // because it's impossible to calculate the render box until it rebuilds
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await _prepareOpenPopup();
@@ -167,12 +165,12 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
       await _popupElementsAnimationController.forward();
     });
 
-    switch (_stateBus.inputMode) {
-      case PlayerHandSettingInputMode.cardPair:
-        _stateBus.inputMode = PlayerHandSettingInputMode.handRange;
+    switch (_stateBus.inputType) {
+      case HandRangeDraftInputType.cardPair:
+        _stateBus.inputType = HandRangeDraftInputType.rankPairs;
         break;
-      case PlayerHandSettingInputMode.handRange:
-        _stateBus.inputMode = PlayerHandSettingInputMode.cardPair;
+      case HandRangeDraftInputType.rankPairs:
+        _stateBus.inputType = HandRangeDraftInputType.cardPair;
         break;
       default:
         throw UnimplementedError();
@@ -196,7 +194,7 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
     await _prepareOpenPopup();
 
     Analytics.of(context).logScreenChange(
-      screenName: "Player Hand Setting Editor Popup",
+      screenName: "Hand Range Editor Popup",
     );
 
     _curtainOverlayEntry = OverlayEntry(
@@ -220,21 +218,21 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
       builder: (context) => _buildActions(context),
     );
 
-    switch (_stateBus.inputMode) {
-      case PlayerHandSettingInputMode.cardPair:
+    switch (_stateBus.inputType) {
+      case HandRangeDraftInputType.cardPair:
         _typeSpecificOverlayEntries = [
           actions,
           OverlayEntry(builder: (context) => _buildHoleCardSelector(context)),
           OverlayEntry(builder: (context) => _buildCardPicker(context)),
         ];
         break;
-      case PlayerHandSettingInputMode.handRange:
+      case HandRangeDraftInputType.rankPairs:
         _typeSpecificOverlayEntries = [
           actions,
           OverlayEntry(
-            builder: (context) => _buildHandRangeIndicatorGrid(context),
+            builder: (context) => _buildRankPairIndicatorGrid(context),
           ),
-          OverlayEntry(builder: (context) => _buildHandRangeEditor(context)),
+          OverlayEntry(builder: (context) => _buildRankPairEditor(context)),
         ];
         break;
       default:
@@ -262,9 +260,9 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
 
     if (widget.onClosedPopup != null) {
       widget.onClosedPopup(
-        _stateBus.inputMode,
+        _stateBus.inputType,
         _stateBus.cardPair,
-        _stateBus.handRange,
+        _stateBus.rankPairs,
       );
     }
   }
@@ -284,14 +282,14 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
       Rect indicatorRect;
       Rect controlRect;
 
-      switch (_stateBus.inputMode) {
-        case PlayerHandSettingInputMode.cardPair:
+      switch (_stateBus.inputType) {
+        case HandRangeDraftInputType.cardPair:
           indicatorRect = _getHoleCardSelectorRect();
           controlRect = _getCardPickerRect();
           break;
-        case PlayerHandSettingInputMode.handRange:
-          indicatorRect = _getHandRangeIndicatorGridRect();
-          controlRect = _getHandRangeEditorRect();
+        case HandRangeDraftInputType.rankPairs:
+          indicatorRect = _getRankPairIndicatorGridRect();
+          controlRect = _getRankPairEditorRect();
           break;
         default:
           throw UnimplementedError();
@@ -322,21 +320,21 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
         holeCardSelectorSize;
   }
 
-  Rect _getHandRangeIndicatorGridRect() {
+  Rect _getRankPairIndicatorGridRect() {
     final RenderBox childRenderBox = _key.currentContext.findRenderObject();
-    final handRangeIndicatorGridSize = childRenderBox.size +
+    final rankPairIndicatorGridSize = childRenderBox.size +
         Offset(
-          _handRangeIndicatorGridPadding.horizontal,
-          _handRangeIndicatorGridPadding.vertical,
+          _rankPairIndicatorGridPadding.horizontal,
+          _rankPairIndicatorGridPadding.vertical,
         );
 
-    return childRenderBox.localToGlobal(
-                handRangeIndicatorGridSize.topLeft(Offset.zero)) -
+    return childRenderBox
+                .localToGlobal(rankPairIndicatorGridSize.topLeft(Offset.zero)) -
             Offset(
-              _handRangeIndicatorGridPadding.left,
-              _handRangeIndicatorGridPadding.top,
+              _rankPairIndicatorGridPadding.left,
+              _rankPairIndicatorGridPadding.top,
             ) &
-        handRangeIndicatorGridSize;
+        rankPairIndicatorGridSize;
   }
 
   Rect _getCardPickerRect() =>
@@ -358,26 +356,25 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
     );
   }
 
-  Rect _getHandRangeEditorRect() {
-    final handRangeIndicatorRect = _getHandRangeIndicatorGridRect();
+  Rect _getRankPairEditorRect() {
+    final rankPairIndicatorRect = _getRankPairIndicatorGridRect();
 
-    return Offset(0.0, handRangeIndicatorRect.bottom) &
-        _getHandRangeEditorSize();
+    return Offset(0.0, rankPairIndicatorRect.bottom) & _getRankPairEditorSize();
   }
 
-  Size _getHandRangeEditorSize() => Size(MediaQuery.of(context).size.width,
+  Size _getRankPairEditorSize() => Size(MediaQuery.of(context).size.width,
       MediaQuery.of(context).size.width + 16 + 60);
 
   Rect _getActionsRect() {
     final mediaQuery = MediaQuery.of(context);
     Rect indicatorRect;
 
-    switch (_stateBus.inputMode) {
-      case PlayerHandSettingInputMode.cardPair:
+    switch (_stateBus.inputType) {
+      case HandRangeDraftInputType.cardPair:
         indicatorRect = _getHoleCardSelectorRect();
         break;
-      case PlayerHandSettingInputMode.handRange:
-        indicatorRect = _getHandRangeIndicatorGridRect();
+      case HandRangeDraftInputType.rankPairs:
+        indicatorRect = _getRankPairIndicatorGridRect();
         break;
       default:
         throw UnimplementedError();
@@ -530,17 +527,17 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                   child: AnimatedBuilder(
                     animation: _stateBus,
                     builder: (context, _) {
-                      switch (_stateBus.inputMode) {
-                        case PlayerHandSettingInputMode.cardPair:
+                      switch (_stateBus.inputType) {
+                        case HandRangeDraftInputType.cardPair:
                           return AquaButton(
                             variant: AquaButtonVariant.normal,
-                            label: "By Hand Range",
+                            label: "By Grid",
                             icon: AquaIcons.grid,
                             onTap: _stateBus.isButtonsDisabled
                                 ? null
                                 : _onTapInputModeToggle,
                           );
-                        case PlayerHandSettingInputMode.handRange:
+                        case HandRangeDraftInputType.rankPairs:
                           return AquaButton(
                             variant: AquaButtonVariant.normal,
                             label: "By Cards",
@@ -661,15 +658,15 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
     );
   }
 
-  _buildHandRangeIndicatorGrid(BuildContext context) {
+  _buildRankPairIndicatorGrid(BuildContext context) {
     final theme = AquaTheme.of(context);
 
     return Positioned.fromRect(
-      rect: _getHandRangeIndicatorGridRect(),
+      rect: _getRankPairIndicatorGridRect(),
       child: AnimatedBuilder(
         animation: _stateBus,
         builder: (context, _) => Padding(
-          padding: _handRangeIndicatorGridPadding,
+          padding: _rankPairIndicatorGridPadding,
           child: Column(
             children: [
               DecoratedBoxTransition(
@@ -684,13 +681,13 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ).animate(_popupElementsCurvedAnimation),
-                child: ReadonlyRangeGrid(handRange: _stateBus.handRange),
+                child: ReadonlyRankPairGrid(rankPairs: _stateBus.rankPairs),
               ),
               SizedBox(height: 8),
               AnimatedBuilder(
                 animation: _popupElementsCurvedAnimation,
                 builder: (context, child) => Text(
-                  "${(_stateBus.handRange.fold(0, (len, part) => len + part.cardPairCombinations.length) / 1326 * 100).floor()}% combs",
+                  "${(_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}% combs",
                   style: theme.textStyleSet.caption.copyWith(
                     color: ColorTween(
                       begin: theme.textStyleSet.caption.color,
@@ -742,9 +739,9 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
     );
   }
 
-  _buildHandRangeEditor(BuildContext context) {
+  _buildRankPairEditor(BuildContext context) {
     return Positioned.fromRect(
-      rect: _getHandRangeEditorRect(),
+      rect: _getRankPairEditorRect(),
       child: AquaPopupTransition(
         animation: _popupElementsCurvedAnimation,
         child: Padding(
@@ -761,33 +758,32 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
                 children: [
                   AspectRatio(
                     aspectRatio: 1,
-                    child: HandRangeSelectGrid(
-                      value: _stateBus.handRange,
-                      onChanged: (handRange) {
-                        _stateBus.handRange = handRange;
+                    child: RankPairSelectGrid(
+                      value: _stateBus.rankPairs,
+                      onChanged: (rankPairs) {
+                        _stateBus.rankPairs = rankPairs;
                       },
-                      onChangeStart: widget.onChangeStartHandRangeGrid,
-                      onChangeEnd: widget.onChangeEndHandRangeGrid,
+                      onChangeStart: widget.onChangeStartRankPairGrid,
+                      onChangeEnd: widget.onChangeEndRankPairGrid,
                     ),
                   ),
                   SizedBox(height: 16),
                   AquaSlider(
-                    divisions: handRangeComponentsInStrongnessOrder.length,
-                    value: _stateBus.handRange.length /
-                        handRangeComponentsInStrongnessOrder.length,
+                    divisions: rankPairsInStrongnessOrder.length,
+                    value: _stateBus.rankPairs.length /
+                        rankPairsInStrongnessOrder.length,
                     label:
-                        "${_stateBus.handRange.fold(0, (len, part) => len + part.cardPairCombinations.length)} (${(_stateBus.handRange.fold(0, (len, part) => len + part.cardPairCombinations.length) / 1326 * 100).floor()}%) combs",
+                        "${_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length)} (${(_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}%) combs",
                     onChanged: (value) {
-                      final handRangeLengthTaken =
-                          (value * handRangeComponentsInStrongnessOrder.length)
-                              .round();
+                      final rankPairLengthTaken =
+                          (value * rankPairsInStrongnessOrder.length).round();
 
-                      _stateBus.handRange = handRangeComponentsInStrongnessOrder
-                          .take(handRangeLengthTaken)
+                      _stateBus.rankPairs = rankPairsInStrongnessOrder
+                          .take(rankPairLengthTaken)
                           .toSet();
                     },
-                    onChangeStart: widget.onChangeStartHandRangeSlider,
-                    onChangeEnd: widget.onChangeEndHandRangeSlider,
+                    onChangeStart: widget.onChangeStartRankPairGridSlider,
+                    onChangeEnd: widget.onChangeEndRankPairGridSlider,
                   ),
                 ],
               ),
@@ -805,8 +801,8 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
       builder: (context, _) {
         Widget child;
 
-        switch (_stateBus.inputMode) {
-          case PlayerHandSettingInputMode.cardPair:
+        switch (_stateBus.inputType) {
+          case HandRangeDraftInputType.cardPair:
             child = Row(
               children: [
                 Expanded(
@@ -823,13 +819,13 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
               ],
             );
             break;
-          case PlayerHandSettingInputMode.handRange:
+          case HandRangeDraftInputType.rankPairs:
             child = Column(
               children: [
-                ReadonlyRangeGrid(handRange: _stateBus.handRange),
+                ReadonlyRankPairGrid(rankPairs: _stateBus.rankPairs),
                 SizedBox(height: 8),
                 Text(
-                  "${(_stateBus.handRange.fold(0, (len, part) => len + part.cardPairCombinations.length) / 1326 * 100).floor()}% combs",
+                  "${(_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}% combs",
                   style: AquaTheme.of(context).textStyleSet.caption,
                 ),
               ],
@@ -845,52 +841,52 @@ class _EditablePlayerHandSettingState extends State<EditablePlayerHandSetting>
   }
 }
 
-class _EditablePlayerHandSettingStateBus extends ChangeNotifier {
-  _EditablePlayerHandSettingStateBus({
-    @required PlayerHandSettingInputMode initialInputMode,
-    @required NullableCardPair initialCardPair,
-    @required Set<HandRangePart> initialHandRange,
-  })  : assert(initialInputMode != null),
+class _EditableHandRangeStateBus extends ChangeNotifier {
+  _EditableHandRangeStateBus({
+    @required HandRangeDraftInputType initialInputType,
+    @required CardPairDraft initialCardPair,
+    @required Set<RankPair> initialRankPairs,
+  })  : assert(initialInputType != null),
         assert(initialCardPair != null),
-        assert(initialHandRange != null),
-        _inputMode = initialInputMode,
+        assert(initialRankPairs != null),
+        _inputType = initialInputType,
         _cardPair = initialCardPair,
-        _handRange = initialHandRange,
+        _rankPairs = initialRankPairs,
         _selectedCardIndex = 0,
         _isButtonsDisabled = false;
 
-  PlayerHandSettingInputMode _inputMode;
+  HandRangeDraftInputType _inputType;
 
-  NullableCardPair _cardPair;
+  CardPairDraft _cardPair;
 
-  Set<HandRangePart> _handRange;
+  Set<RankPair> _rankPairs;
 
   int _selectedCardIndex;
 
   bool _isButtonsDisabled;
 
-  PlayerHandSettingInputMode get inputMode => _inputMode;
+  HandRangeDraftInputType get inputType => _inputType;
 
-  set inputMode(PlayerHandSettingInputMode inputMode) {
-    _inputMode = inputMode;
+  set inputType(HandRangeDraftInputType inputType) {
+    _inputType = inputType;
 
-    if (_inputMode != PlayerHandSettingInputMode.cardPair) {
-      _cardPair = NullableCardPair.empty();
+    if (_inputType != HandRangeDraftInputType.cardPair) {
+      _cardPair = CardPairDraft.empty();
     }
 
-    if (_inputMode != PlayerHandSettingInputMode.handRange) {
-      _handRange = {};
+    if (_inputType != HandRangeDraftInputType.rankPairs) {
+      _rankPairs = {};
     }
 
     notifyListeners();
   }
 
-  NullableCardPair get cardPair => _cardPair;
+  CardPairDraft get cardPair => _cardPair;
 
-  Set<HandRangePart> get handRange => _handRange;
+  Set<RankPair> get rankPairs => _rankPairs;
 
-  set handRange(Set<HandRangePart> handRange) {
-    _handRange = handRange;
+  set rankPairs(Set<RankPair> rankPairs) {
+    _rankPairs = rankPairs;
 
     notifyListeners();
   }
@@ -917,51 +913,16 @@ class _EditablePlayerHandSettingStateBus extends ChangeNotifier {
 
   setCardAtCurrentIndex(Card card) {
     _cardPair = _selectedCardIndex == 0
-        ? NullableCardPair(card, _cardPair[1])
-        : NullableCardPair(_cardPair[0], card);
+        ? CardPairDraft(card, _cardPair[1])
+        : CardPairDraft(_cardPair[0], card);
     _selectedCardIndex = _selectedCardIndex == 0 ? 1 : 0;
 
     notifyListeners();
   }
 }
 
-abstract class PlayerHandSettingInputMode {
-  PlayerHandSettingInputMode._();
-
-  static const cardPair = _PlayerHandSettingInputMode(0);
-  static const handRange = _PlayerHandSettingInputMode(1);
-
-  static PlayerHandSettingInputMode fromPlayerHandSettingType(
-      PlayerHandSettingType type) {
-    switch (type) {
-      case PlayerHandSettingType.holeCards:
-        return PlayerHandSettingInputMode.cardPair;
-      default:
-        return PlayerHandSettingInputMode.handRange;
-    }
-  }
-
-  PlayerHandSettingType toPlayerHandSettingType();
-}
-
-class _PlayerHandSettingInputMode implements PlayerHandSettingInputMode {
-  const _PlayerHandSettingInputMode(this.value);
-
-  final int value;
-
-  // ignore: missing_return
-  PlayerHandSettingType toPlayerHandSettingType() {
-    switch (this) {
-      case PlayerHandSettingInputMode.cardPair:
-        return PlayerHandSettingType.holeCards;
-      case PlayerHandSettingInputMode.handRange:
-        return PlayerHandSettingType.handRange;
-    }
-  }
-}
-
 const _holeCardSelectorPadding = EdgeInsets.all(16.0);
-const _handRangeIndicatorGridPadding =
+const _rankPairIndicatorGridPadding =
     EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0);
 const _controlPadding = EdgeInsets.fromLTRB(2.0, 0.0, 2.0, 2.0);
 const _holeCardBorderPadding = EdgeInsets.all(4.0);

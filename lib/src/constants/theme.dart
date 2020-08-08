@@ -109,7 +109,7 @@ final lightTheme = AquaThemeData(
       Suit.club: _jungleGreen,
     },
   ),
-  handRangeGridStyle: AquaHandRangeGridStyle(
+  rankPairGridStyle: AquaRankPairGridStyle(
     backgroundColor: _lessWhite,
     textStyle: baseTextStyle.copyWith(
       color: _silverSand,
@@ -196,7 +196,7 @@ final darkTheme = AquaThemeData(
       Suit.club: _jungleGreen,
     },
   ),
-  handRangeGridStyle: AquaHandRangeGridStyle(
+  rankPairGridStyle: AquaRankPairGridStyle(
     backgroundColor: _lessBlack,
     textStyle: baseTextStyle.copyWith(
       color: _davysGrey,

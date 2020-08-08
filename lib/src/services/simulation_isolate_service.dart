@@ -13,17 +13,13 @@ class SimulationIsolateService {
   Stream<SimulationProgress> get onProgress => _streamController.stream;
 
   void requestSimulation({
-    @required
-        List<Set<CardPairCombinationsGeneratable>> cardPairCombinationsList,
     @required Set<Card> communityCards,
+    @required List<HandRange> handRanges,
   }) {
     assert(_isolate != null);
     assert(_toIsolate != null);
 
-    _toIsolate.send([
-      cardPairCombinationsList,
-      communityCards,
-    ]);
+    _toIsolate.send([communityCards, handRanges]);
   }
 
   Future<void> initialize() async {
@@ -102,23 +98,28 @@ class PlayerSimulationOverallResult {
 
   Map<HandType, int> winsByHandType =
       Map.fromEntries(HandType.values.map((type) => MapEntry(type, 0)));
+
+  @override
+  String toString() =>
+      "PlayerSimulationOverallResult{win: $wins, defeats: $defeats, ties: $ties}";
 }
 
 void _isolateFunction(SendPort toMain) {
   final receivePort = ReceivePort();
 
   receivePort.listen((data) async {
-    final cardPairCombinationsList =
-        data[0] as List<Set<CardPairCombinationsGeneratable>>;
-    final communityCards = data[1] as Set<Card>;
+    final communityCards = data[0] as Set<Card>;
+    final handRanges = data[1] as List<HandRange>;
 
     final simulator = Simulator(
       communityCards: communityCards,
-      players: cardPairCombinationsList,
+      handRanges: handRanges,
     );
 
-    final results = List.generate(cardPairCombinationsList.length,
-        (_) => PlayerSimulationOverallResult());
+    final results = List.generate(
+      handRanges.length,
+      (_) => PlayerSimulationOverallResult(),
+    );
 
     for (int i = 1; i <= 100000; ++i) {
       Matchup matchup;
@@ -126,26 +127,21 @@ void _isolateFunction(SendPort toMain) {
       try {
         matchup = simulator.evaluate();
       } on Exception catch (error) {
-        print(cardPairCombinationsList);
-
         toMain.send(error);
       }
 
-      for (int playerIndex = 0;
-          playerIndex < cardPairCombinationsList.length;
-          ++playerIndex) {
-        if (matchup.bestHandIndexes.contains(playerIndex)) {
+      for (int hrIndex = 0; hrIndex < handRanges.length; ++hrIndex) {
+        if (matchup.bestHandIndexes.contains(hrIndex)) {
           if (matchup.bestHandIndexes.length == 1) {
-            results[playerIndex].wins += 1;
+            results[hrIndex].wins += 1;
           } else {
-            results[playerIndex].ties += 1;
-            results[playerIndex].tiesWith[matchup.bestHandIndexes.length] += 1;
+            results[hrIndex].ties += 1;
+            results[hrIndex].tiesWith[matchup.bestHandIndexes.length] += 1;
           }
 
-          results[playerIndex]
-              .winsByHandType[matchup.hands[playerIndex].type] += 1;
+          results[hrIndex].winsByHandType[matchup.hands[hrIndex].type] += 1;
         } else {
-          results[playerIndex].defeats += 1;
+          results[hrIndex].defeats += 1;
         }
       }
 

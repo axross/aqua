@@ -1,29 +1,19 @@
-import "dart:collection" show IterableMixin;
+import "package:flutter/foundation.dart";
 import "package:meta/meta.dart";
 import "package:poker/poker.dart";
 
-@immutable
-class CommunityCards with IterableMixin<Card> {
-  CommunityCards(Iterable<Card> cards)
+class CommunityCardsDraft extends ChangeNotifier {
+  CommunityCardsDraft(Iterable<Card> cards)
       : assert(cards != null),
         assert(cards.length <= 5),
         assert(cards.every((c) => c == null || c is Card)),
         cards = [null, null, null, null, null]
           ..setRange(0, cards.length, cards);
 
-  CommunityCards.empty() : cards = [null, null, null, null, null];
+  CommunityCardsDraft.empty() : cards = [null, null, null, null, null];
 
   @visibleForTesting
   final List<Card> cards;
-
-  int get length => cards.where((c) => c != null).length;
-
-  set length(int length) {
-    throw UnsupportedError(
-        "Community cards' length is always 5. You cannot change its length.");
-  }
-
-  Iterator<Card> get iterator => cards.where((c) => c != null).iterator;
 
   int get hashCode {
     int result = 17;
@@ -36,6 +26,8 @@ class CommunityCards with IterableMixin<Card> {
 
     return result;
   }
+
+  Set<Card> toSet() => cards.where((c) => c != null).toSet();
 
   operator [](index) {
     assert(index != null);
@@ -53,7 +45,7 @@ class CommunityCards with IterableMixin<Card> {
   }
 
   operator ==(Object other) =>
-      other is CommunityCards &&
+      other is CommunityCardsDraft &&
       other[0] == this[0] &&
       other[1] == this[1] &&
       other[2] == this[2] &&

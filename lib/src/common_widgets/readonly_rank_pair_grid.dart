@@ -3,16 +3,16 @@ import "package:aqua/src/constants/card.dart";
 import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
-class ReadonlyRangeGrid extends StatelessWidget {
-  ReadonlyRangeGrid({@required this.handRange, Key key})
-      : assert(handRange != null),
+class ReadonlyRankPairGrid extends StatelessWidget {
+  ReadonlyRankPairGrid({@required this.rankPairs, Key key})
+      : assert(rankPairs != null),
         super(key: key);
 
-  final Set<HandRangePart> handRange;
+  final Set<RankPair> rankPairs;
 
   @override
   Widget build(BuildContext context) {
-    final style = AquaTheme.of(context).handRangeGridStyle;
+    final style = AquaTheme.of(context).rankPairGridStyle;
 
     return LayoutBuilder(
       builder: (context, constraints) => DecoratedBox(
@@ -26,11 +26,15 @@ class ReadonlyRangeGrid extends StatelessWidget {
               children: List.generate(ranksInStrongnessOrder.length, (column) {
                 final high = row < column ? row : column;
                 final kicker = high == row ? column : row;
-                final handRangePart = HandRangePart(
-                  high: ranksInStrongnessOrder[high],
-                  kicker: ranksInStrongnessOrder[kicker],
-                  isSuited: row < column,
-                );
+                final rankPairsPart = row < column
+                    ? RankPair.suited(
+                        high: ranksInStrongnessOrder[high],
+                        kicker: ranksInStrongnessOrder[kicker],
+                      )
+                    : RankPair.ofsuit(
+                        high: ranksInStrongnessOrder[high],
+                        kicker: ranksInStrongnessOrder[kicker],
+                      );
                 BorderRadius borderRadius;
 
                 if (row == 0 && column == 0) {
@@ -59,7 +63,7 @@ class ReadonlyRangeGrid extends StatelessWidget {
                   child: Container(
                     height: constraints.maxWidth / 13,
                     decoration: BoxDecoration(
-                      color: handRange.contains(handRangePart)
+                      color: rankPairs.contains(rankPairsPart)
                           ? style.selectedForegroundColor
                           : null,
                       borderRadius: borderRadius,

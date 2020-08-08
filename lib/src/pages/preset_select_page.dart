@@ -1,9 +1,10 @@
 import "package:aqua/src/common_widgets/analytics.dart";
 import "package:aqua/src/common_widgets/aqua_scaffold.dart";
 import "package:aqua/src/common_widgets/aqua_theme.dart";
-import "package:aqua/src/common_widgets/readonly_range_grid.dart";
-import "package:aqua/src/constants/player_hand_setting_preset.dart";
+import "package:aqua/src/common_widgets/readonly_rank_pair_grid.dart";
+import "package:aqua/src/constants/hand_range_preset.dart";
 import "package:aqua/src/utilities/system_ui_overlay_style.dart";
+import "package:aqua/src/view_models/hand_range_draft.dart";
 import "package:flutter/widgets.dart";
 
 class PresetSelectPage extends StatefulWidget {
@@ -49,7 +50,8 @@ class _PresetSelectPageState extends State<PresetSelectPage> {
             (context, index) {
               if (index % 2 == 0) {
                 final preset = bundledPresets[index ~/ 2];
-                final playerHandSetting = preset.toPlayerHandSetting();
+                final handRangeDraft =
+                    HandRangeDraft.fromHandRange(preset.handRange);
 
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -58,8 +60,7 @@ class _PresetSelectPageState extends State<PresetSelectPage> {
                       name: "Tap a Preset Item",
                       parameters: {
                         "Preset Name": preset.name,
-                        "Player Hand Setting Type":
-                            playerHandSetting.type.toString(),
+                        "Hand Range Type": handRangeDraft.type.toString(),
                         "Bundled": true,
                       },
                     );
@@ -74,8 +75,8 @@ class _PresetSelectPageState extends State<PresetSelectPage> {
                         SizedBox(
                           width: 64,
                           height: 64,
-                          child: ReadonlyRangeGrid(
-                            handRange: playerHandSetting.handRange,
+                          child: ReadonlyRankPairGrid(
+                            rankPairs: preset.handRange.onlyRankPairs,
                           ),
                         ),
                         SizedBox(width: 16.0),
@@ -89,7 +90,7 @@ class _PresetSelectPageState extends State<PresetSelectPage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "${(playerHandSetting.cardPairCombinations.length / 1326 * 100).floor()}% combs",
+                              "${(preset.handRange.cardPairCombinations.length / 1326 * 100).floor()}% combs",
                               style: theme.textStyleSet.caption,
                             ),
                           ],
