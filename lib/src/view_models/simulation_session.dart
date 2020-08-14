@@ -1,4 +1,5 @@
-import "package:aqua/src/models/simulation_snapshot.dart";
+import "package:aqua/src/models/hand_range_simulation_result.dart";
+import "package:aqua/src/models/simulation.dart";
 import "package:aqua/src/services/simulation_isolate_service.dart";
 import "package:aqua/src/view_models/hand_range_draft_list.dart";
 import "package:flutter/foundation.dart";
@@ -18,7 +19,7 @@ class SimulationSession extends ChangeNotifier {
 
   final VoidCallback onStartSimulation;
 
-  final void Function(SimulationSnapshot snapshot) onFinishSimulation;
+  final void Function(Simulation snapshot) onFinishSimulation;
 
   HandRangeDraftList _handRanges;
 
@@ -41,23 +42,18 @@ class SimulationSession extends ChangeNotifier {
 
   HandRangeDraftList get handRanges => _handRanges;
 
-  List<PlayerSimulationOverallResult> _results = [];
+  List<HandRangeSimulationResult> _results = [];
 
-  get results => _results;
+  List<HandRangeSimulationResult> get results => _results;
 
   bool _hasPossibleMatchup = true;
 
   get hasPossibleMatchup => _hasPossibleMatchup;
 
-  double _progress = 0;
-
-  get progress => _progress;
-
   SimulationIsolateService _simulationIsolateService;
 
   void _clearResults() {
     _results = [];
-    _progress = 0;
   }
 
   void _enqueueSimulation() async {
@@ -77,7 +73,6 @@ class SimulationSession extends ChangeNotifier {
     }
 
     _results = [];
-    _progress = 0;
 
     notifyListeners();
 
@@ -91,21 +86,24 @@ class SimulationSession extends ChangeNotifier {
       onStartSimulation();
     }
 
+    final timesToSimulate = 100000;
+
     simulationIsolateService
       ..onProgress.listen(
-        (details) {
+        (simulation) {
+          // print(simulation);
+
           _hasPossibleMatchup = true;
-          _results = details.results;
-          _progress = details.timesSimulated / details.timesWillBeSimulated;
+          _results = simulation.results;
 
           notifyListeners();
 
-          if (details.timesSimulated == details.timesWillBeSimulated) {
+          if (simulation.timesSimulated == timesToSimulate) {
             simulationIsolateService.dispose();
             _simulationIsolateService = null;
 
             if (onFinishSimulation != null) {
-              onFinishSimulation(SimulationSnapshot(
+              onFinishSimulation(Simulation(
                 handRanges: handRanges,
                 communityCards: communityCards,
                 results: _results,
@@ -133,6 +131,7 @@ class SimulationSession extends ChangeNotifier {
       ..requestSimulation(
         handRanges: handRanges,
         communityCards: communityCards,
+        times: timesToSimulate,
       );
   }
 }

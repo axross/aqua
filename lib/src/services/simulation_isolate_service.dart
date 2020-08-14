@@ -1,25 +1,28 @@
-import "dart:async";
-import "dart:isolate";
+import "dart:async" show Completer, StreamController;
+import "dart:isolate" show Isolate, SendPort, ReceivePort;
+import "package:aqua/src/models/hand_range_simulation_result.dart";
+import "package:aqua/src/models/simulation.dart";
+import "package:meta/meta.dart";
 import "package:poker/poker.dart";
-import "package:flutter/widgets.dart";
 
 class SimulationIsolateService {
   Isolate _isolate;
 
   SendPort _toIsolate;
 
-  final _streamController = StreamController<SimulationProgress>.broadcast();
+  final _streamController = StreamController<Simulation>.broadcast();
 
-  Stream<SimulationProgress> get onProgress => _streamController.stream;
+  Stream<Simulation> get onProgress => _streamController.stream;
 
   void requestSimulation({
     @required Set<Card> communityCards,
     @required List<HandRange> handRanges,
+    @required int times,
   }) {
     assert(_isolate != null);
     assert(_toIsolate != null);
 
-    _toIsolate.send([communityCards, handRanges]);
+    _toIsolate.send([communityCards, handRanges, times]);
   }
 
   Future<void> initialize() async {
@@ -57,59 +60,17 @@ class SimulationIsolateService {
   }
 }
 
-class SimulationProgress {
-  SimulationProgress({
-    @required this.timesSimulated,
-    @required this.timesWillBeSimulated,
-    @required this.results,
-  })  : assert(timesSimulated != null),
-        assert(timesWillBeSimulated != null),
-        assert(results != null);
-
-  final int timesSimulated;
-  final int timesWillBeSimulated;
-  final List<PlayerSimulationOverallResult> results;
-}
-
-class PlayerSimulationOverallResult {
-  PlayerSimulationOverallResult();
-
-  int wins = 0;
-
-  int defeats = 0;
-
-  int ties = 0;
-
-  final tiesWith = {2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0};
-
-  int get games => wins + defeats + ties;
-
-  double get winRate => wins == 0 ? 0.0 : wins / games;
-
-  double get tieRate => ties == 0 ? 0.0 : ties / games;
-
-  double get equity =>
-      winRate +
-      tiesWith.entries.fold(
-          0.0,
-          (eq, entry) =>
-              eq +
-              ((entry.value == 0 ? 0.0 : (entry.value / entry.key)) / games));
-
-  Map<HandType, int> winsByHandType =
-      Map.fromEntries(HandType.values.map((type) => MapEntry(type, 0)));
-
-  @override
-  String toString() =>
-      "PlayerSimulationOverallResult{win: $wins, defeats: $defeats, ties: $ties}";
-}
-
 void _isolateFunction(SendPort toMain) {
   final receivePort = ReceivePort();
 
   receivePort.listen((data) async {
     final communityCards = data[0] as Set<Card>;
     final handRanges = data[1] as List<HandRange>;
+    final times = data[2] as int;
+
+    if (times % 1000 != 0) {
+      toMain.send(ArgumentError.value(times, "times must be multiple of 1000"));
+    }
 
     final simulator = Simulator(
       communityCards: communityCards,
@@ -117,11 +78,9 @@ void _isolateFunction(SendPort toMain) {
     );
 
     final results = List.generate(
-      handRanges.length,
-      (_) => PlayerSimulationOverallResult(),
-    );
+        handRanges.length, (index) => HandRangeSimulationResult());
 
-    for (int i = 1; i <= 100000; ++i) {
+    for (int i = 1; i <= times; ++i) {
       Matchup matchup;
 
       try {
@@ -132,23 +91,50 @@ void _isolateFunction(SendPort toMain) {
 
       for (int hrIndex = 0; hrIndex < handRanges.length; ++hrIndex) {
         if (matchup.bestHandIndexes.contains(hrIndex)) {
-          if (matchup.bestHandIndexes.length == 1) {
-            results[hrIndex].wins += 1;
-          } else {
-            results[hrIndex].ties += 1;
-            results[hrIndex].tiesWith[matchup.bestHandIndexes.length] += 1;
+          switch (matchup.bestHandIndexes.length) {
+            case 1:
+              results[hrIndex].timesAcquiredPot += 1;
+              break;
+            case 2:
+              results[hrIndex].timesSharedPotWithAnotherPlayer += 1;
+              break;
+            case 3:
+              results[hrIndex].timesSharedPotWithOtherTwoPlayers += 1;
+              break;
+            case 4:
+              results[hrIndex].timesSharedPotWithOtherThreePlayers += 1;
+              break;
+            case 5:
+              results[hrIndex].timesSharedPotWithOtherFourPlayers += 1;
+              break;
+            case 6:
+              results[hrIndex].timesSharedPotWithOtherFivePlayers += 1;
+              break;
+            case 7:
+              results[hrIndex].timesSharedPotWithOtherSixPlayers += 1;
+              break;
+            case 8:
+              results[hrIndex].timesSharedPotWithOtherSevenPlayers += 1;
+              break;
+            case 9:
+              results[hrIndex].timesSharedPotWithOtherEightPlayers += 1;
+              break;
+            case 10:
+              results[hrIndex].timesSharedPotWithOtherNinePlayers += 1;
+              break;
           }
 
-          results[hrIndex].winsByHandType[matchup.hands[hrIndex].type] += 1;
-        } else {
-          results[hrIndex].defeats += 1;
+          results[hrIndex].timesAcquiredOrSharedPotEachHandType[
+              matchup.hands[hrIndex].type] += 1;
         }
+
+        results[hrIndex].timesPlayed += 1;
       }
 
-      if (i % 100 == 0) {
-        toMain.send(SimulationProgress(
-          timesSimulated: i,
-          timesWillBeSimulated: 100000,
+      if (i % 250 == 0) {
+        toMain.send(Simulation(
+          communityCards: communityCards,
+          handRanges: handRanges,
           results: results,
         ));
       }

@@ -5,16 +5,26 @@ import "package:aqua/src/common_widgets/readonly_rank_pair_grid.dart";
 import "package:aqua/src/constants/hand_range_preset.dart";
 import "package:aqua/src/utilities/system_ui_overlay_style.dart";
 import "package:aqua/src/view_models/hand_range_draft.dart";
-import "package:flutter/widgets.dart";
+import "package:flutter/cupertino.dart";
 
-class PresetSelectPage extends StatefulWidget {
-  PresetSelectPage({Key key}) : super(key: key);
-
-  @override
-  State<PresetSelectPage> createState() => _PresetSelectPageState();
+class PresetSelectRoute extends CupertinoPageRoute {
+  PresetSelectRoute({
+    RouteSettings settings,
+  }) : super(
+          title: "PresetSelect",
+          builder: (context) => _PresetSelectPage(),
+          settings: settings,
+        );
 }
 
-class _PresetSelectPageState extends State<PresetSelectPage> {
+class _PresetSelectPage extends StatefulWidget {
+  _PresetSelectPage({Key key}) : super(key: key);
+
+  @override
+  State<_PresetSelectPage> createState() => _PresetSelectPageState();
+}
+
+class _PresetSelectPageState extends State<_PresetSelectPage> {
   @override
   void initState() {
     super.initState();

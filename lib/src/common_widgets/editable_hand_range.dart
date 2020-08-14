@@ -184,7 +184,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
       widget.onOpenPopup();
     }
 
-    final overlayState = Overlay.of(_key.currentContext);
+    final overlayState = Overlay.of(_key.currentContext, rootOverlay: true);
 
     _touchAbsorverEntry = OverlayEntry(
       builder: (context) => _buildTouchAbsorber(context),
@@ -239,7 +239,8 @@ class _EditableHandRangeState extends State<EditableHandRange>
         throw UnimplementedError();
     }
 
-    Overlay.of(_key.currentContext).insertAll(_typeSpecificOverlayEntries);
+    Overlay.of(_key.currentContext, rootOverlay: true)
+        .insertAll(_typeSpecificOverlayEntries);
   }
 
   Future<void> _closePopup() async {
