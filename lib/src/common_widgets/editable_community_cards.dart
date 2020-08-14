@@ -124,7 +124,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
       widget.onOpenPopup();
     }
 
-    final overlayState = Overlay.of(_key.currentContext);
+    final overlayState = Overlay.of(_key.currentContext, rootOverlay: true);
 
     _touchAbsorverEntry = OverlayEntry(
       builder: (context) => _buildTouchAbsorber(context),

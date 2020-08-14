@@ -1,6 +1,6 @@
 import "dart:async" show runZonedGuarded;
 import "package:amplitude_flutter/amplitude.dart";
-import "package:aqua/src/app.dart";
+import "package:aqua/app/app.dart";
 import "package:aqua/src/services/analytics_service.dart";
 import "package:aqua/src/services/authentication_manager.dart";
 import "package:aqua/src/services/error_reporter_service.dart";

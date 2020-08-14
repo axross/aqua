@@ -5,12 +5,14 @@ import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/utilities/system_ui_overlay_style.dart";
 import "package:flutter/cupertino.dart";
 
-class PreferencesPage extends StatefulWidget {
+class PreferencesTabPage extends StatefulWidget {
+  PreferencesTabPage({Key key}) : super(key: key);
+
   @override
-  State<PreferencesPage> createState() => _PreferencesPageState();
+  State<PreferencesTabPage> createState() => _PreferencesTabPageState();
 }
 
-class _PreferencesPageState extends State<PreferencesPage> {
+class _PreferencesTabPageState extends State<PreferencesTabPage> {
   @override
   void initState() {
     super.initState();
