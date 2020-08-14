@@ -74,7 +74,7 @@ class _SimulationPageState extends State<SimulationPage> {
       actions: [
         AquaButton(
           variant: AquaButtonVariant.secondary,
-          icon: AquaIcons.settings,
+          icon: AquaIcons.gear,
           onTap: () => Navigator.of(context).pushNamed("/preferences"),
         ),
       ],
