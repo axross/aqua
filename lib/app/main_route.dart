@@ -84,6 +84,7 @@ class _MainPageState extends State<_MainPage> {
               ),
             ),
             AquaTabBar(
+              activeIndex: _activeTabViewIndex,
               onChanged: (index) {
                 setState(() {
                   _activeTabViewIndex = index;
