@@ -6,12 +6,15 @@ class AquaTabBar extends StatefulWidget {
     Key key,
     @required this.items,
     this.initialSelectedIndex = 0,
+    this.activeIndex = 0,
     this.onChanged,
   }) : super(key: key);
 
   final List<AquaTabBarItem> items;
 
   final int initialSelectedIndex;
+
+  final int activeIndex;
 
   final void Function(int index) onChanged;
 
@@ -26,7 +29,16 @@ class _AquaTabBarState extends State<AquaTabBar> {
   void initState() {
     super.initState();
 
-    _selectedIndex = widget.initialSelectedIndex;
+    _selectedIndex = widget.activeIndex ?? widget.initialSelectedIndex;
+  }
+
+  @override
+  void didUpdateWidget(AquaTabBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.activeIndex != oldWidget.activeIndex) {
+      _selectedIndex = widget.activeIndex;
+    }
   }
 
   @override
@@ -69,15 +81,25 @@ class _AquaTabBarState extends State<AquaTabBar> {
                         padding: EdgeInsets.only(top: 8, bottom: 4),
                         child: Column(
                           children: [
-                            Icon(
-                              widget.items[index].icon,
-                              size: 24,
-                              color: _selectedIndex == index
-                                  ? AquaTheme.of(context).cursorColor
-                                  : AquaTheme.of(context)
-                                      .textStyleSet
-                                      .caption
-                                      .color,
+                            TweenAnimationBuilder(
+                              tween: ColorTween(
+                                begin: AquaTheme.of(context)
+                                    .textStyleSet
+                                    .caption
+                                    .color,
+                                end: _selectedIndex == index
+                                    ? AquaTheme.of(context).cursorColor
+                                    : AquaTheme.of(context)
+                                        .textStyleSet
+                                        .caption
+                                        .color,
+                              ),
+                              duration: Duration(milliseconds: 200),
+                              builder: (context, color, _) => Icon(
+                                widget.items[index].icon,
+                                size: 24,
+                                color: color,
+                              ),
                             ),
                             TweenAnimationBuilder(
                               tween: TextStyleTween(
