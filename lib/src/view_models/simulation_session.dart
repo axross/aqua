@@ -1,6 +1,7 @@
 import "package:aqua/src/models/hand_range_simulation_result.dart";
 import "package:aqua/src/models/simulation.dart";
 import "package:aqua/src/services/simulation_isolate_service.dart";
+import "package:aqua/src/view_models/hand_range_draft.dart";
 import "package:aqua/src/view_models/hand_range_draft_list.dart";
 import "package:flutter/foundation.dart";
 import "package:poker/poker.dart";
@@ -9,7 +10,9 @@ class SimulationSession extends ChangeNotifier {
   SimulationSession.initial({
     this.onStartSimulation,
     this.onFinishSimulation,
-  }) : _handRanges = HandRangeDraftList.empty() {
+  })  : _communityCards = {},
+        _handRanges = HandRangeDraftList.empty(),
+        _results = [] {
     _handRanges.addListener(() {
       _clearResults();
       _enqueueSimulation();
@@ -17,13 +20,39 @@ class SimulationSession extends ChangeNotifier {
     });
   }
 
-  final VoidCallback onStartSimulation;
+  SimulationSession.from(
+    Simulation simulation, {
+    this.onStartSimulation,
+    this.onFinishSimulation,
+  })  : _communityCards = simulation.communityCards,
+        _handRanges = HandRangeDraftList.of(simulation.handRanges
+            .map((hr) => HandRangeDraft.fromHandRange(hr))),
+        _results = simulation.results {
+    _handRanges.addListener(() {
+      _clearResults();
+      _enqueueSimulation();
+      notifyListeners();
+    });
 
-  final void Function(Simulation snapshot) onFinishSimulation;
+    for (final handRange in _handRanges) {
+      handRange.addListener(() {
+        _clearResults();
+        _enqueueSimulation();
+        notifyListeners();
+      });
+    }
+  }
+
+  final void Function(
+    Set<Card> communityCards,
+    List<HandRange> handRanges,
+  ) onStartSimulation;
+
+  final void Function(Simulation simulation) onFinishSimulation;
 
   HandRangeDraftList _handRanges;
 
-  Set<Card> _communityCards = {};
+  Set<Card> _communityCards;
 
   Set<Card> get communityCards => _communityCards;
 
@@ -42,7 +71,7 @@ class SimulationSession extends ChangeNotifier {
 
   HandRangeDraftList get handRanges => _handRanges;
 
-  List<HandRangeSimulationResult> _results = [];
+  List<HandRangeSimulationResult> _results;
 
   List<HandRangeSimulationResult> get results => _results;
 
@@ -83,7 +112,7 @@ class SimulationSession extends ChangeNotifier {
     await simulationIsolateService.initialize();
 
     if (onStartSimulation != null) {
-      onStartSimulation();
+      onStartSimulation(communityCards, handRanges);
     }
 
     final timesToSimulate = 100000;
@@ -91,8 +120,6 @@ class SimulationSession extends ChangeNotifier {
     simulationIsolateService
       ..onProgress.listen(
         (simulation) {
-          // print(simulation);
-
           _hasPossibleMatchup = true;
           _results = simulation.results;
 
@@ -103,11 +130,7 @@ class SimulationSession extends ChangeNotifier {
             _simulationIsolateService = null;
 
             if (onFinishSimulation != null) {
-              onFinishSimulation(Simulation(
-                handRanges: handRanges,
-                communityCards: communityCards,
-                results: _results,
-              ));
+              onFinishSimulation(simulation);
             }
           }
         },

@@ -56,6 +56,50 @@ class HandRangeSimulationResult {
                   HandType.highCard: 0,
                 };
 
+  factory HandRangeSimulationResult.fromJson(Map<String, dynamic> json) {
+    assert(json != null);
+
+    return HandRangeSimulationResult(
+      timesPlayed: json["timesPlayed"],
+      timesAcquiredPot: json["timesAcquiredPot"],
+      timesSharedPotWithAnotherPlayer: json["timesSharedPotWithAnotherPlayer"],
+      timesSharedPotWithOtherTwoPlayers:
+          json["timesSharedPotWithOtherTwoPlayers"],
+      timesSharedPotWithOtherThreePlayers:
+          json["timesSharedPotWithOtherThreePlayers"],
+      timesSharedPotWithOtherFourPlayers:
+          json["timesSharedPotWithOtherFourPlayers"],
+      timesSharedPotWithOtherFivePlayers:
+          json["timesSharedPotWithOtherFivePlayers"],
+      timesSharedPotWithOtherSixPlayers:
+          json["timesSharedPotWithOtherSixPlayers"],
+      timesSharedPotWithOtherSevenPlayers:
+          json["timesSharedPotWithOtherSevenPlayers"],
+      timesSharedPotWithOtherEightPlayers:
+          json["timesSharedPotWithOtherEightPlayers"],
+      timesSharedPotWithOtherNinePlayers:
+          json["timesSharedPotWithOtherNinePlayers"],
+      timesAcquiredOrSharedPotEachHandType: {
+        HandType.straightFlush: json["timesAcquiredOrSharedPotEachHandType"]
+            ["straightFlush"],
+        HandType.fourOfAKind: json["timesAcquiredOrSharedPotEachHandType"]
+            ["fourOfAKind"],
+        HandType.fullHouse: json["timesAcquiredOrSharedPotEachHandType"]
+            ["fullHouse"],
+        HandType.flush: json["timesAcquiredOrSharedPotEachHandType"]["flush"],
+        HandType.straight: json["timesAcquiredOrSharedPotEachHandType"]
+            ["straight"],
+        HandType.threeOfAKind: json["timesAcquiredOrSharedPotEachHandType"]
+            ["threeOfAKind"],
+        HandType.twoPairs: json["timesAcquiredOrSharedPotEachHandType"]
+            ["twoPairs"],
+        HandType.pair: json["timesAcquiredOrSharedPotEachHandType"]["pair"],
+        HandType.highCard: json["timesAcquiredOrSharedPotEachHandType"]
+            ["highCard"],
+      },
+    );
+  }
+
   int timesPlayed;
 
   int timesAcquiredPot;
