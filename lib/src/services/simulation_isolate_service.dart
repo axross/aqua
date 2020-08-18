@@ -67,6 +67,7 @@ void _isolateFunction(SendPort toMain) {
     final communityCards = data[0] as Set<Card>;
     final handRanges = data[1] as List<HandRange>;
     final times = data[2] as int;
+    final startedAt = DateTime.now();
 
     if (times % 1000 != 0) {
       toMain.send(ArgumentError.value(times, "times must be multiple of 1000"));
@@ -87,6 +88,8 @@ void _isolateFunction(SendPort toMain) {
         matchup = simulator.evaluate();
       } on Exception catch (error) {
         toMain.send(error);
+
+        continue;
       }
 
       for (int hrIndex = 0; hrIndex < handRanges.length; ++hrIndex) {
@@ -136,6 +139,8 @@ void _isolateFunction(SendPort toMain) {
           communityCards: communityCards,
           handRanges: handRanges,
           results: results,
+          startedAt: startedAt,
+          endedAt: DateTime.now(),
         ));
       }
     }

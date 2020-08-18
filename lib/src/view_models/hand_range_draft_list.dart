@@ -6,6 +6,9 @@ import "package:poker/poker.dart";
 class HandRangeDraftList extends ChangeNotifier with ListMixin<HandRangeDraft> {
   HandRangeDraftList.empty() : _handRangeDrafts = [];
 
+  HandRangeDraftList.of(Iterable<HandRangeDraft> handRangeDrafts)
+      : _handRangeDrafts = handRangeDrafts.toList();
+
   final List<HandRangeDraft> _handRangeDrafts;
 
   final Map<HandRangeDraft, Function> _listeners = {};

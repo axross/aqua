@@ -7,9 +7,13 @@ class Simulation {
     @required this.communityCards,
     @required this.handRanges,
     @required this.results,
+    @required this.startedAt,
+    @required this.endedAt,
   })  : assert(handRanges != null),
         assert(communityCards != null),
         assert(results != null),
+        assert(startedAt != null),
+        assert(endedAt != null),
         assert(handRanges.length == results.length);
 
   final Set<Card> communityCards;
@@ -20,8 +24,7 @@ class Simulation {
 
   int get timesSimulated => results.first.timesPlayed;
 
-  @override
-  String toString() {
-    return "Simulation{communityCards: $communityCards, handRanges: $handRanges, results: $results}";
-  }
+  final DateTime startedAt;
+
+  final DateTime endedAt;
 }
