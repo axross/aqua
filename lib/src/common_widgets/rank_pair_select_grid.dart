@@ -8,19 +8,18 @@ import "package:poker/poker.dart";
 
 class RankPairSelectGrid extends StatefulWidget {
   RankPairSelectGrid({
-    Key key,
-    @required this.onChanged,
+    Key? key,
+    required this.onChanged,
     this.onChangeStart,
     this.onChangeEnd,
     this.value = const {},
-  })  : assert(onChanged != null),
-        super(key: key);
+  }) : super(key: key);
 
   final void Function(Set<RankPair> rankPairs) onChanged;
 
-  final void Function(RankPair part, bool isToMark) onChangeStart;
+  final void Function(RankPair part, bool isToMark)? onChangeStart;
 
-  final void Function(RankPair part, bool wasToMark) onChangeEnd;
+  final void Function(RankPair part, bool wasToMark)? onChangeEnd;
 
   final Set<RankPair> value;
 
@@ -29,17 +28,17 @@ class RankPairSelectGrid extends StatefulWidget {
 }
 
 class _RankPairSelectGridState extends State<RankPairSelectGrid> {
-  Set<RankPair> selectedRange;
+  late Set<RankPair> selectedRange;
 
-  bool isToMark;
+  bool isToMark = false;
 
-  RankPair lastChangedPart;
+  RankPair? lastChangedPart;
 
   @override
   void initState() {
     super.initState();
 
-    selectedRange = widget.value == null ? {} : {...widget.value};
+    selectedRange = {...widget.value};
   }
 
   @override
@@ -87,7 +86,7 @@ class _RankPairSelectGridState extends State<RankPairSelectGrid> {
                   });
 
                   if (widget.onChangeStart != null) {
-                    widget.onChangeStart(rankPairsPart, true);
+                    widget.onChangeStart!(rankPairsPart, true);
                   }
 
                   widget.onChanged(selectedRange);
@@ -100,7 +99,7 @@ class _RankPairSelectGridState extends State<RankPairSelectGrid> {
                   });
 
                   if (widget.onChangeStart != null) {
-                    widget.onChangeStart(rankPairsPart, false);
+                    widget.onChangeStart!(rankPairsPart, false);
                   }
 
                   widget.onChanged(selectedRange);
@@ -153,7 +152,7 @@ class _RankPairSelectGridState extends State<RankPairSelectGrid> {
               },
               onPanEnd: (details) {
                 if (widget.onChangeEnd != null) {
-                  widget.onChangeEnd(lastChangedPart, isToMark);
+                  widget.onChangeEnd!(lastChangedPart!, isToMark);
                 }
               },
               behavior: HitTestBehavior.opaque,
@@ -198,11 +197,10 @@ class _RankPairSelectGridState extends State<RankPairSelectGrid> {
 
 class RankPairSelectGridItem extends StatelessWidget {
   RankPairSelectGridItem({
-    @required this.rankPairsPart,
+    required this.rankPairsPart,
     this.isSelected = false,
-    Key key,
-  })  : assert(rankPairsPart != null),
-        super(key: key);
+    Key? key,
+  }) : super(key: key);
 
   final RankPair rankPairsPart;
 

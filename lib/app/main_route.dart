@@ -9,7 +9,7 @@ import "package:flutter/cupertino.dart";
 
 class MainRoute extends CupertinoPageRoute {
   MainRoute({
-    RouteSettings settings,
+    RouteSettings? settings,
   }) : super(
           title: "Main",
           builder: (context) => _MainPage(),
@@ -23,11 +23,11 @@ class _MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<_MainPage> {
-  int _activeTabViewIndex;
+  late int _activeTabViewIndex;
 
-  /// A ValueNotifier that holds a SimulationSession inside.
-  /// Replace the held SimulationSession to start a new session
-  ValueNotifier<SimulationSession> _simulationSession;
+  /// A ValueNotifier that holds a CalculationSession inside.
+  /// Replace the held CalculationSession to start a new session
+  late ValueNotifier<CalculationSession> _calculationSession;
 
   @override
   void initState() {
@@ -35,39 +35,38 @@ class _MainPageState extends State<_MainPage> {
 
     _activeTabViewIndex = 0;
 
-    SimulationSession simulationSession;
-
-    simulationSession = SimulationSession.initial(
-      onStartSimulation: () {
+    late CalculationSession calculationSession;
+    calculationSession = CalculationSession.initial(
+      onStartCalculation: (_, __) {
         Analytics.of(context).logEvent(
           name: "Start Simulation",
           parameters: {
             "Number of Community Cards":
-                simulationSession.communityCards.toSet().length,
-            "Number of Hand Ranges": simulationSession.handRanges.length,
+                calculationSession.communityCards.toSet().length,
+            "Number of Hand Ranges": calculationSession.players.length,
           },
         );
       },
-      onFinishSimulation: (snapshot) {
+      onFinishCalculation: (snapshot) {
         Analytics.of(context).logEvent(
           name: "Finish Simulation",
           parameters: {
             "Number of Community Cards":
-                simulationSession.communityCards.toSet().length,
-            "Number of Hand Ranges": simulationSession.handRanges.length,
+                calculationSession.communityCards.toSet().length,
+            "Number of Hand Ranges": calculationSession.players.length,
           },
         );
       },
     );
 
-    _simulationSession = ValueNotifier(simulationSession);
+    _calculationSession = ValueNotifier(calculationSession);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: _simulationSession,
-      builder: (context, simulationSession, _) => Container(
+    return ValueListenableBuilder<CalculationSession>(
+      valueListenable: _calculationSession,
+      builder: (context, calculationSession, _) => Container(
         color: Color(0xffffffff),
         child: Column(
           children: [
@@ -76,7 +75,7 @@ class _MainPageState extends State<_MainPage> {
                 views: [
                   SimulationTabPage(
                     key: ValueKey(0),
-                    simulationSession: simulationSession,
+                    calculationSession: calculationSession,
                   ),
                   PreferencesTabPage(key: ValueKey(1)),
                 ],

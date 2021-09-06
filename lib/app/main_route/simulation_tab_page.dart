@@ -9,35 +9,33 @@ import "package:aqua/src/common_widgets/aqua_theme.dart";
 import "package:aqua/src/common_widgets/digits_text.dart";
 import "package:aqua/src/common_widgets/editable_community_cards.dart";
 import "package:aqua/src/common_widgets/editable_hand_range.dart";
-import "package:aqua/src/constants/hand.dart";
 import "package:aqua/src/models/hand_range_preset.dart";
-import "package:aqua/src/models/hand_range_simulation_result.dart";
 import "package:aqua/src/utilities/system_ui_overlay_style.dart";
 import "package:aqua/src/view_models/hand_range_draft.dart";
 import "package:aqua/src/view_models/simulation_session.dart";
 import "package:flutter/widgets.dart";
+import "package:poker/poker.dart";
 
 class SimulationTabPage extends StatefulWidget {
   SimulationTabPage({
-    Key key,
-    @required this.simulationSession,
-  })  : assert(simulationSession != null),
-        super(key: key);
+    required this.calculationSession,
+    Key? key,
+  }) : super(key: key);
 
-  final SimulationSession simulationSession;
+  final CalculationSession calculationSession;
 
   @override
   _SimulationTabPageState createState() => _SimulationTabPageState();
 }
 
 class _SimulationTabPageState extends State<SimulationTabPage> {
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
 
-  bool _needsBottomPaddingForOverscroll;
+  late bool _needsBottomPaddingForOverscroll;
 
-  int _openHandRangeIndex;
+  int? _openHandRangeIndex;
 
-  bool _isCommunityCardPopupOpen;
+  late bool _isCommunityCardPopupOpen;
 
   @override
   void initState() {
@@ -47,7 +45,7 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
     _needsBottomPaddingForOverscroll = false;
     _isCommunityCardPopupOpen = false;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       Analytics.of(context).logScreenChange(
         screenName: "Simulation Screen",
       );
@@ -75,19 +73,9 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
       title: "Calculation",
       slivers: [
         AnimatedBuilder(
-          animation: widget.simulationSession,
-          builder: (context, _) => widget.simulationSession.hasPossibleMatchup
-              ? SliverToBoxAdapter()
-              : SliverPadding(
-                  padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  sliver: SliverToBoxAdapter(
-                    child: Text(
-                      "No or too less possible combination(s).\nReview player hands to recalculate.",
-                      textAlign: TextAlign.left,
-                      style: theme.textStyleSet.errorCaption,
-                    ),
-                  ),
-                ),
+          animation: widget.calculationSession,
+          // builder: (context, _) => widget.calculationSession.hasPossibleMatchup
+          builder: (context, _) => SliverToBoxAdapter(),
         ),
         SliverPadding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -103,12 +91,12 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                     });
                   },
                   child: AnimatedBuilder(
-                    animation: widget.simulationSession,
+                    animation: widget.calculationSession,
                     builder: (context, _) => EditableCommunityCards(
                       initialCommunityCards:
-                          widget.simulationSession.communityCards,
+                          widget.calculationSession.communityCards,
                       unavailableCards:
-                          widget.simulationSession.handRanges.usedCards,
+                          widget.calculationSession.players.usedCards,
                       isPopupOpen: _isCommunityCardPopupOpen,
                       prepareForPopup: (overlayPosition) async {
                         final mediaQuery = MediaQuery.of(context);
@@ -160,7 +148,7 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                           name: "Tap Clear Community Cards Button",
                           parameters: {
                             "Number of Previous Community Cards": widget
-                                .simulationSession.communityCards
+                                .calculationSession.communityCards
                                 .toSet()
                                 .length,
                           },
@@ -176,7 +164,7 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                           name: "Close Community Card Editor Popup",
                         );
 
-                        widget.simulationSession.communityCards =
+                        widget.calculationSession.communityCards =
                             communityCards;
                       },
                       onRequestClose: () {
@@ -211,11 +199,11 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: AnimatedBuilder(
-                      animation: widget.simulationSession,
+                      animation: widget.calculationSession,
                       builder: (context, child) => AquaAppearAnimation(
                         isVisible:
-                            widget.simulationSession.handRanges.length < 10,
-                        child: child,
+                            widget.calculationSession.players.length < 10,
+                        child: child!,
                       ),
                       child: AquaButton(
                         variant: AquaButtonVariant.primary,
@@ -226,17 +214,16 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                             name: "Tap the Add Hand Range Button",
                             parameters: {
                               "Number of Previous Hand Ranges":
-                                  widget.simulationSession.handRanges.length,
+                                  widget.calculationSession.players.length,
                               "Number of New Hand Ranges":
-                                  widget.simulationSession.handRanges.length +
-                                      1,
+                                  widget.calculationSession.players.length + 1,
                             },
                           );
 
                           final nextIndex =
-                              widget.simulationSession.handRanges.length;
+                              widget.calculationSession.players.length;
 
-                          widget.simulationSession.handRanges
+                          widget.calculationSession.players
                               .add(HandRangeDraft.emptyCardPair());
 
                           setState(() {
@@ -252,39 +239,38 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
           ),
         ),
         AnimatedBuilder(
-          animation: widget.simulationSession,
-          builder: (context, _) =>
-              widget.simulationSession.handRanges.length < 2
+          animation: widget.calculationSession,
+          builder: (context, _) => widget.calculationSession.players.length < 2
+              ? SliverPadding(
+                  padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+                  sliver: SliverToBoxAdapter(
+                    child: Text(
+                      "Needs at least 2 players to calculate.",
+                      textAlign: TextAlign.left,
+                      style: theme.textStyleSet.caption,
+                    ),
+                  ),
+                )
+              : widget.calculationSession.players.hasIncomplete
                   ? SliverPadding(
                       padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
                       sliver: SliverToBoxAdapter(
                         child: Text(
-                          "Needs at least 2 players to calculate.",
+                          "Some player hand is incomplete. Fill or delete to calculate.",
                           textAlign: TextAlign.left,
                           style: theme.textStyleSet.caption,
                         ),
                       ),
                     )
-                  : widget.simulationSession.handRanges.hasIncomplete
-                      ? SliverPadding(
-                          padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
-                          sliver: SliverToBoxAdapter(
-                            child: Text(
-                              "Some player hand is incomplete. Fill or delete to calculate.",
-                              textAlign: TextAlign.left,
-                              style: theme.textStyleSet.caption,
-                            ),
-                          ),
-                        )
-                      : SliverToBoxAdapter(),
+                  : SliverToBoxAdapter(),
         ),
         AnimatedBuilder(
-          animation: widget.simulationSession,
+          animation: widget.calculationSession,
           builder: (context, _) => SliverToBoxAdapter(
             child: Column(
-              children: List.generate(
-                  widget.simulationSession.handRanges.length, (index) {
-                final handRange = widget.simulationSession.handRanges[index];
+              children: List.generate(widget.calculationSession.players.length,
+                  (index) {
+                final handRange = widget.calculationSession.players[index];
 
                 return _PlayerListItem(
                   indicator: GestureDetector(
@@ -296,7 +282,7 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                         parameters: {
                           "Hand Range Index": index,
                           "Number of Hand Ranges":
-                              widget.simulationSession.handRanges.length,
+                              widget.calculationSession.players.length,
                           "Hand Range Type": handRange.type.toString(),
                         },
                       );
@@ -309,14 +295,13 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                       initialInputType: handRange.type,
                       initialCardPair: handRange.firstCardPair,
                       initialRankPairs: handRange.rankPairs,
-                      unavailableCards: {
-                        ...widget.simulationSession.communityCards.toSet(),
-                        ...widget.simulationSession.handRanges.usedCards.where(
-                          (card) =>
-                              card != handRange.firstCardPair[0] &&
-                              card != handRange.firstCardPair[1],
-                        ),
-                      },
+                      unavailableCards: widget.calculationSession.communityCards
+                          .union(CardSet(
+                              widget.calculationSession.players.usedCards.where(
+                        (card) =>
+                            card != handRange.firstCardPair[0] &&
+                            card != handRange.firstCardPair[1],
+                      ))),
                       isPopupOpen: index == _openHandRangeIndex,
                       prepareForPopup: (overlayPosition) async {
                         final mediaQuery = MediaQuery.of(context);
@@ -401,14 +386,13 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                         await Future.delayed(Duration(milliseconds: 300));
 
                         final preset = (await Navigator.of(context)
-                            .push(PresetSelectRoute())) as HandRangePreset;
+                            .push(PresetSelectRoute())) as HandRangePreset?;
 
                         if (preset != null) {
                           final handRange =
                               HandRangeDraft.fromHandRange(preset.handRange);
 
-                          widget.simulationSession.handRanges[index] =
-                              handRange;
+                          widget.calculationSession.players[index] = handRange;
                         }
                       },
                       onTapDelete: () {
@@ -418,13 +402,13 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                           parameters: {
                             "Hand Range Index": index,
                             "Number of Previous Hand Ranges":
-                                widget.simulationSession.handRanges.length,
+                                widget.calculationSession.players.length,
                             "Number of New Hand Ranges":
-                                widget.simulationSession.handRanges.length - 1,
+                                widget.calculationSession.players.length - 1,
                           },
                         );
 
-                        widget.simulationSession.handRanges.removeAt(index);
+                        widget.calculationSession.players.removeAt(index);
 
                         setState(() {
                           _openHandRangeIndex = null;
@@ -441,11 +425,11 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                         });
                       },
                       onClosedPopup: (inputType, cardPair, rankPairs) {
-                        widget.simulationSession.handRanges[index]
-                            .firstCardPair = cardPair;
-                        widget.simulationSession.handRanges[index].rankPairs =
+                        widget.calculationSession.players[index].firstCardPair =
+                            cardPair;
+                        widget.calculationSession.players[index].rankPairs =
                             rankPairs;
-                        widget.simulationSession.handRanges[index].type =
+                        widget.calculationSession.players[index].type =
                             inputType;
 
                         setState(() {
@@ -454,9 +438,11 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
                       },
                     ),
                   ),
-                  result: widget.simulationSession.results.length > index
-                      ? widget.simulationSession.results[index]
-                      : null,
+                  result: widget.calculationSession.result,
+                  playerResult:
+                      widget.calculationSession.result.players.length > index
+                          ? widget.calculationSession.result.players[index]
+                          : null,
                 );
               }),
             ),
@@ -475,13 +461,15 @@ class _SimulationTabPageState extends State<SimulationTabPage> {
 
 class _PlayerListItem extends StatelessWidget {
   _PlayerListItem({
-    Key key,
     this.result,
-    @required this.indicator,
-  })  : assert(indicator != null),
-        super(key: key);
+    required this.playerResult,
+    required this.indicator,
+    Key? key,
+  }) : super(key: key);
 
-  final HandRangeSimulationResult result;
+  final EvaluationResult? result;
+
+  final EvaluationResultPlayer? playerResult;
 
   final Widget indicator;
 
@@ -502,50 +490,17 @@ class _PlayerListItem extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(left: 16),
-              child: result != null
+              child: result != null && playerResult != null
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AnimatedBuilder(
                           animation: preferences,
-                          builder: (context, child) =>
-                              preferences.prefersWinRate
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.baseline,
-                                      textBaseline: TextBaseline.alphabetic,
-                                      children: [
-                                        DigitsText(
-                                          result.winRate + result.tieRate,
-                                          suffix: "% win",
-                                        ),
-                                        DigitsText(
-                                          result.tieRate,
-                                          textStyle: theme.textStyleSet.caption,
-                                          useLargeWholeNumberPart: false,
-                                          fractionDigits: 0,
-                                          showAlmostEqualPrefix: true,
-                                          suffix: "% tie",
-                                        ),
-                                      ],
-                                    )
-                                  : DigitsText(
-                                      result.equity,
-                                      suffix: "% equity",
-                                    ),
-                        ),
-                        SizedBox(height: 8),
-                        SizedBox(
-                          height: 40,
-                          child: Text(
-                            result.timesAcquiredOrSharedPotEachHandType.values
-                                    .any((win) => win > 0)
-                                ? "wins pot by ${(result.timesAcquiredOrSharedPotEachHandType.entries.where((entry) => entry.value > 0).toList()..sort((a, b) => b.value - a.value)).take(3).map((entry) => handTypeStrings[entry.key]).join(", ")}"
-                                : "",
-                            style: theme.textStyleSet.caption,
-                            maxLines: 2,
+                          builder: (context, child) => DigitsText(
+                            result!.games > 0
+                                ? playerResult!.equity / result!.games
+                                : 0,
+                            suffix: "% equity",
                           ),
                         ),
                       ],
@@ -556,9 +511,7 @@ class _PlayerListItem extends StatelessWidget {
                         AnimatedBuilder(
                           animation: preferences,
                           builder: (context, child) => DigitsPlaceholderText(
-                            suffix: preferences.prefersWinRate
-                                ? "% win"
-                                : "% equity",
+                            suffix: "% equity",
                           ),
                         ),
                         SizedBox(height: 8),

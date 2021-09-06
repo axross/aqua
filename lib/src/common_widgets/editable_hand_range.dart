@@ -17,10 +17,10 @@ import "package:poker/poker.dart";
 
 class EditableHandRange extends StatefulWidget {
   EditableHandRange({
-    this.initialInputType,
+    required this.initialInputType,
     this.initialCardPair,
     this.initialRankPairs,
-    this.unavailableCards = const {},
+    this.unavailableCards = CardSet.empty,
     this.isPopupOpen = false,
     this.prepareForPopup,
     this.onTapCardPicker,
@@ -33,44 +33,44 @@ class EditableHandRange extends StatefulWidget {
     this.onRequestClose,
     this.onOpenPopup,
     this.onClosedPopup,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
-  final HandRangeDraftInputType initialInputType;
+  final HandRangeDraftInputType? initialInputType;
 
-  final CardPairDraft initialCardPair;
+  final CardPairDraft? initialCardPair;
 
-  final Set<RankPair> initialRankPairs;
+  final Set<RankPair>? initialRankPairs;
 
-  final Set<Card> unavailableCards;
+  final CardSet unavailableCards;
 
   final bool isPopupOpen;
 
-  final Future<void> Function(Rect overlayRect) prepareForPopup;
+  final Future<void> Function(Rect overlayRect)? prepareForPopup;
 
-  final void Function(Card card) onTapCardPicker;
+  final void Function(Card card)? onTapCardPicker;
 
-  final void Function(double value) onChangeStartRankPairGridSlider;
+  final void Function(double value)? onChangeStartRankPairGridSlider;
 
-  final void Function(double value) onChangeEndRankPairGridSlider;
+  final void Function(double value)? onChangeEndRankPairGridSlider;
 
-  final void Function(RankPair part, bool isToMark) onChangeStartRankPairGrid;
+  final void Function(RankPair part, bool isToMark)? onChangeStartRankPairGrid;
 
-  final void Function(RankPair part, bool wasToMark) onChangeEndRankPairGrid;
+  final void Function(RankPair part, bool wasToMark)? onChangeEndRankPairGrid;
 
-  final VoidCallback onTapPresets;
+  final VoidCallback? onTapPresets;
 
-  final VoidCallback onTapDelete;
+  final VoidCallback? onTapDelete;
 
-  final VoidCallback onRequestClose;
+  final VoidCallback? onRequestClose;
 
-  final VoidCallback onOpenPopup;
+  final VoidCallback? onOpenPopup;
 
   final void Function(
     HandRangeDraftInputType inputType,
     CardPairDraft cardPair,
     Set<RankPair> handRange,
-  ) onClosedPopup;
+  )? onClosedPopup;
 
   @override
   State<EditableHandRange> createState() => _EditableHandRangeState();
@@ -80,19 +80,19 @@ class _EditableHandRangeState extends State<EditableHandRange>
     with TickerProviderStateMixin {
   final _key = GlobalKey();
 
-  _EditableHandRangeStateBus _stateBus;
+  late _EditableHandRangeStateBus _stateBus;
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
-  AnimationController _popupElementsAnimationController;
+  late AnimationController _popupElementsAnimationController;
 
-  Animation _curvedAnimation;
+  late Animation<double> _curvedAnimation;
 
-  Animation _popupElementsCurvedAnimation;
+  late Animation<double> _popupElementsCurvedAnimation;
 
-  OverlayEntry _touchAbsorverEntry;
+  OverlayEntry? _touchAbsorverEntry;
 
-  OverlayEntry _curtainOverlayEntry;
+  OverlayEntry? _curtainOverlayEntry;
 
   List<OverlayEntry> _typeSpecificOverlayEntries = [];
 
@@ -126,7 +126,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
     );
 
     if (widget.isPopupOpen) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
         _openPopup();
       });
     }
@@ -137,7 +137,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
     super.didUpdateWidget(oldWidget);
 
     if (widget.isPopupOpen != oldWidget.isPopupOpen) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
         if (widget.isPopupOpen) {
           _openPopup();
         } else {
@@ -157,7 +157,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
     // TODO: refactor this if you have better idea
     // HACK: we need to wait for build triggered by hand range type change
     // because it's impossible to calculate the render box until it rebuilds
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) async {
       await _prepareOpenPopup();
 
       _addTypeSpecificOverlayEntries();
@@ -181,15 +181,15 @@ class _EditableHandRangeState extends State<EditableHandRange>
     if (_touchAbsorverEntry != null) return;
 
     if (widget.onOpenPopup != null) {
-      widget.onOpenPopup();
+      widget.onOpenPopup!();
     }
 
-    final overlayState = Overlay.of(_key.currentContext, rootOverlay: true);
+    final overlayState = Overlay.of(_key.currentContext!, rootOverlay: true)!;
 
     _touchAbsorverEntry = OverlayEntry(
       builder: (context) => _buildTouchAbsorber(context),
     );
-    overlayState.insert(_touchAbsorverEntry);
+    overlayState.insert(_touchAbsorverEntry!);
 
     await _prepareOpenPopup();
 
@@ -200,10 +200,10 @@ class _EditableHandRangeState extends State<EditableHandRange>
     _curtainOverlayEntry = OverlayEntry(
       builder: (context) => _buildCurtain(
         context,
-        onRequestClose: widget.onRequestClose,
+        onRequestClose: widget.onRequestClose!,
       ),
     );
-    overlayState.insert(_curtainOverlayEntry);
+    overlayState.insert(_curtainOverlayEntry!);
 
     _addTypeSpecificOverlayEntries();
 
@@ -239,14 +239,14 @@ class _EditableHandRangeState extends State<EditableHandRange>
         throw UnimplementedError();
     }
 
-    Overlay.of(_key.currentContext, rootOverlay: true)
+    Overlay.of(_key.currentContext!, rootOverlay: true)!
         .insertAll(_typeSpecificOverlayEntries);
   }
 
   Future<void> _closePopup() async {
     if (_touchAbsorverEntry == null) return;
 
-    _touchAbsorverEntry.remove();
+    _touchAbsorverEntry!.remove();
     _touchAbsorverEntry = null;
 
     await Future.wait([
@@ -254,13 +254,13 @@ class _EditableHandRangeState extends State<EditableHandRange>
       _popupElementsAnimationController.reverse(),
     ]);
 
-    _curtainOverlayEntry.remove();
+    _curtainOverlayEntry!.remove();
     _curtainOverlayEntry = null;
 
     _removeTypeSpecificOverlayEntries();
 
     if (widget.onClosedPopup != null) {
-      widget.onClosedPopup(
+      widget.onClosedPopup!(
         _stateBus.inputType,
         _stateBus.cardPair,
         _stateBus.rankPairs,
@@ -296,7 +296,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
           throw UnimplementedError();
       }
 
-      await widget.prepareForPopup(
+      await widget.prepareForPopup!(
         indicatorRect
             .expandToInclude(controlRect)
             .expandToInclude(_getActionsRect()),
@@ -305,7 +305,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
   }
 
   Rect _getHoleCardSelectorRect() {
-    final RenderBox childRenderBox = _key.currentContext.findRenderObject();
+    final childRenderBox = _key.currentContext!.findRenderObject() as RenderBox;
     final holeCardSelectorSize = childRenderBox.size +
         Offset(
           _holeCardSelectorPadding.horizontal,
@@ -322,7 +322,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
   }
 
   Rect _getRankPairIndicatorGridRect() {
-    final RenderBox childRenderBox = _key.currentContext.findRenderObject();
+    final childRenderBox = _key.currentContext!.findRenderObject() as RenderBox;
     final rankPairIndicatorGridSize = childRenderBox.size +
         Offset(
           _rankPairIndicatorGridPadding.horizontal,
@@ -401,7 +401,8 @@ class _EditableHandRangeState extends State<EditableHandRange>
     );
   }
 
-  _buildCurtain(BuildContext context, {@required Function onRequestClose}) {
+  _buildCurtain(BuildContext context,
+      {required void Function() onRequestClose}) {
     return Positioned.fill(
       child: AnimatedBuilder(
         animation: _curvedAnimation,
@@ -423,7 +424,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
               begin: BoxDecoration(color: Color(0x00000000)),
               end: BoxDecoration(color: Color(0x1f000000)),
             ).animate(_curvedAnimation),
-            child: child,
+            child: child!,
           ),
         ),
         child: GestureDetector(
@@ -471,7 +472,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
                               await _closePopup();
 
                               if (widget.onTapDelete != null) {
-                                widget.onTapDelete();
+                                widget.onTapDelete!();
                               }
                             },
                     ),
@@ -502,11 +503,11 @@ class _EditableHandRangeState extends State<EditableHandRange>
                               _stateBus.isButtonsDisabled = true;
 
                               if (widget.onRequestClose != null) {
-                                widget.onRequestClose();
+                                widget.onRequestClose!();
                               }
 
                               if (widget.onTapPresets != null) {
-                                widget.onTapPresets();
+                                widget.onTapPresets!();
                               }
                             },
                     ),
@@ -605,7 +606,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
                           ),
                         ).animate(_popupElementsCurvedAnimation),
                         child: _stateBus.cardPair[0] != null
-                            ? PlayingCard(card: _stateBus.cardPair[0])
+                            ? PlayingCard(card: _stateBus.cardPair[0]!)
                             : PlayingCardBack(),
                       ),
                     ),
@@ -645,7 +646,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
                           ),
                         ).animate(_popupElementsCurvedAnimation),
                         child: _stateBus.cardPair[1] != null
-                            ? PlayingCard(card: _stateBus.cardPair[1])
+                            ? PlayingCard(card: _stateBus.cardPair[1]!)
                             : PlayingCardBack(),
                       ),
                     ),
@@ -688,7 +689,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
               AnimatedBuilder(
                 animation: _popupElementsCurvedAnimation,
                 builder: (context, child) => Text(
-                  "${(_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}% combs",
+                  "${(_stateBus.rankPairs.fold<int>(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}% combs",
                   style: theme.textStyleSet.caption.copyWith(
                     color: ColorTween(
                       begin: theme.textStyleSet.caption.color,
@@ -720,14 +721,16 @@ class _EditableHandRangeState extends State<EditableHandRange>
             child: AnimatedBuilder(
               animation: _stateBus,
               builder: (context, _) => CardPicker(
-                unavailableCards: {
-                  ...widget.unavailableCards,
-                  _stateBus.cardPair[0],
-                  _stateBus.cardPair[1],
-                },
+                unavailableCards: widget.unavailableCards
+                    .union(_stateBus.cardPair[0] != null
+                        ? CardSet.single(_stateBus.cardPair[0]!)
+                        : CardSet.empty)
+                    .union(_stateBus.cardPair[1] != null
+                        ? CardSet.single(_stateBus.cardPair[1]!)
+                        : CardSet.empty),
                 onCardTap: (card) {
                   if (widget.onTapCardPicker != null) {
-                    widget.onTapCardPicker(card);
+                    widget.onTapCardPicker!(card);
                   }
 
                   _stateBus.setCardAtCurrentIndex(card);
@@ -774,7 +777,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
                     value: _stateBus.rankPairs.length /
                         rankPairsInStrongnessOrder.length,
                     label:
-                        "${_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length)} (${(_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}%) combs",
+                        "${_stateBus.rankPairs.fold<int>(0, (len, part) => len + part.toCardPairs().length)} (${(_stateBus.rankPairs.fold<int>(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}%) combs",
                     onChanged: (value) {
                       final rankPairLengthTaken =
                           (value * rankPairsInStrongnessOrder.length).round();
@@ -808,13 +811,13 @@ class _EditableHandRangeState extends State<EditableHandRange>
               children: [
                 Expanded(
                   child: _stateBus.cardPair[0] != null
-                      ? PlayingCard(card: _stateBus.cardPair[0])
+                      ? PlayingCard(card: _stateBus.cardPair[0]!)
                       : PlayingCardBack(),
                 ),
                 SizedBox(width: 8),
                 Expanded(
                   child: _stateBus.cardPair[1] != null
-                      ? PlayingCard(card: _stateBus.cardPair[1])
+                      ? PlayingCard(card: _stateBus.cardPair[1]!)
                       : PlayingCardBack(),
                 ),
               ],
@@ -826,7 +829,7 @@ class _EditableHandRangeState extends State<EditableHandRange>
                 ReadonlyRankPairGrid(rankPairs: _stateBus.rankPairs),
                 SizedBox(height: 8),
                 Text(
-                  "${(_stateBus.rankPairs.fold(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}% combs",
+                  "${(_stateBus.rankPairs.fold<int>(0, (len, part) => len + part.toCardPairs().length) / 1326 * 100).floor()}% combs",
                   style: AquaTheme.of(context).textStyleSet.caption,
                 ),
               ],
@@ -844,13 +847,10 @@ class _EditableHandRangeState extends State<EditableHandRange>
 
 class _EditableHandRangeStateBus extends ChangeNotifier {
   _EditableHandRangeStateBus({
-    @required HandRangeDraftInputType initialInputType,
-    @required CardPairDraft initialCardPair,
-    @required Set<RankPair> initialRankPairs,
-  })  : assert(initialInputType != null),
-        assert(initialCardPair != null),
-        assert(initialRankPairs != null),
-        _inputType = initialInputType,
+    required HandRangeDraftInputType initialInputType,
+    required CardPairDraft initialCardPair,
+    required Set<RankPair> initialRankPairs,
+  })  : _inputType = initialInputType,
         _cardPair = initialCardPair,
         _rankPairs = initialRankPairs,
         _selectedCardIndex = 0,

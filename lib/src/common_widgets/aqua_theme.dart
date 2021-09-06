@@ -6,11 +6,10 @@ import "package:poker/poker.dart";
 
 class AquaTheme extends InheritedWidget {
   AquaTheme({
-    @required this.data,
-    Widget child,
-    Key key,
-  })  : assert(data != null),
-        super(
+    required this.data,
+    required Widget child,
+    Key? key,
+  }) : super(
           key: key,
           child: DefaultAquaButtonStyle(
             style: data.buttonStyleSet.normal,
@@ -27,21 +26,21 @@ class AquaTheme extends InheritedWidget {
   bool updateShouldNotify(AquaTheme old) => data != old.data;
 
   static AquaThemeData of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AquaTheme>().data;
+      context.dependOnInheritedWidgetOfExactType<AquaTheme>()!.data;
 }
 
 @immutable
 class AquaThemeData {
   const AquaThemeData({
-    @required this.textStyleSet,
-    @required this.buttonStyleSet,
-    @required this.scaffoldStyle,
-    @required this.playingCardStyle,
-    @required this.rankPairGridStyle,
-    @required this.digitTextStyle,
-    @required this.sliderStyle,
-    @required this.cursorColor,
-    @required this.elevationBoxShadows,
+    required this.textStyleSet,
+    required this.buttonStyleSet,
+    required this.scaffoldStyle,
+    required this.playingCardStyle,
+    required this.rankPairGridStyle,
+    required this.digitTextStyle,
+    required this.sliderStyle,
+    required this.cursorColor,
+    required this.elevationBoxShadows,
   });
 
   final AquaTextStyleSet textStyleSet;
@@ -66,14 +65,11 @@ class AquaThemeData {
 @immutable
 class AquaTextStyleSet {
   const AquaTextStyleSet({
-    @required this.headline,
-    @required this.body,
-    @required this.caption,
-    @required this.errorCaption,
-  })  : assert(headline != null),
-        assert(body != null),
-        assert(caption != null),
-        assert(errorCaption != null);
+    required this.headline,
+    required this.body,
+    required this.caption,
+    required this.errorCaption,
+  });
 
   final TextStyle headline;
 
@@ -86,12 +82,10 @@ class AquaTextStyleSet {
 
 class AquaPlayingCardStyle {
   const AquaPlayingCardStyle({
-    @required this.textStyle,
-    @required this.backgroundColor,
-    @required this.suitColors,
-  })  : assert(textStyle != null),
-        assert(backgroundColor != null),
-        assert(suitColors != null);
+    required this.textStyle,
+    required this.backgroundColor,
+    required this.suitColors,
+  });
 
   final TextStyle textStyle;
 
@@ -102,14 +96,11 @@ class AquaPlayingCardStyle {
 
 class AquaRankPairGridStyle {
   AquaRankPairGridStyle({
-    @required this.backgroundColor,
-    @required this.textStyle,
-    @required this.selectedBackgroundColor,
-    @required this.selectedForegroundColor,
-  })  : assert(backgroundColor != null),
-        assert(textStyle != null),
-        assert(selectedBackgroundColor != null),
-        assert(selectedForegroundColor != null);
+    required this.backgroundColor,
+    required this.textStyle,
+    required this.selectedBackgroundColor,
+    required this.selectedForegroundColor,
+  });
 
   final Color backgroundColor;
 
@@ -122,16 +113,12 @@ class AquaRankPairGridStyle {
 
 class AquaSliderStyle {
   AquaSliderStyle({
-    @required this.thumbColor,
-    @required this.activeTrackColor,
-    @required this.inactiveTrackColor,
-    @required this.valueIndicatorColor,
-    @required this.valueIndicatorTextStyle,
-  })  : assert(thumbColor != null),
-        assert(activeTrackColor != null),
-        assert(inactiveTrackColor != null),
-        assert(valueIndicatorColor != null),
-        assert(valueIndicatorTextStyle != null);
+    required this.thumbColor,
+    required this.activeTrackColor,
+    required this.inactiveTrackColor,
+    required this.valueIndicatorColor,
+    required this.valueIndicatorTextStyle,
+  });
 
   final Color thumbColor;
 

@@ -11,8 +11,8 @@ import "package:poker/poker.dart";
 
 class EditableCommunityCards extends StatefulWidget {
   EditableCommunityCards({
-    this.initialCommunityCards,
-    this.unavailableCards = const {},
+    required this.initialCommunityCards,
+    this.unavailableCards = CardSet.empty,
     this.isPopupOpen = false,
     this.prepareForPopup,
     this.onTapChangeTarget,
@@ -20,30 +20,28 @@ class EditableCommunityCards extends StatefulWidget {
     this.onTapClear,
     this.onOpenPopup,
     this.onClosedPopup,
-    this.onRequestClose,
-    Key key,
-  })  : assert(initialCommunityCards != null),
-        assert(initialCommunityCards.length <= 5),
-        assert(unavailableCards != null),
+    required this.onRequestClose,
+    Key? key,
+  })  : assert(initialCommunityCards.length <= 5),
         super(key: key);
 
-  final Set<Card> initialCommunityCards;
+  final CardSet initialCommunityCards;
 
-  final Set<Card> unavailableCards;
+  final CardSet unavailableCards;
 
   final bool isPopupOpen;
 
-  final Future<void> Function(Rect overlayRect) prepareForPopup;
+  final Future<void> Function(Rect overlayRect)? prepareForPopup;
 
-  final void Function(int index) onTapChangeTarget;
+  final void Function(int index)? onTapChangeTarget;
 
-  final void Function(Card card) onTapCardPicker;
+  final void Function(Card card)? onTapCardPicker;
 
-  final VoidCallback onTapClear;
+  final VoidCallback? onTapClear;
 
-  final VoidCallback onOpenPopup;
+  final VoidCallback? onOpenPopup;
 
-  final Function(Set<Card> communityCards) onClosedPopup;
+  final Function(CardSet communityCards)? onClosedPopup;
 
   final VoidCallback onRequestClose;
 
@@ -55,17 +53,17 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     with TickerProviderStateMixin {
   final _key = GlobalKey();
 
-  _EditableCommunityCardsStateBus _stateBus;
+  late _EditableCommunityCardsStateBus _stateBus;
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
-  AnimationController _popupElementsAnimationController;
+  late AnimationController _popupElementsAnimationController;
 
-  Animation _curvedAnimation;
+  late Animation<double> _curvedAnimation;
 
-  Animation _popupElementsCurvedAnimation;
+  late Animation<double> _popupElementsCurvedAnimation;
 
-  OverlayEntry _touchAbsorverEntry;
+  OverlayEntry? _touchAbsorverEntry;
 
   List<OverlayEntry> _overlayEntries = [];
 
@@ -74,7 +72,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     super.initState();
 
     _stateBus = _EditableCommunityCardsStateBus(
-      initialCommunityCards: widget.initialCommunityCards ?? {},
+      initialCommunityCards: widget.initialCommunityCards,
     );
 
     _animationController = AnimationController(
@@ -96,7 +94,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     );
 
     if (widget.isPopupOpen) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
         _openPopup();
       });
     }
@@ -107,7 +105,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     super.didUpdateWidget(oldWidget);
 
     if (widget.isPopupOpen != oldWidget.isPopupOpen) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
         if (widget.isPopupOpen) {
           _openPopup();
         } else {
@@ -121,15 +119,16 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     if (_touchAbsorverEntry != null) return;
 
     if (widget.onOpenPopup != null) {
-      widget.onOpenPopup();
+      widget.onOpenPopup!();
     }
 
-    final overlayState = Overlay.of(_key.currentContext, rootOverlay: true);
+    final overlayState = Overlay.of(_key.currentContext!, rootOverlay: true)!;
 
-    _touchAbsorverEntry = OverlayEntry(
+    final touchAbsorverEntry = OverlayEntry(
       builder: (context) => _buildTouchAbsorber(context),
     );
-    overlayState.insert(_touchAbsorverEntry);
+    _touchAbsorverEntry = touchAbsorverEntry;
+    overlayState.insert(touchAbsorverEntry);
 
     await _prepareOpenPopup();
 
@@ -162,7 +161,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
   Future<void> _closePopup() async {
     if (_touchAbsorverEntry == null) return;
 
-    _touchAbsorverEntry.remove();
+    _touchAbsorverEntry!.remove();
     _touchAbsorverEntry = null;
 
     await Future.wait([
@@ -177,7 +176,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     _overlayEntries = [];
 
     if (widget.onClosedPopup != null) {
-      widget.onClosedPopup(_stateBus.toSet());
+      widget.onClosedPopup!(_stateBus.toCardSet());
     }
   }
 
@@ -185,7 +184,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
     if (widget.prepareForPopup != null) {
       // calculate picker global offset before scroll/reposition
       // this global offset will change after prepareForPopup()
-      await widget.prepareForPopup(
+      await widget.prepareForPopup!(
         _getTargetCardSelectorRect()
             .expandToInclude(_getCardPickerRect())
             .expandToInclude(_getActionsRect()),
@@ -194,7 +193,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
   }
 
   Rect _getTargetCardSelectorRect() {
-    final RenderBox childRenderBox = _key.currentContext.findRenderObject();
+    final childRenderBox = _key.currentContext!.findRenderObject() as RenderBox;
     final holeCardSelectorSize = childRenderBox.size +
         Offset(
           _targetCardSelectorPadding.horizontal,
@@ -269,7 +268,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                 begin: BoxDecoration(color: Color(0x00000000)),
                 end: BoxDecoration(color: Color(0x1f000000)),
               ).animate(_curvedAnimation),
-              child: child,
+              child: child!,
             ),
           ),
           child: GestureDetector(
@@ -305,7 +304,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                       icon: AquaIcons.backspace,
                       onTap: () {
                         if (widget.onTapClear != null) {
-                          widget.onTapClear();
+                          widget.onTapClear!();
                         }
 
                         _stateBus.clearCards();
@@ -350,7 +349,7 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
                   child: GestureDetector(
                     onTap: () {
                       if (widget.onTapChangeTarget != null) {
-                        widget.onTapChangeTarget(index);
+                        widget.onTapChangeTarget!(index);
                       }
 
                       _stateBus.replacementTargetIndex = index;
@@ -402,13 +401,11 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
               child: AnimatedBuilder(
                 animation: _stateBus,
                 builder: (context, _) => CardPicker(
-                  unavailableCards: {
-                    ...widget.unavailableCards,
-                    ..._stateBus.toSet(),
-                  },
+                  unavailableCards:
+                      widget.unavailableCards.union(_stateBus.toCardSet()),
                   onCardTap: (card) {
                     if (widget.onTapCardPicker != null) {
-                      widget.onTapCardPicker(card);
+                      widget.onTapCardPicker!(card);
                     }
 
                     _stateBus.setCard(card);
@@ -471,16 +468,13 @@ class _EditableCommunityCardsState extends State<EditableCommunityCards>
 }
 
 class _EditableCommunityCardsStateBus extends ChangeNotifier {
-  _EditableCommunityCardsStateBus({
-    @required Set<Card> initialCommunityCards,
-  })  : assert(initialCommunityCards != null),
-        assert(initialCommunityCards.length <= 5),
-        assert(initialCommunityCards.every((c) => c == null || c is Card)),
+  _EditableCommunityCardsStateBus({required CardSet initialCommunityCards})
+      : assert(initialCommunityCards.length <= 5),
         _cards = [null, null, null, null, null]
           ..setRange(0, initialCommunityCards.length, initialCommunityCards),
         _replacementTargetIndex = 0;
 
-  List<Card> _cards;
+  List<Card?> _cards;
 
   int _replacementTargetIndex;
 
@@ -506,7 +500,8 @@ class _EditableCommunityCardsStateBus extends ChangeNotifier {
     notifyListeners();
   }
 
-  Set<Card> toSet() => _cards.where((c) => c != null).toSet();
+  // CardSet toCardSet() => CardSet(_cards.where((c) => c != null))
+  CardSet toCardSet() => CardSet(_cards.whereType<Card>());
 
   operator [](index) {
     assert(index != null);

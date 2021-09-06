@@ -2,15 +2,22 @@ import "package:aqua/src/view_models/card_pair_draft.dart";
 import "package:flutter/foundation.dart";
 import "package:poker/poker.dart";
 
+extension Open on HandRange {
+  Set<CardPair> get onlyCardPairs => components.whereType<CardPair>().toSet();
+
+  bool get hasCardPair => onlyCardPairs.length >= 1;
+
+  Set<RankPair> get onlyRankPairs => components.whereType<RankPair>().toSet();
+
+  bool get hasRankPair => onlyRankPairs.length >= 1;
+}
+
 class HandRangeDraft extends ChangeNotifier {
   HandRangeDraft({
-    @required HandRangeDraftInputType type,
-    @required List<CardPairDraft> cardPairs,
-    @required Set<RankPair> rankPairs,
-  })  : assert(type != null),
-        assert(cardPairs != null),
-        assert(rankPairs != null),
-        _type = type,
+    required HandRangeDraftInputType type,
+    required List<CardPairDraft> cardPairs,
+    required Set<RankPair> rankPairs,
+  })  : _type = type,
         _cardPairs = cardPairs,
         _rankPairs = rankPairs;
 
@@ -32,7 +39,7 @@ class HandRangeDraft extends ChangeNotifier {
             : HandRangeDraftInputType.rankPairs,
         _cardPairs = handRange.onlyCardPairs.length >= 1
             ? handRange.onlyCardPairs
-                .map((cp) => CardPairDraft(cp[0], cp[1]))
+                .map((cp) => CardPairDraft(cp.first, cp.last))
                 .toList()
             : [CardPairDraft.empty()],
         _rankPairs = handRange.onlyRankPairs;

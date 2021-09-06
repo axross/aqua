@@ -11,15 +11,15 @@ class HandRangeDraftList extends ChangeNotifier with ListMixin<HandRangeDraft> {
 
   final List<HandRangeDraft> _handRangeDrafts;
 
-  final Map<HandRangeDraft, Function> _listeners = {};
+  final Map<HandRangeDraft, void Function()> _listeners = {};
 
   int get length => _handRangeDrafts.length;
 
   bool get hasIncomplete =>
       _handRangeDrafts.any((handRange) => handRange.isEmpty);
 
-  Set<Card> get usedCards {
-    final usedCards = <Card>{};
+  CardSet get usedCards {
+    final usedCards = CardSet.empty;
 
     for (final handRangeDraft in _handRangeDrafts) {
       if (handRangeDraft.type != HandRangeDraftInputType.cardPair) {
@@ -27,11 +27,11 @@ class HandRangeDraftList extends ChangeNotifier with ListMixin<HandRangeDraft> {
       }
 
       if (handRangeDraft.firstCardPair[0] != null) {
-        usedCards.add(handRangeDraft.firstCardPair[0]);
+        usedCards.union(CardSet.single(handRangeDraft.firstCardPair[0]!));
       }
 
       if (handRangeDraft.firstCardPair[1] != null) {
-        usedCards.add(handRangeDraft.firstCardPair[1]);
+        usedCards.union(CardSet.single(handRangeDraft.firstCardPair[1]!));
       }
     }
 
@@ -41,7 +41,7 @@ class HandRangeDraftList extends ChangeNotifier with ListMixin<HandRangeDraft> {
   set length(value) {
     if (value <= length) {
       for (final handRangeDraft in _handRangeDrafts.getRange(value, length)) {
-        handRangeDraft.removeListener(_listeners[handRangeDraft]);
+        handRangeDraft.removeListener(_listeners[handRangeDraft]!);
       }
 
       _handRangeDrafts.length = value;
@@ -66,9 +66,7 @@ class HandRangeDraftList extends ChangeNotifier with ListMixin<HandRangeDraft> {
 
     final previous = _handRangeDrafts[index];
 
-    if (previous != null) {
-      previous.removeListener(_listeners[previous]);
-    }
+    previous.removeListener(_listeners[previous]!);
 
     _handRangeDrafts[index] = handRangeDraft;
 
@@ -76,7 +74,7 @@ class HandRangeDraftList extends ChangeNotifier with ListMixin<HandRangeDraft> {
       notifyListeners();
     };
 
-    handRangeDraft.addListener(_listeners[handRangeDraft]);
+    handRangeDraft.addListener(_listeners[handRangeDraft]!);
 
     notifyListeners();
   }

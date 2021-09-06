@@ -10,13 +10,13 @@ class DigitsText extends StatelessWidget {
     this.suffix = "%",
     this.fractionDigits = 2,
     this.showAlmostEqualPrefix = false,
-  }) : assert(value != null);
+  });
 
   final double value;
 
-  final AquaDigitTextStyle style;
+  final AquaDigitTextStyle? style;
 
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   final bool useLargeWholeNumberPart;
 
@@ -102,7 +102,7 @@ class DigitsText extends StatelessWidget {
   }
 }
 
-int extractDecimalPartOf(double value, {@required int fractionDigits}) {
+int extractDecimalPartOf(double value, {required int fractionDigits}) {
   var onlyDecimalPart = value * 100 % 1;
   int asWholeNumber = 0;
 
@@ -125,9 +125,9 @@ class DigitsPlaceholderText extends StatelessWidget {
     this.fractionDigits = 2,
   });
 
-  final AquaDigitTextStyle style;
+  final AquaDigitTextStyle? style;
 
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   final bool useLargeWholeNumberPart;
 
@@ -197,18 +197,13 @@ class DigitsPlaceholderText extends StatelessWidget {
 
 class AquaDigitTextStyle {
   AquaDigitTextStyle({
-    @required this.color,
-    @required this.placeholderColor,
-    @required this.fontFamily,
-    @required this.fontWeight,
-    @required this.fontSizeFactor,
-    @required this.largeFontSizeFactor,
-  })  : assert(color != null),
-        assert(placeholderColor != null),
-        assert(fontFamily != null),
-        assert(fontWeight != null),
-        assert(fontSizeFactor != null),
-        assert(largeFontSizeFactor != null);
+    required this.color,
+    required this.placeholderColor,
+    required this.fontFamily,
+    required this.fontWeight,
+    required this.fontSizeFactor,
+    required this.largeFontSizeFactor,
+  });
 
   final Color color;
 

@@ -6,9 +6,9 @@ class CardPairDraft extends ChangeNotifier {
 
   CardPairDraft.empty();
 
-  Card _a;
+  Card? _a;
 
-  Card _b;
+  Card? _b;
 
   bool get isComplete => _a != null && _b != null;
 
@@ -25,20 +25,20 @@ class CardPairDraft extends ChangeNotifier {
   CardPair toCardPair() {
     assert(isComplete);
 
-    return CardPair(_a, _b);
+    return CardPair(_a!, _b!);
   }
 
   /// Returns a string representation such like `"AsKh"`.
   @override
-  String toString() => "${_a}${_b}";
+  String toString() => "$_a$_b";
 
-  Card operator [](int index) {
+  Card? operator [](int index) {
     assert(index == 0 || index == 1, "index should 0 or 1.");
 
     return index == 0 ? _a : _b;
   }
 
-  operator []=(int index, Card card) {
+  operator []=(int index, Card? card) {
     assert(index == 0 || index == 1, "index should 0 or 1.");
 
     if (index == 0) {

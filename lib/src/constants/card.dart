@@ -12,7 +12,7 @@ const ranksInStrongnessOrder = [
   Rank.six,
   Rank.five,
   Rank.four,
-  Rank.three,
+  Rank.trey,
   Rank.deuce,
 ];
 
@@ -28,6 +28,6 @@ const rankChars = {
   Rank.six: "6",
   Rank.five: "5",
   Rank.four: "4",
-  Rank.three: "3",
+  Rank.trey: "3",
   Rank.deuce: "2",
 };

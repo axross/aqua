@@ -1,158 +1,132 @@
-import "package:aqua/src/models/hand_range_simulation_result.dart";
-import "package:aqua/src/models/simulation.dart";
-import "package:aqua/src/services/simulation_isolate_service.dart";
-import "package:aqua/src/view_models/hand_range_draft.dart";
+import "package:aqua/app/services/flutter_isolate_evaluation_service.dart";
+import "package:aqua/src/models/calculation.dart";
+import "package:aqua/src/services/isolate_evaluation_service.dart";
 import "package:aqua/src/view_models/hand_range_draft_list.dart";
 import "package:flutter/foundation.dart";
 import "package:poker/poker.dart";
 
-class SimulationSession extends ChangeNotifier {
-  SimulationSession.initial({
-    this.onStartSimulation,
-    this.onFinishSimulation,
-  })  : _communityCards = {},
-        _handRanges = HandRangeDraftList.empty(),
-        _results = [] {
-    _handRanges.addListener(() {
+class CalculationSession extends ChangeNotifier {
+  CalculationSession.initial({
+    this.onStartCalculation,
+    this.onFinishCalculation,
+  })  : _communityCards = CardSet.empty,
+        _players = HandRangeDraftList.empty(),
+        _result = EvaluationResult.empty(playerLength: 0) {
+    _players.addListener(() {
       _clearResults();
-      _enqueueSimulation();
+      _enqueueCalculation();
       notifyListeners();
     });
-  }
-
-  SimulationSession.from(
-    Simulation simulation, {
-    this.onStartSimulation,
-    this.onFinishSimulation,
-  })  : _communityCards = simulation.communityCards,
-        _handRanges = HandRangeDraftList.of(simulation.handRanges
-            .map((hr) => HandRangeDraft.fromHandRange(hr))),
-        _results = simulation.results {
-    _handRanges.addListener(() {
-      _clearResults();
-      _enqueueSimulation();
-      notifyListeners();
-    });
-
-    for (final handRange in _handRanges) {
-      handRange.addListener(() {
-        _clearResults();
-        _enqueueSimulation();
-        notifyListeners();
-      });
-    }
   }
 
   final void Function(
-    Set<Card> communityCards,
-    List<HandRange> handRanges,
-  ) onStartSimulation;
+    CardSet communityCards,
+    List<HandRange> players,
+  )? onStartCalculation;
 
-  final void Function(Simulation simulation) onFinishSimulation;
+  final void Function(Calculation? calculation)? onFinishCalculation;
 
-  HandRangeDraftList _handRanges;
+  HandRangeDraftList _players;
 
-  Set<Card> _communityCards;
+  CardSet _communityCards;
 
-  Set<Card> get communityCards => _communityCards;
+  CardSet get communityCards => _communityCards;
 
-  set communityCards(Set<Card> communityCards) {
-    if (communityCards.containsAll(_communityCards) &&
-        _communityCards.containsAll(communityCards)) {
+  set communityCards(CardSet communityCards) {
+    if (communityCards == _communityCards) {
       return;
     }
 
     _communityCards = communityCards;
 
     _clearResults();
-    _enqueueSimulation();
+    _enqueueCalculation();
     notifyListeners();
   }
 
-  HandRangeDraftList get handRanges => _handRanges;
+  HandRangeDraftList get players => _players;
 
-  List<HandRangeSimulationResult> _results;
+  EvaluationResult _result;
 
-  List<HandRangeSimulationResult> get results => _results;
+  EvaluationResult get result => _result;
 
   bool _hasPossibleMatchup = true;
 
   get hasPossibleMatchup => _hasPossibleMatchup;
 
-  SimulationIsolateService _simulationIsolateService;
+  IsolateEvaluationService? _isolateEvaluationService;
 
   void _clearResults() {
-    _results = [];
+    _result = EvaluationResult.empty(playerLength: players.length);
   }
 
-  void _enqueueSimulation() async {
-    if (_handRanges.length <= 1) return;
-    if (_handRanges.hasIncomplete) return;
+  void _enqueueCalculation() async {
+    if (_players.length <= 1) return;
+    if (_players.hasIncomplete) return;
 
-    final communityCards = _communityCards.toSet();
-    final handRanges = _handRanges.map((hr) => hr.toHandRange()).toList();
+    final players = _players.map((hr) => hr.toHandRange()).toList();
 
-    if (_simulationIsolateService != null) {
-      _simulationIsolateService.dispose();
-      _simulationIsolateService = null;
+    if (_isolateEvaluationService != null) {
+      _isolateEvaluationService!.dispose();
+      _isolateEvaluationService = null;
 
-      if (onFinishSimulation != null) {
-        onFinishSimulation(null);
+      if (onFinishCalculation != null) {
+        onFinishCalculation!(null);
       }
     }
 
-    _results = [];
+    _result = EvaluationResult.empty(playerLength: _players.length);
 
     notifyListeners();
 
-    final simulationIsolateService = SimulationIsolateService();
+    final isolateEvaluationService = FlutterIsolateEvaluationService();
 
-    _simulationIsolateService = simulationIsolateService;
+    _isolateEvaluationService = isolateEvaluationService;
 
-    await simulationIsolateService.initialize();
+    await isolateEvaluationService.initialize();
 
-    if (onStartSimulation != null) {
-      onStartSimulation(communityCards, handRanges);
+    if (onStartCalculation != null) {
+      onStartCalculation!(communityCards, players);
     }
 
-    final timesToSimulate = 100000;
+    final timesToSimulate = 200000;
 
-    simulationIsolateService
+    isolateEvaluationService
       ..onProgress.listen(
-        (simulation) {
+        (calculation) {
           _hasPossibleMatchup = true;
-          _results = simulation.results;
+          _result = calculation.result;
 
           notifyListeners();
 
-          if (simulation.timesSimulated == timesToSimulate) {
-            simulationIsolateService.dispose();
-            _simulationIsolateService = null;
+          if (calculation.result.tries == timesToSimulate) {
+            isolateEvaluationService.dispose();
+            _isolateEvaluationService = null;
 
-            if (onFinishSimulation != null) {
-              onFinishSimulation(simulation);
+            if (onFinishCalculation != null) {
+              onFinishCalculation!(calculation);
             }
           }
         },
         onError: (error) {
-          simulationIsolateService.dispose();
-          _simulationIsolateService = null;
+          isolateEvaluationService.dispose();
+          _isolateEvaluationService = null;
 
-          if (error is NoPossibleMatchupException) {
-            debugPrint("simulation canceled: ${error.runtimeType}");
+          // if (error is NoPossibleMatchupException) {
+          //   debugPrint("calculation canceled: ${error.runtimeType}");
 
-            _hasPossibleMatchup = false;
+          _hasPossibleMatchup = false;
 
-            notifyListeners();
+          notifyListeners();
 
-            return;
-          }
+          //   return;
+          // }
 
           throw error;
         },
       )
-      ..requestSimulation(
-        handRanges: handRanges,
+      ..requestEvaluation(
+        players: players,
         communityCards: communityCards,
         times: timesToSimulate,
       );
