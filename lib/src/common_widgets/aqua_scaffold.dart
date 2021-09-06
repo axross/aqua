@@ -7,14 +7,14 @@ import "package:flutter/widgets.dart";
 @immutable
 class AquaScadffold extends StatelessWidget {
   AquaScadffold({
-    Key key,
+    Key? key,
     this.scrollController,
     this.title = "Title",
     this.actions = const [],
     this.slivers = const [],
   }) : super(key: key);
 
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   final String title;
 
@@ -92,9 +92,9 @@ class AquaScadffold extends StatelessWidget {
 @immutable
 class AquaScaffoldStyle {
   const AquaScaffoldStyle({
-    @required this.titleTextStyle,
+    required this.titleTextStyle,
     this.defaultActionButtonvariant = AquaButtonVariant.secondary,
-    @required this.backgroundColor,
+    required this.backgroundColor,
   });
 
   final TextStyle titleTextStyle;

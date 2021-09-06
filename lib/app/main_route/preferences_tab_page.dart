@@ -6,7 +6,7 @@ import "package:aqua/src/utilities/system_ui_overlay_style.dart";
 import "package:flutter/cupertino.dart";
 
 class PreferencesTabPage extends StatefulWidget {
-  PreferencesTabPage({Key key}) : super(key: key);
+  PreferencesTabPage({Key? key}) : super(key: key);
 
   @override
   State<PreferencesTabPage> createState() => _PreferencesTabPageState();
@@ -17,7 +17,7 @@ class _PreferencesTabPageState extends State<PreferencesTabPage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       Analytics.of(context).logScreenChange(
         screenName: "Preferences Screen",
       );

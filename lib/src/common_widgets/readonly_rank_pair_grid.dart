@@ -4,9 +4,7 @@ import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
 class ReadonlyRankPairGrid extends StatelessWidget {
-  ReadonlyRankPairGrid({@required this.rankPairs, Key key})
-      : assert(rankPairs != null),
-        super(key: key);
+  ReadonlyRankPairGrid({required this.rankPairs, Key? key}) : super(key: key);
 
   final Set<RankPair> rankPairs;
 
@@ -35,7 +33,7 @@ class ReadonlyRankPairGrid extends StatelessWidget {
                         high: ranksInStrongnessOrder[high],
                         kicker: ranksInStrongnessOrder[kicker],
                       );
-                BorderRadius borderRadius;
+                BorderRadius? borderRadius;
 
                 if (row == 0 && column == 0) {
                   borderRadius = BorderRadius.only(

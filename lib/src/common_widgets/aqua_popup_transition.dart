@@ -2,9 +2,9 @@ import "package:flutter/widgets.dart";
 
 class AquaPopupTransition extends AnimatedWidget {
   AquaPopupTransition({
-    Key key,
-    @required this.animation,
-    this.child,
+    Key? key,
+    required this.animation,
+    required this.child,
   }) : super(key: key, listenable: animation);
 
   final Animation<double> animation;

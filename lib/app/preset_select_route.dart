@@ -9,7 +9,7 @@ import "package:flutter/cupertino.dart";
 
 class PresetSelectRoute extends CupertinoPageRoute {
   PresetSelectRoute({
-    RouteSettings settings,
+    RouteSettings? settings,
   }) : super(
           title: "PresetSelect",
           builder: (context) => _PresetSelectPage(),
@@ -18,7 +18,7 @@ class PresetSelectRoute extends CupertinoPageRoute {
 }
 
 class _PresetSelectPage extends StatefulWidget {
-  _PresetSelectPage({Key key}) : super(key: key);
+  _PresetSelectPage({Key? key}) : super(key: key);
 
   @override
   State<_PresetSelectPage> createState() => _PresetSelectPageState();
@@ -29,7 +29,7 @@ class _PresetSelectPageState extends State<_PresetSelectPage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       Analytics.of(context).logScreenChange(
         screenName: "Preset Select Screen",
       );
@@ -100,7 +100,7 @@ class _PresetSelectPageState extends State<_PresetSelectPage> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "${(preset.handRange.cardPairCombinations.length / 1326 * 100).floor()}% combs",
+                              "${(preset.handRange.length / 1326 * 100).floor()}% combs",
                               style: theme.textStyleSet.caption,
                             ),
                           ],

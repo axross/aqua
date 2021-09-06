@@ -5,10 +5,10 @@ import "package:flutter/services.dart";
 
 class AquaSlider extends StatefulWidget {
   AquaSlider({
-    Key key,
-    this.divisions,
-    this.value,
-    this.label,
+    Key? key,
+    required this.divisions,
+    required this.value,
+    required this.label,
     this.onChanged,
     this.onChangeStart,
     this.onChangeEnd,
@@ -20,11 +20,11 @@ class AquaSlider extends StatefulWidget {
 
   final String label;
 
-  final void Function(double value) onChanged;
+  final void Function(double value)? onChanged;
 
-  final void Function(double value) onChangeStart;
+  final void Function(double value)? onChangeStart;
 
-  final void Function(double value) onChangeEnd;
+  final void Function(double value)? onChangeEnd;
 
   @override
   State<AquaSlider> createState() => _AquaSliderState();
@@ -56,19 +56,19 @@ class _AquaSliderState extends State<AquaSlider> {
             }
 
             if (widget.onChanged != null) {
-              widget.onChanged(value);
+              widget.onChanged!(value);
             }
           },
           onChangeStart: (value) {
             HapticFeedback.lightImpact();
 
             if (widget.onChangeStart != null) {
-              widget.onChangeStart(value);
+              widget.onChangeStart!(value);
             }
           },
           onChangeEnd: (value) {
             if (widget.onChangeEnd != null) {
-              widget.onChangeEnd(value);
+              widget.onChangeEnd!(value);
             }
           },
         ),

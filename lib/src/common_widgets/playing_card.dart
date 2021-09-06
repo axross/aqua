@@ -6,9 +6,7 @@ import "package:flutter/widgets.dart";
 import "package:poker/poker.dart";
 
 class PlayingCard extends StatelessWidget {
-  PlayingCard({Key key, @required this.card})
-      : assert(card != null),
-        super(key: key);
+  PlayingCard({Key? key, required this.card}) : super(key: key);
 
   final Card card;
 
@@ -30,7 +28,7 @@ class PlayingCard extends StatelessWidget {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Text(
-                    rankChars[card.rank],
+                    rankChars[card.rank]!,
                     textAlign: TextAlign.center,
                     style: style.textStyle.copyWith(
                       color: style.suitColors[card.suit],

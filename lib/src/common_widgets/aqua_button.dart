@@ -8,29 +8,29 @@ class AquaButton extends StatelessWidget {
     this.icon,
     this.style,
     this.onTap,
-    Key key,
+    Key? key,
   })  : assert(style != null || variant != null),
         super(key: key);
 
-  final AquaButtonVariant variant;
+  final AquaButtonVariant? variant;
 
-  final String label;
+  final String? label;
 
-  final IconData icon;
+  final IconData? icon;
 
-  final AquaButtonStyle style;
+  final AquaButtonStyle? style;
 
-  final void Function() onTap;
+  final void Function()? onTap;
 
   AquaButtonStyle _resolveStyle(BuildContext context) {
-    if (style != null) return style;
-    if (variant != null) return AquaTheme.of(context).buttonStyleSet[variant];
+    if (style != null) return style!;
+    if (variant != null) return AquaTheme.of(context).buttonStyleSet[variant!];
 
     final defaultStyle = DefaultAquaButtonStyle.of(context);
 
     assert(defaultStyle != null);
 
-    return defaultStyle;
+    return defaultStyle!;
   }
 
   @override
@@ -64,15 +64,11 @@ class AquaButton extends StatelessWidget {
                 if (icon != null)
                   Icon(
                     icon,
-                    size: style.labelTextStyle.fontSize * 20 / 14,
+                    size: style.labelTextStyle.fontSize! * 20 / 14,
                     color: style.labelTextStyle.color,
                   ),
                 if (label != null && icon != null) SizedBox(width: 4.0),
-                if (label != null)
-                  Text(
-                    label,
-                    style: style.labelTextStyle,
-                  ),
+                if (label != null) Text(label!, style: style.labelTextStyle),
               ],
             ),
           ),
@@ -84,20 +80,22 @@ class AquaButton extends StatelessWidget {
 
 class DefaultAquaButtonStyle extends InheritedWidget {
   DefaultAquaButtonStyle({
-    @required this.style,
-    Widget child,
-    Key key,
-  })  : assert(style != null),
-        super(key: key, child: child);
+    required this.style,
+    required Widget child,
+    Key? key,
+  }) : super(key: key, child: child);
 
   final AquaButtonStyle style;
 
   @override
   bool updateShouldNotify(DefaultAquaButtonStyle old) => style != old.style;
 
-  static AquaButtonStyle of(BuildContext context) => context
-      .dependOnInheritedWidgetOfExactType<DefaultAquaButtonStyle>()
-      .style;
+  static AquaButtonStyle? of(BuildContext context) {
+    final a =
+        context.dependOnInheritedWidgetOfExactType<DefaultAquaButtonStyle>();
+
+    return a != null ? a.style : null;
+  }
 }
 
 enum AquaButtonVariant {
@@ -110,10 +108,10 @@ enum AquaButtonVariant {
 @immutable
 class AquaButtonStyleSet {
   const AquaButtonStyleSet({
-    @required this.normal,
-    @required this.primary,
-    @required this.secondary,
-    @required this.danger,
+    required this.normal,
+    required this.primary,
+    required this.secondary,
+    required this.danger,
   });
 
   final AquaButtonStyle normal;
@@ -135,15 +133,13 @@ class AquaButtonStyleSet {
       case AquaButtonVariant.danger:
         return danger;
     }
-
-    throw UnimplementedError();
   }
 }
 
 class AquaButtonStyle {
   const AquaButtonStyle({
-    @required this.labelTextStyle,
-    @required this.backgroundColor,
+    required this.labelTextStyle,
+    required this.backgroundColor,
   });
 
   final TextStyle labelTextStyle;

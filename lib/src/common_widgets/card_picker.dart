@@ -5,14 +5,14 @@ import "package:poker/poker.dart";
 
 class CardPicker extends StatelessWidget {
   CardPicker({
-    Set<Card> unavailableCards,
-    void Function(Card) onCardTap,
-    Key key,
-  })  : unavailableCards = unavailableCards ?? Set(),
+    CardSet? unavailableCards,
+    void Function(Card)? onCardTap,
+    Key? key,
+  })  : unavailableCards = unavailableCards ?? CardSet.empty,
         onCardTap = onCardTap ?? ((_) {}),
         super(key: key);
 
-  final Set<Card> unavailableCards;
+  final CardSet unavailableCards;
 
   final void Function(Card) onCardTap;
 
@@ -56,7 +56,7 @@ class CardPicker extends StatelessWidget {
   }
 }
 
-const _cards = [
+final _cards = [
   [
     Card(rank: Rank.ace, suit: Suit.spade),
     Card(rank: Rank.king, suit: Suit.spade),
@@ -69,7 +69,7 @@ const _cards = [
     Card(rank: Rank.six, suit: Suit.spade),
     Card(rank: Rank.five, suit: Suit.spade),
     Card(rank: Rank.four, suit: Suit.spade),
-    Card(rank: Rank.three, suit: Suit.spade),
+    Card(rank: Rank.trey, suit: Suit.spade),
     Card(rank: Rank.deuce, suit: Suit.spade),
   ],
   [
@@ -84,7 +84,7 @@ const _cards = [
     Card(rank: Rank.six, suit: Suit.heart),
     Card(rank: Rank.five, suit: Suit.heart),
     Card(rank: Rank.four, suit: Suit.heart),
-    Card(rank: Rank.three, suit: Suit.heart),
+    Card(rank: Rank.trey, suit: Suit.heart),
     Card(rank: Rank.deuce, suit: Suit.heart),
   ],
   [
@@ -99,7 +99,7 @@ const _cards = [
     Card(rank: Rank.six, suit: Suit.diamond),
     Card(rank: Rank.five, suit: Suit.diamond),
     Card(rank: Rank.four, suit: Suit.diamond),
-    Card(rank: Rank.three, suit: Suit.diamond),
+    Card(rank: Rank.trey, suit: Suit.diamond),
     Card(rank: Rank.deuce, suit: Suit.diamond),
   ],
   [
@@ -114,7 +114,7 @@ const _cards = [
     Card(rank: Rank.six, suit: Suit.club),
     Card(rank: Rank.five, suit: Suit.club),
     Card(rank: Rank.four, suit: Suit.club),
-    Card(rank: Rank.three, suit: Suit.club),
+    Card(rank: Rank.trey, suit: Suit.club),
     Card(rank: Rank.deuce, suit: Suit.club),
   ],
 ];

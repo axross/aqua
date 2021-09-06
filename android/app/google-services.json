@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1070741331805-dlv2er04ppa5obsu7rc84o1hqlkv3rfi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.axross.aqua",
+            "certificate_hash": "e019e9559cc05ae53f2f4ff97551b43e9f69314e"
+          }
+        },
+        {
           "client_id": "1070741331805-25q27uuoqf0k9kv8gqai7cfrs689j9rf.apps.googleusercontent.com",
           "client_type": 3
         }

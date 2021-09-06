@@ -4,10 +4,9 @@ import "package:poker/poker.dart";
 @immutable
 class HandRangePreset {
   const HandRangePreset({
-    @required this.name,
-    @required this.handRange,
-  })  : assert(name != null),
-        assert(handRange != null);
+    required this.name,
+    required this.handRange,
+  });
 
   final String name;
 

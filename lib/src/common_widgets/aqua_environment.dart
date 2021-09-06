@@ -3,8 +3,8 @@ import "package:flutter/widgets.dart";
 
 class AquaEnvironment extends InheritedWidget {
   AquaEnvironment({
-    Key key,
-    Widget child,
+    Key? key,
+    required Widget child,
   })  : data = AquaEnvironmentData(),
         super(key: key, child: child);
 
@@ -14,7 +14,7 @@ class AquaEnvironment extends InheritedWidget {
   bool updateShouldNotify(AquaEnvironment old) => data != old.data;
 
   static AquaEnvironmentData of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AquaEnvironment>().data;
+      context.dependOnInheritedWidgetOfExactType<AquaEnvironment>()!.data;
 }
 
 @immutable

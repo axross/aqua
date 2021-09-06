@@ -1,10 +1,9 @@
 import "package:flutter/painting.dart";
 import "package:flutter/services.dart";
-import "package:meta/meta.dart";
 
 void setSystemUIOverlayStyle({
-  @required Color topColor,
-  Color bottomColor,
+  required Color topColor,
+  Color? bottomColor,
 }) {
   final topBrightness = _estimateBrightness(topColor);
   final bottomBrightness = _estimateBrightness(topColor);

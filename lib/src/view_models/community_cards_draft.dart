@@ -3,9 +3,8 @@ import "package:meta/meta.dart";
 import "package:poker/poker.dart";
 
 class CommunityCardsDraft extends ChangeNotifier {
-  CommunityCardsDraft(Iterable<Card> cards)
-      : assert(cards != null),
-        assert(cards.length <= 5),
+  CommunityCardsDraft(Iterable<Card?> cards)
+      : assert(cards.length <= 5),
         assert(cards.every((c) => c == null || c is Card)),
         cards = [null, null, null, null, null]
           ..setRange(0, cards.length, cards);
@@ -13,7 +12,7 @@ class CommunityCardsDraft extends ChangeNotifier {
   CommunityCardsDraft.empty() : cards = [null, null, null, null, null];
 
   @visibleForTesting
-  final List<Card> cards;
+  final List<Card?> cards;
 
   int get hashCode {
     int result = 17;
@@ -27,7 +26,8 @@ class CommunityCardsDraft extends ChangeNotifier {
     return result;
   }
 
-  Set<Card> toSet() => cards.where((c) => c != null).toSet();
+  // Set<Card> toSet() => cards.where((c) => c != null).toSet();
+  Set<Card> toSet() => cards.whereType<Card>().toSet();
 
   operator [](index) {
     assert(index != null);

@@ -3,11 +3,10 @@ import "package:shared_preferences/shared_preferences.dart";
 
 class AquaPreferences extends InheritedWidget {
   AquaPreferences({
-    @required this.data,
-    Widget child,
-    Key key,
-  })  : assert(data != null),
-        super(key: key, child: child);
+    required this.data,
+    required Widget child,
+    Key? key,
+  }) : super(key: key, child: child);
 
   final AquaPreferenceData data;
 
@@ -15,19 +14,19 @@ class AquaPreferences extends InheritedWidget {
   bool updateShouldNotify(AquaPreferences old) => data != old.data;
 
   static AquaPreferenceData of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AquaPreferences>().data;
+      context.dependOnInheritedWidgetOfExactType<AquaPreferences>()!.data;
 }
 
 class AquaPreferenceData extends ChangeNotifier {
   AquaPreferenceData();
 
-  SharedPreferences preferences;
+  late SharedPreferences preferences;
 
   bool _isLoaded = false;
 
   get isLoaded => _isLoaded;
 
-  bool _prefersWinRate;
+  late bool _prefersWinRate;
 
   bool get prefersWinRate => _prefersWinRate;
 
@@ -46,7 +45,7 @@ class AquaPreferenceData extends ChangeNotifier {
       await preferences.setBool("prefersWinRate", false);
     }
 
-    _prefersWinRate = preferences.getBool("prefersWinRate");
+    _prefersWinRate = preferences.getBool("prefersWinRate")!;
     _isLoaded = true;
 
     notifyListeners();

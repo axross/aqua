@@ -3,7 +3,7 @@ import "package:flutter/widgets.dart";
 
 @immutable
 class AquaAppearAnimation extends StatefulWidget {
-  AquaAppearAnimation({Key key, this.child, this.isVisible = false})
+  AquaAppearAnimation({Key? key, required this.child, this.isVisible = false})
       : super(key: key);
 
   final bool isVisible;
@@ -16,9 +16,9 @@ class AquaAppearAnimation extends StatefulWidget {
 
 class _AquaAppearAnimationState extends State<AquaAppearAnimation>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
-  Animation _curvedAnimation;
+  late Animation<double> _curvedAnimation;
 
   @override
   void initState() {

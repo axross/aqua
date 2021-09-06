@@ -3,8 +3,8 @@ import "package:flutter/widgets.dart";
 
 class AquaTabBar extends StatefulWidget {
   AquaTabBar({
-    Key key,
-    @required this.items,
+    Key? key,
+    required this.items,
     this.initialSelectedIndex = 0,
     this.activeIndex = 0,
     this.onChanged,
@@ -16,20 +16,20 @@ class AquaTabBar extends StatefulWidget {
 
   final int activeIndex;
 
-  final void Function(int index) onChanged;
+  final void Function(int index)? onChanged;
 
   @override
   _AquaTabBarState createState() => _AquaTabBarState();
 }
 
 class _AquaTabBarState extends State<AquaTabBar> {
-  int _selectedIndex;
+  late int _selectedIndex;
 
   @override
   void initState() {
     super.initState();
 
-    _selectedIndex = widget.activeIndex ?? widget.initialSelectedIndex;
+    _selectedIndex = widget.activeIndex;
   }
 
   @override
@@ -74,14 +74,14 @@ class _AquaTabBarState extends State<AquaTabBar> {
                         });
 
                         if (widget.onChanged != null) {
-                          widget.onChanged(index);
+                          widget.onChanged!(index);
                         }
                       },
                       child: Padding(
                         padding: EdgeInsets.only(top: 8, bottom: 4),
                         child: Column(
                           children: [
-                            TweenAnimationBuilder(
+                            TweenAnimationBuilder<Color?>(
                               tween: ColorTween(
                                 begin: AquaTheme.of(context)
                                     .textStyleSet
@@ -101,7 +101,7 @@ class _AquaTabBarState extends State<AquaTabBar> {
                                 color: color,
                               ),
                             ),
-                            TweenAnimationBuilder(
+                            TweenAnimationBuilder<TextStyle>(
                               tween: TextStyleTween(
                                 begin: AquaTheme.of(context)
                                     .textStyleSet
@@ -144,10 +144,9 @@ class _AquaTabBarState extends State<AquaTabBar> {
 @immutable
 class AquaTabBarItem {
   const AquaTabBarItem({
-    @required this.label,
-    @required this.icon,
-  })  : assert(label != null),
-        assert(icon != null);
+    required this.label,
+    required this.icon,
+  });
 
   final String label;
 
